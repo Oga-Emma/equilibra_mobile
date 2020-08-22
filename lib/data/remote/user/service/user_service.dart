@@ -1,3 +1,5 @@
+import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
+
 abstract class UserService {
   Future createAccount(
       {birthMonth,
@@ -7,4 +9,6 @@ abstract class UserService {
       fullName,
       password,
       username});
+
+  Future<AuthResponseDTO> login({email, password});
 }

@@ -9,6 +9,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/auth/complete_signup/complete_signup.dart';
 import '../screens/auth/landing_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/reset_password_screen.dart';
@@ -23,6 +24,7 @@ class Routes {
   static const String resetPasswordScreen = '/reset-password-screen';
   static const String signupScreen = '/signup-screen';
   static const String homeScreen = '/home-screen';
+  static const String completeSignupScreen = '/complete-signup-screen';
   static const all = <String>{
     splashScreen,
     landingScreen,
@@ -30,6 +32,7 @@ class Routes {
     resetPasswordScreen,
     signupScreen,
     homeScreen,
+    completeSignupScreen,
   };
 }
 
@@ -43,6 +46,7 @@ class Router extends RouterBase {
     RouteDef(Routes.resetPasswordScreen, page: ResetPasswordScreen),
     RouteDef(Routes.signupScreen, page: SignupScreen),
     RouteDef(Routes.homeScreen, page: HomeScreen),
+    RouteDef(Routes.completeSignupScreen, page: CompleteSignupScreen),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -80,6 +84,12 @@ class Router extends RouterBase {
     HomeScreen: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => HomeScreen(),
+        settings: data,
+      );
+    },
+    CompleteSignupScreen: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CompleteSignupScreen(),
         settings: data,
       );
     },

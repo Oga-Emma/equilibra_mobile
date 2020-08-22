@@ -1,3 +1,5 @@
+import 'package:equilibra_mobile/model/dto/user_dto.dart';
+
 abstract class UserRepo {
   Future createAccount(
       {birthMonth,
@@ -7,4 +9,6 @@ abstract class UserRepo {
       fullName,
       password,
       username});
+
+  Future login({email, password});
 }

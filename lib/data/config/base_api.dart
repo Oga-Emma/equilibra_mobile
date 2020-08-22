@@ -15,11 +15,11 @@ class BaseApi {
 
   handleError(Map<String, dynamic> error) {
     if (error['message'] != null) {
-      throw Exception(error['message']);
+      return error['message'];
     }
 
     if (error['data']['message'] != null) {
-      throw Exception(error['data']['message']);
+      return error['data']['message'];
     }
 
     throw "$error";

@@ -17,7 +17,7 @@ class EButton extends StatelessWidget {
     return FlatButton(
       shape: RoundedRectangleBorder(borderRadius: radius),
       color: Pallet.primaryColor,
-      onPressed: onTap,
+      onPressed: loading ? () {} : onTap,
       child: Container(
         height: 52,
         padding: EdgeInsets.all(4.0),
