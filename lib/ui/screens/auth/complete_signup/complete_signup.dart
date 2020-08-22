@@ -1,3 +1,4 @@
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/complete_signup_dto.dart';
 import 'package:equilibra_mobile/ui/core/widgets/auth_background.dart';
 import 'package:equilibra_mobile/ui/screens/auth/complete_signup/where_you_are_from.dart';
@@ -5,6 +6,7 @@ import 'package:equilibra_mobile/ui/screens/auth/complete_signup/where_you_resid
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/custom_snackbar/ui_snackbar.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../auth_viewmodel.dart';
@@ -14,13 +16,13 @@ class CompleteSignupScreen extends StatefulWidget {
   _CompleteSignupScreenState createState() => _CompleteSignupScreenState();
 }
 
+CompleteSignupDTO completeSignup = CompleteSignupDTO();
+
 class _CompleteSignupScreenState extends State<CompleteSignupScreen>
-    with UISnackBarProvider {
+    with UISnackBarProvider, ErrorHandler {
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   var _current = 0;
-
-  CompleteSignupDTO completeSignup = CompleteSignupDTO();
 
   bool _autoValidate = false;
 
@@ -28,6 +30,7 @@ class _CompleteSignupScreenState extends State<CompleteSignupScreen>
     super.initState();
   }
 
+  AuthViewModel controller = AuthViewModel();
   @override
   Widget build(BuildContext context) {
     return AuthBackground(
@@ -42,7 +45,6 @@ class _CompleteSignupScreenState extends State<CompleteSignupScreen>
             index: _current,
             children: <Widget>[
               PlaceOfOriginScreen(completeSignup, onNext: () {
-                print('here');
                 setState(() {
                   _current = 1;
                 });
@@ -56,8 +58,13 @@ class _CompleteSignupScreenState extends State<CompleteSignupScreen>
   }
 
   _completeSignup() async {
-    try {} catch (e) {
-      print(e);
+    try {
+      showLoadingSnackBar(context);
+      await controller.completeSignup(completeSignup.toMap());
+      closeLoadingSnackBar();
+      controller.showHomeScreen();
+    } catch (e) {
+      showInSnackBar(context, getErrorMessage(e));
     }
   }
 

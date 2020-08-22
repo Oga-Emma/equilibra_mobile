@@ -39,4 +39,9 @@ class UserRepoImpl implements UserRepo {
 
     return authResponse.user;
   }
+
+  @override
+  Future completeSignup(data) async {
+    return userService.completeSignup(await localCache.getToken(), data);
+  }
 }

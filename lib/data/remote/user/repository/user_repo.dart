@@ -11,4 +11,5 @@ abstract class UserRepo {
       username});
 
   Future login({email, password});
+  Future completeSignup(data);
 }

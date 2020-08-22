@@ -81,6 +81,19 @@ class AuthViewModel extends BaseViewModel {
     setBusy(false);
   }
 
+  Future completeSignup(data) async {
+    try {
+      setBusy(true);
+      await _userRepo.completeSignup(data);
+      setBusy(false);
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+
+    setBusy(false);
+  }
+
   Future sendVerificationMail(email) async {
     try {
       setBusy(true);

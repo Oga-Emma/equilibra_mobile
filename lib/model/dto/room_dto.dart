@@ -1,0 +1,33 @@
+import 'package:equilibra_mobile/model/dto/filterable_list_item.dart';
+
+class RoomDTO extends FilterableListItem {
+  var changeTopic; //": false,
+  var id; //": "5e3d4a48fb9e016690a5be9c",
+  var roomType; //": "LGA",
+  var government; //": "5e3d4a46fb9e016690a5b898",
+  var name; //": "Abia North",
+  var slug; //": "abia-north",
+  var members; //": [],
+  var __v; //": 0,
+  var createdAt; //": "2020-02-07T11:30:18.585Z",
+  var updatedAt; //": "2020-07-08T14:25:59.071Z",
+  var currentTopic; //": null,
+  var topicStartDate; //": null,
+  var schedules; //": 0
+
+  RoomDTO.fromMap(Map<String, dynamic> data) {
+    changeTopic = data["changeTopic"] ?? false;
+    id = data["_id"];
+    roomType = data["roomType"];
+    government = data["government"];
+    name = data["name"];
+    slug = data["slug"];
+    members = data["members"];
+    __v = data["__v"];
+    createdAt = data["createdAt"];
+    updatedAt = data["updatedAt"];
+    currentTopic = data["currentTopic"];
+    topicStartDate = data["topicStartDate"];
+    schedules = data["schedules"];
+  }
+}

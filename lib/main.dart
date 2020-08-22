@@ -1,3 +1,4 @@
+import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/router/router.gr.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserController>(create: (_) => UserController())
+        ChangeNotifierProvider<UserController>(create: (_) => UserController()),
+        ChangeNotifierProvider<DataController>(create: (_) => DataController())
       ],
       child: OverlaySupport(
         child: MaterialApp(

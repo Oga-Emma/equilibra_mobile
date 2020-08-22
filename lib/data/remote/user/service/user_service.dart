@@ -11,4 +11,5 @@ abstract class UserService {
       username});
 
   Future<AuthResponseDTO> login({email, password});
+  Future completeSignup(token, data);
 }

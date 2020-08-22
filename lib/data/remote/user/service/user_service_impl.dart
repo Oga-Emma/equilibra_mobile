@@ -34,7 +34,7 @@ class UserServiceImpl with BaseApi implements UserService {
       var response =
           await http.post(url, headers: header, body: json.encode(payload));
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -56,10 +56,37 @@ class UserServiceImpl with BaseApi implements UserService {
       var response =
           await http.post(url, headers: header, body: json.encode(payload));
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return AuthResponseDTO.fromMap(decode['data']);
+      }
+      throw Exception(handleError(decode));
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @override
+  Future completeSignup(token, data) async {
+    try {
+      var url = "$BASE_URL/accounts/continue-signup";
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      };
+
+      print(header);
+      print(data);
+
+      var response = await http.post(url,
+          headers: header, body: json.encode({"update": data}));
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+//        return AuthResponseDTO.fromMap(decode['data']);
+
       }
       throw Exception(handleError(decode));
     } catch (err) {
