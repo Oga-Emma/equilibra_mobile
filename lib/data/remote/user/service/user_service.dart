@@ -1,4 +1,5 @@
 import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
+import 'package:equilibra_mobile/model/dto/user_dto.dart';
 
 abstract class UserService {
   Future createAccount(
@@ -12,4 +13,6 @@ abstract class UserService {
 
   Future<AuthResponseDTO> login({email, password});
   Future completeSignup(token, data);
+
+  Future<UserDTO> fetchMyProfile(token);
 }

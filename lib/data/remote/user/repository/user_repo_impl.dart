@@ -1,6 +1,7 @@
 import 'package:equilibra_mobile/data/local/cache/local_cache.dart';
 import 'package:equilibra_mobile/data/remote/user/service/user_service.dart';
 import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
+import 'package:equilibra_mobile/model/dto/user_dto.dart';
 
 import 'user_repo.dart';
 export 'user_repo.dart';
@@ -43,5 +44,12 @@ class UserRepoImpl implements UserRepo {
   @override
   Future completeSignup(data) async {
     return userService.completeSignup(await localCache.getToken(), data);
+  }
+
+  @override
+  Future<UserDTO> fetchMyProfile() async {
+    var user = await userService.fetchMyProfile(await localCache.getToken());
+
+    return user;
   }
 }
