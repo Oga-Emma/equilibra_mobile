@@ -12,12 +12,13 @@ import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/validators.dart';
 import 'package:stacked/stacked.dart';
 
-class LoginScreen extends StatefulWidget {
+class ResetPasswordScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with UISnackBarProvider {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen>
+    with UISnackBarProvider {
   var _formkey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -35,11 +36,16 @@ class _LoginScreenState extends State<LoginScreen> with UISnackBarProvider {
       builder: (context, model, child) {
         return AuthBackground(
             scaffoldKey: _scaffoldKey,
-            title: "Welcome Back",
-            subtitle: "Please login to continue using Equilibra",
+            title: "Recover your password",
+            subtitle: "Please enter the email registered on your account",
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Text(
+                  "We'll Email you a link to change your password",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w100),
+                ),
+                EmptySpace(multiple: 2),
                 EAuthTextField(
                     autoValidate: _autoValidate,
                     inputType: TextInputType.emailAddress,
@@ -50,47 +56,20 @@ class _LoginScreenState extends State<LoginScreen> with UISnackBarProvider {
                     hintText: "Email Address",
                     icon: SvgIconUtils.getSvgIcon(SvgIconUtils.PERSON_AVATER,
                         width: 20, height: 20)),
-                EmptySpace(multiple: 2),
-                EAuthTextField(
-                  autoValidate: _autoValidate,
-                  obscureText: true,
-                  validator: Validators.validatePlainPass(),
-                  onSaved: (value) {
-                    _password = value;
-                  },
-                  hintText: "Password",
-                  icon: SvgIconUtils.getSvgIcon(SvgIconUtils.LOCK,
-                      width: 20, height: 20),
-                ),
-                EmptySpace(multiple: 2),
-                EButton(label: "Login", onTap: () {}),
-                EmptySpace(multiple: 2),
-                FlatButton(
-                  onPressed: () => model.showResetPasswordPage(),
-                  child: Text("Forgot my password?",
-                      style: TextStyle(color: Pallet.primaryColor)),
-                ),
-                EmptySpace(multiple: 2),
-                SocialAuthButtons(google: (value) {}, facebook: (value) {}),
                 EmptySpace(multiple: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Don't have an account? "),
-                    EmptySpace(),
-                    InkWell(
-                        onTap: () => model.showSsignupPage(),
-                        child: Text(
-                          "Create One",
-                          style: TextStyle(color: Pallet.primaryColor),
-                        )),
-                  ],
+                EButton(label: "Request password reset", onTap: () {}),
+                EmptySpace(multiple: 2),
+                Center(
+                  child: FlatButton(
+                    onPressed: () => model.showLoginPage(),
+                    child: Text("Remember your password? Sign In",
+                        style: TextStyle(color: Pallet.primaryColor)),
+                  ),
                 ),
                 EmptySpace(multiple: 5),
               ],
             ),
-            showBackButton: false);
+            showBackButton: true);
       },
       viewModelBuilder: () => AuthViewModel(),
     );

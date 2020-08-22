@@ -64,14 +64,15 @@ class AuthBackground extends StatelessWidget {
                           fontSize: 28),
                     ),
                   ),
-                  EmptySpace(multiple: 4),
+                  EmptySpace(multiple: 2),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          EmptySpace(multiple: 2),
                           Material(
                             shape: RoundedRectangleBorder(borderRadius: radius),
-                            elevation: 1.0,
+//                            elevation: 1.0,
                             color: Colors.white,
                             child: Padding(
                               padding: const EdgeInsets.only(

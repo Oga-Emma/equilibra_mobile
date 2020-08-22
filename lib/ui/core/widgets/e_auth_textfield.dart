@@ -32,7 +32,7 @@ class EAuthTextField extends StatelessWidget {
           icon,
           Container(
             color: Pallet.inputColor.withOpacity(0.5),
-            height: 56,
+            height: 52,
             width: 1,
             margin: EdgeInsets.symmetric(horizontal: 12),
           ),

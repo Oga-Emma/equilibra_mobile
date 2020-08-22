@@ -18,13 +18,16 @@ class EButton extends StatelessWidget {
       onPressed: onTap,
       child: Container(
         height: 52,
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.all(4.0),
         child: Row(
           children: <Widget>[
             Expanded(
                 child: Text(
               "$label",
-              style: TextStyle(fontSize: 14.0, color: Colors.white),
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700),
             )),
             SvgIconUtils.getSvgIcon(SvgIconUtils.ARROW_CIRCLE_RIGHT,
                 color: Colors.white, width: 24, height: 24)

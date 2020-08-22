@@ -1,4 +1,4 @@
-import 'package:equilibra_mobile/ui/screens/landing_screen.dart';
+import 'package:equilibra_mobile/ui/screens/auth/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
