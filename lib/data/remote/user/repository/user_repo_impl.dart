@@ -8,4 +8,23 @@ class UserRepoImpl implements UserRepo {
   LocalCache localCache;
   UserService userService;
   UserRepoImpl({this.localCache, this.userService});
+
+  @override
+  Future createAccount(
+      {birthMonth,
+      birthYear,
+      currentCountry,
+      email,
+      fullName,
+      password,
+      username}) {
+    return userService.createAccount(
+        birthMonth: birthMonth,
+        birthYear: birthYear,
+        email: email,
+        currentCountry: currentCountry,
+        fullName: fullName,
+        password: password,
+        username: username);
+  }
 }

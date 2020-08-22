@@ -1,13 +1,15 @@
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:helper_widgets/loading_spinner.dart';
 
 import 'helper.dart';
 
 class EButton extends StatelessWidget {
-  EButton({@required this.label, @required this.onTap});
+  EButton({@required this.label, @required this.onTap, this.loading = false});
 
   final String label;
+  final bool loading;
   final Function() onTap;
 
   @override
@@ -29,8 +31,10 @@ class EButton extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.w700),
             )),
-            SvgIconUtils.getSvgIcon(SvgIconUtils.ARROW_CIRCLE_RIGHT,
-                color: Colors.white, width: 24, height: 24)
+            loading
+                ? LoadingSpinner(color: Colors.white)
+                : SvgIconUtils.getSvgIcon(SvgIconUtils.ARROW_CIRCLE_RIGHT,
+                    color: Colors.white, width: 24, height: 24)
           ],
         ),
       ),

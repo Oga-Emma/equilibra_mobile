@@ -14,17 +14,19 @@ class EFormTextField extends StatelessWidget {
       this.isEnabled = true,
       this.inputType = TextInputType.text,
       this.initialValue,
-      this.showDropDownArrow = false});
-  String labelText;
-  String initialValue;
-  Function(String) onSaved;
-  Function(String) validator;
-  TextEditingController controller;
-  bool autoValidate;
-  bool obscureText;
-  bool isEnabled;
-  bool showDropDownArrow;
-  TextInputType inputType;
+      this.showDropDownArrow = false,
+      this.isLastTextField = false});
+  final String labelText;
+  final String initialValue;
+  final Function(String) onSaved;
+  final Function(String) validator;
+  final TextEditingController controller;
+  final bool autoValidate;
+  final bool obscureText;
+  final bool isEnabled;
+  final bool showDropDownArrow;
+  final TextInputType inputType;
+  final bool isLastTextField;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,12 @@ class EFormTextField extends StatelessWidget {
                       autovalidate: autoValidate,
                       obscureText: obscureText,
                       keyboardType: inputType,
+                      textInputAction: isLastTextField
+                          ? TextInputAction.done
+                          : TextInputAction.next,
+                      onFieldSubmitted: (_) => isLastTextField
+                          ? null
+                          : FocusScope.of(context).nextFocus(),
                       decoration: InputDecoration.collapsed(hintText: ""),
                     ),
                   ),
