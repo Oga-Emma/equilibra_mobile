@@ -56,3 +56,65 @@ class UserDTO {
     };
   }
 }
+
+class UserProfileDTO extends UserDTO {
+  var localGovtOfOrigin;
+  var localGovtOfResidence;
+  var stateOfOrigin;
+  var stateOfOriginConstituency;
+  var stateOfOriginFedConstituency;
+  var stateOfOriginSenatorialDistrict;
+  var stateOfResidence;
+  var stateOfResidenceConstituency;
+  var stateOfResidenceFedConstituency;
+  var stateOfResidenceSenatorialDistrict;
+  UserProfileDTO.fromMap(Map<String, dynamic> data) : super.fromMap(data) {
+    if (data['localGovtOfOrigin'] != null && data['localGovtOfOrigin'] is Map) {
+      localGovtOfOrigin = data["localGovtOfOrigin"];
+    }
+    if (data['localGovtOfResidence'] != null &&
+        data['localGovtOfResidence'] is Map) {
+      localGovtOfResidence = data["localGovtOfResidence"];
+    }
+    if (data['stateOfOrigin'] != null && data['stateOfOrigin'] is Map) {
+      stateOfOrigin = data["stateOfOrigin"];
+    }
+    if (data['stateOfOriginConstituency'] != null &&
+        data['stateOfOriginConstituency'] is Map) {
+      stateOfOriginConstituency = data["stateOfOriginConstituency"];
+    }
+    if (data['stateOfOriginFedConstituency'] != null &&
+        data['stateOfOriginFedConstituency'] is Map) {
+      stateOfOriginFedConstituency = data["stateOfOriginFedConstituency"];
+    }
+    if (data['stateOfOriginSenatorialDistrict'] != null &&
+        data['stateOfOriginSenatorialDistrict'] is Map) {
+      stateOfOriginSenatorialDistrict = data["stateOfOriginSenatorialDistrict"];
+    }
+    if (data['stateOfResidence'] != null && data['stateOfResidence'] is Map) {
+      stateOfResidence = data["stateOfResidence"];
+    }
+    if (data['stateOfResidenceConstituency'] != null &&
+        data['stateOfResidenceConstituency'] is Map) {
+      stateOfResidenceConstituency = data["stateOfResidenceConstituency"];
+    }
+    if (data['stateOfResidenceFedConstituency'] != null &&
+        data['stateOfResidenceFedConstituency'] is Map) {
+      stateOfResidenceFedConstituency = data["stateOfResidenceFedConstituency"];
+    }
+    if (data['stateOfResidenceSenatorialDistrict'] != null &&
+        data['stateOfResidenceSenatorialDistrict'] is Map) {
+      stateOfResidenceSenatorialDistrict =
+          data["stateOfResidenceSenatorialDistrict"];
+    }
+  }
+}
+
+class TitleID {
+  var id; //": "5e3d4a48fb9e016690a5c0be",
+  var name; //": "Uzo Uwani"
+  TitleID.fromMap(Map<String, dynamic> data) {
+    id = data['_id'];
+    name = data['name'];
+  }
+}

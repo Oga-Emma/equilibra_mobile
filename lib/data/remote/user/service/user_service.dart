@@ -14,5 +14,5 @@ abstract class UserService {
   Future<AuthResponseDTO> login({email, password});
   Future completeSignup(token, data);
 
-  Future<UserDTO> fetchMyProfile(token);
+  Future<UserProfileDTO> fetchMyProfile(token);
 }

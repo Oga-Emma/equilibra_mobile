@@ -68,12 +68,12 @@ class UserServiceImpl with BaseApi implements UserService {
     }
   }
 
-  Future<UserDTO> fetchMyProfile(token) async {
+  Future<UserProfileDTO> fetchMyProfile(token) async {
     try {
       var url = "$BASE_URL/accounts/me";
       var header = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
+        "x-access-token": "Bearer $token"
       };
 
       print(token);
@@ -83,7 +83,7 @@ class UserServiceImpl with BaseApi implements UserService {
       print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
-        return UserDTO.fromMap(decode['data']);
+        return UserProfileDTO.fromMap(decode['data']);
       }
       throw Exception(handleError(decode));
     } catch (err) {
@@ -97,7 +97,7 @@ class UserServiceImpl with BaseApi implements UserService {
       var url = "$BASE_URL/accounts/continue-signup";
       var header = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
+        "x-access-token": "Bearer $token"
       };
 
       print(header);

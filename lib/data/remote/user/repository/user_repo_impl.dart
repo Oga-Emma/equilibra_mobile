@@ -47,7 +47,7 @@ class UserRepoImpl implements UserRepo {
   }
 
   @override
-  Future<UserDTO> fetchMyProfile() async {
+  Future<UserProfileDTO> fetchMyProfile() async {
     var user = await userService.fetchMyProfile(await localCache.getToken());
 
     return user;

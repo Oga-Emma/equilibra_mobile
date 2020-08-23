@@ -224,7 +224,7 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  Future<UserDTO> getUser() async {
+  Future<UserProfileDTO> getUser() async {
     try {
       var user = await _localCache.getUser();
       if (user.signupStatus) {
