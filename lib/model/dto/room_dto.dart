@@ -48,8 +48,8 @@ class RoomGroupDTO {
 }
 
 class RoomType {
-  static const String HOUSE_OF_REPRESENTATIVE = "HOUSE_OF_REPRESENTATIVE";
-  static const String HOUSE_OF_ASSEMBLY = "HOUSE_OF_ASSEMBLY";
+  static const String HOUSE_OF_REPRESENTATIVE = "HOR";
+  static const String HOUSE_OF_ASSEMBLY = "HOR";
   static const String SENATE = "SENATE";
   static const String MINISTRY = "MINISTRY";
   static const String COURT = "COURT";

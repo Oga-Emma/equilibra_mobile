@@ -1,9 +1,12 @@
+import 'package:equilibra_mobile/di/di.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/router/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/loading_spinner.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import 'helper.dart';
 
@@ -18,13 +21,16 @@ class GroupsGridItem extends StatelessWidget {
   final RoomGroupDTO group;
   final bool loading;
 
+  var _navigationService = getIt<NavigationService>();
+
   @override
   Widget build(BuildContext context) {
     return Material(
       borderRadius: radius,
       child: InkWell(
         onTap: () {
-//          Router.gotoWidget(RoomGroupsListScreen(group), context);
+          _navigationService.navigateTo(Routes.roomGroupsListScreen,
+              arguments: RoomGroupsListScreenArguments(group: group));
         },
         child: Container(
           padding: EdgeInsets.all(24.0),

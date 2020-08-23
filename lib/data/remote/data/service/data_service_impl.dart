@@ -31,9 +31,31 @@ class DataServiceImpl with BaseApi implements DataService {
     }
   }
 
-  Future<List<RoomDTO>> fetchRoom(String type, String stateId) async {
+  Future<List<RoomDTO>> fetchHomeRoom(String type, String stateId) async {
     try {
       var url = "$BASE_URL/home/rooms/$type/$stateId/1/40";
+      var header = {"Content-Type": "application/json"};
+
+      var response = await http.get(url, headers: header);
+
+//      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return List<RoomDTO>.from((decode['data']['rooms'] ?? [])
+            .map((e) => RoomDTO.fromMap(e))
+            .toList());
+      } else {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  Future<List<RoomDTO>> fetchRoom(String type, String stateId,
+      {bool origin = false}) async {
+    try {
+      var url = "$BASE_URL/rooms/$type/$stateId/$origin/1/40";
       var header = {"Content-Type": "application/json"};
 
       var response = await http.get(url, headers: header);

@@ -26,19 +26,19 @@ class DataController extends BaseViewModel {
   }
 
   Future<List<RoomDTO>> fetchLGA(String stateId) {
-    return dataRepo.fetchLGSRooms(stateId);
+    return dataRepo.fetchHomeLGSRooms(stateId);
   }
 
   Future<List<RoomDTO>> fetchHouseOfAssembly(String stateId) {
-    return dataRepo.fetchHouseOfAssemblyRooms(stateId);
+    return dataRepo.fetchHomeHouseOfAssemblyRooms(stateId);
   }
 
   Future<List<RoomDTO>> fetchHouseOfRep(String stateId) {
-    return dataRepo.fetchHouseOfRepRooms(stateId);
+    return dataRepo.fetchHomeHouseOfRepRooms(stateId);
   }
 
   Future<List<RoomDTO>> fetchSenateRooms(String stateId) {
-    return dataRepo.fetchSenateRooms(stateId);
+    return dataRepo.fetchHomeSenateRooms(stateId);
   }
 
   @override

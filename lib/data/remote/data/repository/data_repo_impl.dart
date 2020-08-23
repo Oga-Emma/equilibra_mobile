@@ -17,22 +17,43 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<List<RoomDTO>> fetchHouseOfAssemblyRooms(String stateId) {
-    return dataService.fetchRoom('HOA', stateId);
+  Future<List<RoomDTO>> fetchHomeHouseOfAssemblyRooms(String stateId) {
+    return dataService.fetchHomeRoom('HOA', stateId);
   }
 
   @override
-  Future<List<RoomDTO>> fetchHouseOfRepRooms(String stateId) {
-    return dataService.fetchRoom('HOR', stateId);
+  Future<List<RoomDTO>> fetchHomeHouseOfRepRooms(String stateId) {
+    return dataService.fetchHomeRoom('HOR', stateId);
   }
 
   @override
-  Future<List<RoomDTO>> fetchLGSRooms(String stateId) {
-    return dataService.fetchRoom('LGA', stateId);
+  Future<List<RoomDTO>> fetchHomeLGSRooms(String stateId) {
+    return dataService.fetchHomeRoom('LGA', stateId);
   }
 
   @override
-  Future<List<RoomDTO>> fetchSenateRooms(String stateId) {
-    return dataService.fetchRoom('SENATE', stateId);
+  Future<List<RoomDTO>> fetchHomeSenateRooms(String stateId) {
+    return dataService.fetchHomeRoom('SENATE', stateId);
+  }
+
+  @override
+  Future<List<RoomDTO>> fetchHouseOfAssemblyRooms(
+      String stateId, bool isOrigin) {
+    return dataService.fetchRoom('HOA', stateId, origin: isOrigin);
+  }
+
+  @override
+  Future<List<RoomDTO>> fetchHouseOfRepRooms(String stateId, bool isOrigin) {
+    return dataService.fetchRoom('HOR', stateId, origin: isOrigin);
+  }
+
+  @override
+  Future<List<RoomDTO>> fetchLGSRooms(String stateId, bool isOrigin) {
+    return dataService.fetchRoom('LGA', stateId, origin: isOrigin);
+  }
+
+  @override
+  Future<List<RoomDTO>> fetchSenateRooms(String stateId, bool isOrigin) {
+    return dataService.fetchRoom('SENATE', stateId, origin: isOrigin);
   }
 }

@@ -6,6 +6,7 @@ import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/home_grid_items.dart';
 import 'package:equilibra_mobile/ui/core/widgets/home_screen_toolbar.dart';
 import 'package:equilibra_mobile/ui/screens/home/home_view_model.dart';
+import 'package:equilibra_mobile/ui/screens/home/sidebar/drawer_layout.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
@@ -60,12 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
       AboutContact(_scaffoldKey),
     ];
 
-    return ViewModelBuilder.reactive(
-        builder: (context, model, child) {
+    return ViewModelBuilder<HomeViewModel>.reactive(
+        builder: (context, HomeViewModel model, child) {
           return Scaffold(
               key: _scaffoldKey,
               drawer: DrawerLayout(),
-              body: Container(child: children[0]));
+              body: Container(child: children[model.currentPage]));
         },
         viewModelBuilder: () => HomeViewModel(),
         disposeViewModel: false);
@@ -299,7 +300,8 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           makeHeader(
-                              "${user.stateOfResidence.name}  - RESIDENCE'.toUpperCase()"),
+                              "${user.stateOfResidence.name}  - RESIDENCE"
+                                  .toUpperCase()),
                           SliverPadding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 16.0, vertical: 8.0),
@@ -307,7 +309,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: 1.1,
+                              childAspectRatio: 1.3,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
@@ -340,6 +342,7 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
                           ),
+                          SliverPadding(padding: EdgeInsets.only(bottom: 32.0))
                         ],
                       ));
                 },
@@ -349,163 +352,6 @@ class HomePage extends StatelessWidget {
 
           return LoadingSpinner();
         });
-  }
-}
-
-class DrawerLayout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-//    appState = Provider.of<AppStateProvider>(context);
-    return Drawer(
-      child: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(child: SizedBox()),
-              IconButton(
-                  icon: Icon(
-                    EvaIcons.close,
-                    size: 28,
-                    color: Pallet.accentColor,
-                  ),
-                  onPressed: () => Navigator.pop(context))
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              child: Column(
-                children: <Widget>[
-                  SideBarItem(
-                    label: "Home",
-                    icon: SvgIconUtils.HOME,
-                    selected: true,
-                    onTap: () {
-                      Navigator.pop(context);
-//                      appState.selectedTab = 0;
-                    },
-                  ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "Notifications",
-                    icon: SvgIconUtils.NOTIFICATION,
-                    selected: false,
-                    onTap: () {
-                      Navigator.pop(context);
-//                      appState.selectedTab = 0;
-//                      Router.gotoNamed(Routes.NOTIFICATION, context);
-                    },
-                  ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "About Us",
-                    icon: SvgIconUtils.ABOUT_US,
-                    selected: false,
-                    onTap: () {
-                      Navigator.pop(context);
-//                      appState.selectedTab = 1;
-                    },
-                  ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "Contact Us",
-                    icon: SvgIconUtils.CONTACT_US,
-                    selected: false,
-                    onTap: () {
-                      Navigator.pop(context);
-//                      appState.selectedTab = 2;
-                    },
-                  ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "Feedbacks",
-                    icon: SvgIconUtils.FEEDBACK,
-                    selected: false,
-                    onTap: () {
-                      Navigator.pop(context);
-                      showDialog(
-                          context: context,
-                          builder: (context) => FeedBackDialog("email"));
-                    },
-                  ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "Settings",
-                    icon: SvgIconUtils.SETTINGS,
-                    selected: false, //appState.selectedTab == 5,
-                    onTap: () {
-                      Navigator.pop(context);
-//                      appState.selectedTab = 0;
-//                      Router.gotoNamed(Routes.SETTINGS, context);
-                    },
-                  )
-                ],
-              ),
-              padding: EdgeInsets.only(right: 40),
-            ),
-          ),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 24.0),
-              height: 1,
-              color: Colors.grey[400]),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-              width: double.maxFinite,
-              child: InkWell(
-                onTap: () {
-//                  googleSignIn.signOut();
-//                  appState.signout();
-//                  Router.gotoNamed(Routes.LANDING, context, clearStack: true);
-                },
-                child: Row(
-                  children: <Widget>[
-                    SvgIconUtils.getSvgIcon(SvgIconUtils.LOGOUT,
-                        color: Colors.red),
-                    EmptySpace(multiple: 2),
-                    Text("Logout", style: Theme.of(context).textTheme.subhead),
-                  ],
-                ),
-              ),
-              decoration: BoxDecoration()),
-          EmptySpace()
-        ],
-      )),
-    );
-  }
-}
-
-class SideBarItem extends StatelessWidget {
-  SideBarItem(
-      {@required this.label,
-      @required this.icon,
-      @required this.onTap,
-      this.selected = false});
-  String icon;
-  String label;
-  Function() onTap;
-  bool selected;
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-          width: double.maxFinite,
-          child: Row(
-            children: <Widget>[
-              SvgIconUtils.getSvgIcon(icon,
-                  color: selected ? Pallet.primaryColor : Colors.grey[800]),
-              EmptySpace(multiple: 2),
-              Text("$label", style: Theme.of(context).textTheme.subhead),
-            ],
-          ),
-          decoration: BoxDecoration(
-              color: selected ? Pallet.groupIconColor : Colors.transparent),
-        ),
-      ),
-    );
   }
 }
 
