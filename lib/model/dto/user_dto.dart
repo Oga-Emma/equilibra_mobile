@@ -58,54 +58,59 @@ class UserDTO {
 }
 
 class UserProfileDTO extends UserDTO {
-  var localGovtOfOrigin;
-  var localGovtOfResidence;
-  var stateOfOrigin;
-  var stateOfOriginConstituency;
-  var stateOfOriginFedConstituency;
-  var stateOfOriginSenatorialDistrict;
-  var stateOfResidence;
-  var stateOfResidenceConstituency;
-  var stateOfResidenceFedConstituency;
-  var stateOfResidenceSenatorialDistrict;
+  TitleID localGovtOfOrigin;
+  TitleID localGovtOfResidence;
+  TitleID stateOfOrigin;
+  TitleID stateOfOriginConstituency;
+  TitleID stateOfOriginFedConstituency;
+  TitleID stateOfOriginSenatorialDistrict;
+  TitleID stateOfResidence;
+  TitleID stateOfResidenceConstituency;
+  TitleID stateOfResidenceFedConstituency;
+  TitleID stateOfResidenceSenatorialDistrict;
   UserProfileDTO.fromMap(Map<String, dynamic> data) : super.fromMap(data) {
     if (data['localGovtOfOrigin'] != null && data['localGovtOfOrigin'] is Map) {
-      localGovtOfOrigin = data["localGovtOfOrigin"];
+      localGovtOfOrigin = TitleID.fromMap(data["localGovtOfOrigin"]);
     }
     if (data['localGovtOfResidence'] != null &&
         data['localGovtOfResidence'] is Map) {
-      localGovtOfResidence = data["localGovtOfResidence"];
+      localGovtOfResidence = TitleID.fromMap(data["localGovtOfResidence"]);
     }
     if (data['stateOfOrigin'] != null && data['stateOfOrigin'] is Map) {
-      stateOfOrigin = data["stateOfOrigin"];
+      stateOfOrigin = TitleID.fromMap(data["stateOfOrigin"]);
     }
     if (data['stateOfOriginConstituency'] != null &&
         data['stateOfOriginConstituency'] is Map) {
-      stateOfOriginConstituency = data["stateOfOriginConstituency"];
+      stateOfOriginConstituency =
+          TitleID.fromMap(data["stateOfOriginConstituency"]);
     }
     if (data['stateOfOriginFedConstituency'] != null &&
         data['stateOfOriginFedConstituency'] is Map) {
-      stateOfOriginFedConstituency = data["stateOfOriginFedConstituency"];
+      stateOfOriginFedConstituency =
+          TitleID.fromMap(data["stateOfOriginFedConstituency"]);
     }
     if (data['stateOfOriginSenatorialDistrict'] != null &&
         data['stateOfOriginSenatorialDistrict'] is Map) {
-      stateOfOriginSenatorialDistrict = data["stateOfOriginSenatorialDistrict"];
+      stateOfOriginSenatorialDistrict =
+          TitleID.fromMap(data["stateOfOriginSenatorialDistrict"]);
     }
     if (data['stateOfResidence'] != null && data['stateOfResidence'] is Map) {
-      stateOfResidence = data["stateOfResidence"];
+      stateOfResidence = TitleID.fromMap(data["stateOfResidence"]);
     }
     if (data['stateOfResidenceConstituency'] != null &&
         data['stateOfResidenceConstituency'] is Map) {
-      stateOfResidenceConstituency = data["stateOfResidenceConstituency"];
+      stateOfResidenceConstituency =
+          TitleID.fromMap(data["stateOfResidenceConstituency"]);
     }
     if (data['stateOfResidenceFedConstituency'] != null &&
         data['stateOfResidenceFedConstituency'] is Map) {
-      stateOfResidenceFedConstituency = data["stateOfResidenceFedConstituency"];
+      stateOfResidenceFedConstituency =
+          TitleID.fromMap(data["stateOfResidenceFedConstituency"]);
     }
     if (data['stateOfResidenceSenatorialDistrict'] != null &&
         data['stateOfResidenceSenatorialDistrict'] is Map) {
       stateOfResidenceSenatorialDistrict =
-          data["stateOfResidenceSenatorialDistrict"];
+          TitleID.fromMap(data["stateOfResidenceSenatorialDistrict"]);
     }
   }
 }

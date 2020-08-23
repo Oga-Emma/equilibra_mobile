@@ -1,11 +1,11 @@
 import 'package:equilibra_mobile/di/di.dart';
+import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/router/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import '../core/res/pallet.dart';
 import 'auth_viewmodel.dart';
 
 class LandingScreen extends StatelessWidget {

@@ -31,3 +31,38 @@ class RoomDTO extends FilterableListItem {
     schedules = data["schedules"];
   }
 }
+
+class RoomGroupDTO {
+  String groupName;
+  String roomType;
+  String title;
+  bool isFederal;
+  bool isOrigin;
+  bool ventTheSteam;
+  int numberOfGroups;
+
+  RoomGroupDTO(this.groupName, this.roomType, this.title, this.numberOfGroups,
+      {this.isOrigin = false,
+      this.isFederal = false,
+      this.ventTheSteam = false});
+}
+
+class RoomType {
+  static const String HOUSE_OF_REPRESENTATIVE = "HOUSE_OF_REPRESENTATIVE";
+  static const String HOUSE_OF_ASSEMBLY = "HOUSE_OF_ASSEMBLY";
+  static const String SENATE = "SENATE";
+  static const String MINISTRY = "MINISTRY";
+  static const String COURT = "COURT";
+  static const String LGA = "LGA";
+}
+
+class RoomMember {
+  String member;
+  bool moderator;
+  String moderatorType;
+  RoomMember.fromMap(Map<dynamic, dynamic> data) {
+    member = data['member'];
+    moderator = data['moderator'];
+    moderatorType = data['moderatorType'];
+  }
+}

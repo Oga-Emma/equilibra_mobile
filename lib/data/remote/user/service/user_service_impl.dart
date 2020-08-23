@@ -76,11 +76,11 @@ class UserServiceImpl with BaseApi implements UserService {
         "x-access-token": "Bearer $token"
       };
 
-      print(token);
+//      print(token);
 
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return UserProfileDTO.fromMap(decode['data']);
@@ -100,13 +100,13 @@ class UserServiceImpl with BaseApi implements UserService {
         "x-access-token": "Bearer $token"
       };
 
-      print(header);
-      print(data);
+//      print(header);
+//      print(data);
 
       var response = await http.post(url,
           headers: header, body: json.encode({"update": data}));
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
 //        return AuthResponseDTO.fromMap(decode['data']);
