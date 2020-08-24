@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/input_validators.dart';
 import 'package:equilibra_mobile/ui/core/widgets/custom_dialogs.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/custom_snackbar/ui_snackbar.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart';
 import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -16,7 +18,7 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen>
-    with UISnackBarProvider {
+    with UISnackBarProvider, ErrorHandler {
   var _formkey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
   File image;
@@ -31,8 +33,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
     super.dispose();
   }
 
+  UserController userController;
+
   @override
   Widget build(BuildContext context) {
+    userController = Provider.of<UserController>(context);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -84,7 +89,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                   },
                 ),
                 EmptySpace(multiple: 3),
-                EButton(label: "Update Password", onTap: updatePassword),
+                EButton(
+                    loading: userController.isBusy,
+                    label: "Update Password",
+                    onTap: updatePassword),
               ],
             ),
           ),
@@ -92,53 +100,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   }
 
   updatePassword() async {
-//    if (_formkey.currentState.validate()) {
-//      _formkey.currentState.save();
-//
-//      showLoadingSnackBar();
-//      try {
-//        print("Starting");
-//
-////        GraphQLConfigurationWithAuth.token = appState.token;
-//        GraphQLClient _client = graphQLConfiguration.clientToQuery();
-//        MutationOptions query = MutationOptions(
-//            context: <String, dynamic>{
-//              'headers': <String, String>{
-//                'Authorization': 'Bearer ${appState.token}',
-//              },
-//            },
-//            document: AuthQueryMutation.updatePassword(),
-//            variables: {
-//              "passwordInput": {
-//                "currentPassword": currentPassword,
-//                "newPassword": newPassword
-//              },
-//            });
-//
-//        var result = await _client.mutate(query);
-//
-//        if (result.hasException) {
-//          print("Errors => ${result.exception.toString()}");
-//          showInSnackBar("${result.exception.toString()}");
-//        } else {
-////          var user = UserDTO.fromMap(result.data.data["login"]);
-////          appState.user = user;
-////          Router.gotoWidget(HomeScreen(), context, clearStack: true);
-////          appState.save(user);
-//          showInSnackBar("Password updated");
-//
-////          print("after creating user => ${user.toMap()}");
-//        }
-//      } catch (e) {
-//        print(e);
-//        showInSnackBar("Error");
-//      }
-//    } else {
-//      showInSnackBar("Please fix the errors in red");
-//      setState(() {
-//        _autoValidate = true;
-//      });
-//    }
+    if (_formkey.currentState.validate()) {
+      _formkey.currentState.save();
+
+      userController.setBusy(true);
+      try {
+        await userController.changePassword(
+            newPassword: newPassword, oldPassword: currentPassword);
+        showInSnackBar(context, "Password changed successfully");
+      } catch (e) {
+        print(e);
+        showInSnackBar(context, getErrorMessage(e));
+      }
+      userController.setBusy(false);
+    }
   }
 
   Future _selectImage() async {

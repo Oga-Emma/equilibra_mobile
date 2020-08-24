@@ -52,4 +52,10 @@ class UserRepoImpl implements UserRepo {
 
     return user;
   }
+
+  @override
+  Future changePassword({oldPassword, newPassword}) async {
+    return userService.changePassword(await localCache.getToken(),
+        newPassword: newPassword, oldPassword: oldPassword);
+  }
 }

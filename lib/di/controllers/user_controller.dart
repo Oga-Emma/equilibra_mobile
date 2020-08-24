@@ -24,6 +24,11 @@ class UserController extends BaseViewModel {
     return _profileController.stream;
   }
 
+  Future changePassword({newPassword, oldPassword}) {
+    return _userRepo.changePassword(
+        newPassword: newPassword, oldPassword: oldPassword);
+  }
+
   @override
   void dispose() {
     _profileController.close();

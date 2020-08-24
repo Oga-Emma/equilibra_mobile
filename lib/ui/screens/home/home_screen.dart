@@ -156,7 +156,7 @@ class HomePage extends StatelessWidget {
       return SliverToBoxAdapter(
           child: Container(
         color: Colors.white,
-        padding: const EdgeInsets.only(left: 18.0, top: 16.0),
+        padding: const EdgeInsets.only(left: 18.0, top: 32.0, bottom: 16.0),
         child: Text(headerText, style: Theme.of(context).textTheme.subtitle),
       ));
     }

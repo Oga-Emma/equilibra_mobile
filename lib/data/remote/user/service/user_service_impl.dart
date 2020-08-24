@@ -117,4 +117,27 @@ class UserServiceImpl with BaseApi implements UserService {
       throw err;
     }
   }
+
+  @override
+  Future changePassword(token, {oldPassword, newPassword}) async {
+    try {
+      var url = "$BASE_URL/accounts/update-password";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var data = {"oldPassword": oldPassword, "newPassword": newPassword};
+
+      var response =
+          await http.put(url, headers: header, body: json.encode(data));
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
 }

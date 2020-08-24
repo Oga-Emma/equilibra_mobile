@@ -40,13 +40,14 @@ class SettingsScreen extends StatelessWidget {
                     item("Change State of Residence",
                         model.changeStateOfResidence),
                     EmptySpace(multiple: 5),
-                    getHeading(context, "Diaspora"),
-                    item("Change Diaspora", model.changeDiaspora),
-                    EmptySpace(multiple: 5),
+//                    getHeading(context, "Diaspora"),
+//                    item("Change Diaspora", model.changeDiaspora),
+//                    EmptySpace(multiple: 5),
                     getHeading(context, "More"),
                     item("Privacy & Licenses", () {}),
                     item("Send Feedbacks", () {}),
-                    EmptySpace(),
+                    EmptySpace(multiple: 5),
+                    Divider(),
                     SizedBox(
                       child: InkWell(
                         onTap: HomeViewModel().logout(),
@@ -81,8 +82,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
-        EmptySpace(),
-        Container(height: 0.5, color: Colors.grey[300], width: double.maxFinite)
+        Divider()
       ],
     );
   }

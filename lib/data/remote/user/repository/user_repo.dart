@@ -13,5 +13,6 @@ abstract class UserRepo {
   Future login({email, password});
   Future completeSignup(data);
 
+  Future changePassword({oldPassword, newPassword});
   Future<UserDTO> fetchMyProfile();
 }
