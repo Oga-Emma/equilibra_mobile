@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/router/router.gr.dart';
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
             primaryColor: Pallet.primaryColor,
             accentColor: Pallet.accentColor,
           ),
+          builder: BotToastInit(), //1. call BotToastInit
+          navigatorObservers: [BotToastNavigatorObserver()],
           navigatorKey: getIt<NavigationService>().navigatorKey,
           initialRoute: Routes.splashScreen,
           onGenerateRoute: Router().onGenerateRoute,

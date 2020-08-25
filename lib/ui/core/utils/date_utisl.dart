@@ -24,7 +24,7 @@ class DateUtils {
 
   static int getTimeStamp(date) {
     try {
-      var d = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
+      var d = DateTime.tryParse(date);
       return int.parse(timeStampFormat.format(d));
     } catch (e) {
 //      print("Error => ${e}");

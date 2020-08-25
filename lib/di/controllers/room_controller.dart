@@ -36,15 +36,21 @@ class RoomController extends BaseViewModel {
     return await _dataRepo.fetchRoom(id);
   }
 
-  BehaviorSubject<CommentDTO> commentStream;
-  Stream<CommentDTO> initCommentsStream() {
-    commentStream = BehaviorSubject<CommentDTO>();
-    return commentStream.stream;
+  BehaviorSubject<EventHandler> eventHandlerStream;
+  Stream<EventHandler> initEventHandlerStream() {
+    eventHandlerStream = BehaviorSubject<EventHandler>();
+    return eventHandlerStream.stream;
   }
 
-  closeCommentsStream() {
-    commentStream.close();
-    commentStream = null;
+  addEvent(EventHandler event) {
+    if (eventHandlerStream != null && eventHandlerStream.hasListener) {
+      eventHandlerStream.sink.add(event);
+    }
+  }
+
+  closeEventHandlerStream() {
+    eventHandlerStream.close();
+    eventHandlerStream = null;
   }
 
   Future<List<CommentDTO>> fetchComments({page, limit, roomId, topicId}) async {
@@ -77,12 +83,40 @@ class RoomController extends BaseViewModel {
 
 //      _socket.emit("room connection", [room]);
     });
-    _socket.on("update", (data) {
-      try {} catch (err) {
-        logger.e(err);
-        showErrorToast('Internal client error');
-      }
+
+    _socket.on('connect', (data) {
+      print("connect $data");
     });
+    _socket.on('join-room', (data) {
+      print("join-room $data");
+    });
+    _socket.on('leave-room', (data) {
+      print("leave-room $data");
+    });
+    _socket.on('comment', (data) {
+      print("comment $data");
+      addEvent(EventHandler(EventTypes.COMMENT, CommentDTO.fromJson(data)));
+    });
+    _socket.on('topic-changed', (data) {
+      print("topic-changed $data");
+    });
+    _socket.on('vote-topic-change', (data) {
+      print("vote-topic-change $data");
+    });
+    _socket.on('new-vote', (data) {
+      print("new-vote $data");
+    });
+    _socket.on('vote-topic-closed', (data) {
+      print("vote-topic-closed $data");
+    });
+    _socket.on('topic-discussion-vote', (data) {
+      print("topic-discussion-vote $data");
+    });
+    _socket.on('close-discussion-vote', (data) {
+      print("close-discussion-vote $data");
+    });
+    _socket.on('disconnect', (data) {});
+
     _socket.onConnectError((data) {
       logger.e('connection error => $data');
       showErrorToast('Network error');
@@ -108,4 +142,14 @@ class RoomController extends BaseViewModel {
     socket?.disconnect();
     super.dispose();
   }
+}
+
+class EventHandler {
+  EventTypes type;
+  var data;
+  EventHandler(this.type, this.data);
+}
+
+enum EventTypes {
+  COMMENT,
 }

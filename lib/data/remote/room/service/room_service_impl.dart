@@ -41,9 +41,6 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
-      print(token);
-      print(url);
-
       var response = await http.get(url, headers: header);
 
 //      print(response.body);

@@ -24,10 +24,23 @@ class _RoomCommentsState extends State<RoomComments> {
 
   UserController userController;
   RoomController roomController;
+
+  @override
+  void dispose() {
+    if (roomController != null) {
+      roomController.closeEventHandlerStream();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     userController = Provider.of<UserController>(context);
-    roomController = Provider.of<RoomController>(context);
+
+    if (roomController == null) {
+      roomController = Provider.of<RoomController>(context);
+      roomController.initEventHandlerStream().listen(handleEvents);
+    }
 
 //    print(widget.room);
 //    print(widget.room.id);
@@ -152,4 +165,11 @@ class _RoomCommentsState extends State<RoomComments> {
     width: double.maxFinite,
     color: Colors.grey[300],
   );
+
+  void handleEvents(EventHandler event) {
+    if (event.type == EventTypes.COMMENT) {
+      comments.insert(0, event.data as CommentDTO);
+      animatedListKey.currentState.insertItem(0);
+    }
+  }
 }
