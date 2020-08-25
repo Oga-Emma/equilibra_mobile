@@ -16,6 +16,7 @@ import '../screens/auth/login_screen.dart';
 import '../screens/auth/reset_password_screen.dart';
 import '../screens/auth/signup_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/home/room/room_screen.dart';
 import '../screens/home/room/rooms_list_screen.dart';
 import '../screens/home/setting/settings/change_diaspora.dart';
 import '../screens/home/setting/settings/change_password_screen.dart';
@@ -38,6 +39,7 @@ class Routes {
   static const String changeDiaspora = '/change-diaspora';
   static const String changePasswordScreen = '/change-password-screen';
   static const String changeStateOfResidence = '/change-state-of-residence';
+  static const String roomScreen = '/room-screen';
   static const all = <String>{
     splashScreen,
     landingScreen,
@@ -52,6 +54,7 @@ class Routes {
     changeDiaspora,
     changePasswordScreen,
     changeStateOfResidence,
+    roomScreen,
   };
 }
 
@@ -72,6 +75,7 @@ class Router extends RouterBase {
     RouteDef(Routes.changeDiaspora, page: ChangeDiaspora),
     RouteDef(Routes.changePasswordScreen, page: ChangePasswordScreen),
     RouteDef(Routes.changeStateOfResidence, page: ChangeStateOfResidence),
+    RouteDef(Routes.roomScreen, page: RoomScreen),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -155,6 +159,17 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    RoomScreen: (data) {
+      final args = data.getArgs<RoomScreenArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => RoomScreen(
+          args.group,
+          args.room,
+          isVentTheSteam: args.isVentTheSteam,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -166,4 +181,13 @@ class Router extends RouterBase {
 class RoomGroupsListScreenArguments {
   final RoomGroupDTO group;
   RoomGroupsListScreenArguments({@required this.group});
+}
+
+/// RoomScreen arguments holder class
+class RoomScreenArguments {
+  final RoomGroupDTO group;
+  final RoomDTO room;
+  final bool isVentTheSteam;
+  RoomScreenArguments(
+      {@required this.group, @required this.room, this.isVentTheSteam = false});
 }

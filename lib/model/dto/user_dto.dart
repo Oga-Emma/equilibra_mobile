@@ -123,3 +123,20 @@ class TitleID {
     name = data['name'];
   }
 }
+
+class UserShortInfo {
+  var id;
+  String fullName;
+  String username;
+  String image;
+  bool isSuspended;
+  String role;
+
+  UserShortInfo.fromMap(Map<dynamic, dynamic> data)
+      : id = data['_id'] ?? "",
+        fullName = data['fullName'] ?? "",
+        username = data['username'] ?? "",
+        image = data['image'] ?? "",
+        isSuspended = data['isSuspended'] ?? false,
+        role = data['role'] ?? "";
+}

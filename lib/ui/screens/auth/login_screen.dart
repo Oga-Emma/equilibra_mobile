@@ -1,3 +1,4 @@
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
@@ -27,11 +28,12 @@ class _LoginScreenState extends State<LoginScreen>
   String email, password;
 
   bool _autoValidate = false;
+  UserController userController;
 //
 //  AppStateProvider appState;
   @override
   Widget build(BuildContext context) {
-//    appState = Provider.of<AppStateProvider>(context);
+    userController = Provider.of<UserController>(context);
 
     return ViewModelBuilder<AuthViewModel>.reactive(
       builder: (context, model, child) {
@@ -110,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen>
       if (_formkey.currentState.validate()) {
         _formkey.currentState.save();
         UserDTO user = await model.login(email: email, password: password);
+        userController.user = user;
         model.completeLogin(context, user);
       } else {
         showInSnackBar(context, "Please fill out all fields");

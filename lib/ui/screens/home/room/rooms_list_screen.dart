@@ -2,10 +2,12 @@ import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/screens/home/room/room_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/loading_spinner.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
+import 'package:stacked/stacked.dart';
 
 class RoomGroupsListScreen extends StatelessWidget {
   RoomGroupsListScreen(this.group);
@@ -19,52 +21,56 @@ class RoomGroupsListScreen extends StatelessWidget {
     textTheme = Theme.of(context).textTheme;
     controller = Provider.of<DataController>(context);
 
-    return Scaffold(
-        appBar: RoomListAppBar(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios,
-                      size: 20, color: Colors.white)),
-              EmptySpace(),
-              Text(StringUtils.toTitleCase("${group.groupName}"),
-                  style: TextStyle(fontSize: 16.0, color: Colors.white)),
-              EmptySpace(multiple: 0.5),
-              group.ventTheSteam
-                  ? SizedBox()
-                  : Icon(Icons.arrow_forward_ios,
-                      size: 14.0, color: Colors.white.withOpacity(0.7)),
-              EmptySpace(multiple: 0.5),
-              group.ventTheSteam
-                  ? SizedBox()
-                  : Text("${group.title}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16.0,
-                          color: Colors.white)),
-            ],
-          ),
-        ),
-        body: Container(
-            child: StreamBuilder<Map<String, List<RoomDTO>>>(
-                stream: group.isFederal
-                    ? controller.fetchFederalRooms(group.roomType)
-                    : group.isOrigin
-                        ? controller.fetchStateOfOriginRooms(
-                            group.roomId, group.roomType)
-                        : controller.fetchStateOfResidenceRooms(
-                            group.roomId, group.roomType),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data.containsKey(group.roomType)) {
-                    print(snapshot.data);
-                    return _buildRooms(snapshot.data[group.roomType]);
-                  }
+    return ViewModelBuilder<RoomViewModel>.nonReactive(
+        builder: (context, model, child) {
+          return Scaffold(
+              appBar: RoomListAppBar(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(Icons.arrow_back_ios,
+                            size: 20, color: Colors.white)),
+                    EmptySpace(),
+                    Text(StringUtils.toTitleCase("${group.groupName}"),
+                        style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                    EmptySpace(multiple: 0.5),
+                    group.ventTheSteam
+                        ? SizedBox()
+                        : Icon(Icons.arrow_forward_ios,
+                            size: 14.0, color: Colors.white.withOpacity(0.7)),
+                    EmptySpace(multiple: 0.5),
+                    group.ventTheSteam
+                        ? SizedBox()
+                        : Text("${group.title}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16.0,
+                                color: Colors.white)),
+                  ],
+                ),
+              ),
+              body: Container(
+                  child: StreamBuilder<Map<String, List<RoomDTO>>>(
+                      stream: group.isFederal
+                          ? controller.fetchFederalRooms(group.roomType)
+                          : group.isOrigin
+                              ? controller.fetchStateOfOriginRooms(
+                                  group.roomId, group.roomType)
+                              : controller.fetchStateOfResidenceRooms(
+                                  group.roomId, group.roomType),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData &&
+                            snapshot.data.containsKey(group.roomType)) {
+                          return _buildRooms(
+                              snapshot.data[group.roomType], model);
+                        }
 
-                  return LoadingSpinner();
-                })));
+                        return LoadingSpinner();
+                      })));
+        },
+        viewModelBuilder: () => RoomViewModel());
   }
 
   String getInitials(String name) {
@@ -104,13 +110,20 @@ class RoomGroupsListScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildRooms(List<RoomDTO> rooms) {
+  Widget _buildRooms(List<RoomDTO> rooms, RoomViewModel model) {
     return ListView.builder(
         itemCount: rooms.length,
         itemBuilder: (context, index) {
           var room = rooms[index];
           return ListTile(
             onTap: () {
+//              print(room.id);
+              model.gotoRoomScreen(
+                group,
+                room,
+                isVentTheSteam: room.name.toLowerCase().contains("vent"),
+              );
+
 //                Router.gotoWidget(
 //                    RoomScreen(
 //                      group,

@@ -168,6 +168,7 @@ class HomePage extends StatelessWidget {
           if (snapshot.hasData) {
             user = snapshot.data;
 
+
             return ViewModelBuilder.reactive(
                 builder: (context, model, child) {
                   return Scaffold(

@@ -5,6 +5,7 @@ import 'package:equilibra_mobile/ui/screens/auth/reset_password_screen.dart';
 import 'package:equilibra_mobile/ui/screens/auth/signup_screen.dart';
 import 'package:equilibra_mobile/ui/screens/home/home_screen.dart';
 import 'package:equilibra_mobile/ui/screens/auth/landing_screen.dart';
+import 'package:equilibra_mobile/ui/screens/home/room/room_screen.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/rooms_list_screen.dart';
 import 'package:equilibra_mobile/ui/screens/home/setting/settings/change_diaspora.dart';
 import 'package:equilibra_mobile/ui/screens/home/setting/settings/change_password_screen.dart';
@@ -27,5 +28,6 @@ import 'package:equilibra_mobile/ui/screens/splash_screen.dart';
   MaterialRoute(page: ChangeDiaspora),
   MaterialRoute(page: ChangePasswordScreen),
   MaterialRoute(page: ChangeStateOfResidence),
+  MaterialRoute(page: RoomScreen),
 ])
 class $Router {}

@@ -11,10 +11,14 @@ class UserController extends BaseViewModel {
 
   var _profileIsFetching = false;
   var _profileController = BehaviorSubject<UserProfileDTO>();
+
+  UserDTO user;
+
   Stream<UserProfileDTO> fetchProfile() {
     if (!_profileIsFetching) {
       _profileIsFetching = true;
       _userRepo.fetchMyProfile().then((value) {
+        user = value;
         _profileIsFetching = false;
         _profileController.sink.add(value);
       }).catchError((err) {

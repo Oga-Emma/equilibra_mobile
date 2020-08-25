@@ -1,0 +1,979 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
+import 'package:equilibra_mobile/model/dto/_voting_dtos.dart';
+import 'package:equilibra_mobile/model/dto/comment_dto.dart';
+import 'package:equilibra_mobile/model/dto/room_dto.dart';
+import 'package:equilibra_mobile/model/dto/topic_dto.dart';
+import 'package:equilibra_mobile/model/dto/user_dto.dart';
+import 'package:equilibra_mobile/ui/core/res/palet.dart';
+import 'package:equilibra_mobile/ui/core/utils/date_utisl.dart';
+import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
+import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
+import 'package:equilibra_mobile/ui/screens/home/room/room_screen/topic_title.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:helper_widgets/custom_toasts.dart';
+import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart' as helper;
+import 'package:helper_widgets/loading_spinner.dart';
+import 'package:helper_widgets/string_utils/string_utils.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import 'room_screen/comment_list_items.dart';
+import 'room_screen/dialogs_in_room/change_topic_dialog.dart';
+import 'room_screen/dialogs_in_room/end_of_topic_voting_dialog.dart';
+import 'room_screen/dialogs_in_room/end_of_topic_voting_result_dialog.dart';
+import 'room_screen/dialogs_in_room/loading_dialog_helper.dart';
+import 'room_screen/dialogs_in_room/report_comment_dialog.dart';
+import 'room_screen/dialogs_in_room/suggest_topic_dialog.dart';
+import 'room_screen/dialogs_in_room/vote_change_topic_dialog.dart';
+import 'room_screen/dialogs_in_room/vote_change_topic_result_dialog.dart';
+
+class RoomScreen extends StatefulWidget {
+  RoomScreen(this.group, this.room, {this.isVentTheSteam = false});
+
+  RoomGroupDTO group;
+  RoomDTO room;
+  bool isVentTheSteam;
+
+  @override
+  _RoomScreenState createState() => _RoomScreenState();
+}
+
+class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final animatedListKey = GlobalKey<AnimatedListState>();
+
+  var commentController = TextEditingController();
+  bool hasTopic = false;
+
+  CommentDTO reply;
+  RoomDTO room;
+
+  bool get hasReply => reply != null;
+  bool sending = false;
+
+  List dates = [];
+  bool isMember = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
+
+  TextTheme textTheme;
+  UserController userController;
+
+  @override
+  Widget build(BuildContext context) {
+    textTheme = Theme.of(context).textTheme;
+    userController = Provider.of<UserController>(context);
+
+    print(widget.room.id);
+    return Scaffold(
+//        appBar: AppBar(
+//          leading: InkWell(
+//              onTap: () => Navigator.pop(context),
+//              child: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white)),
+//        ),
+        body: body());
+
+//    return Scaffold(key: _scaffoldKey, body: body());
+  }
+
+  Widget body() {
+//    if (!widget.group.ventTheSteam) {
+//      hasTopic = widget.room.currentTopic != null &&
+//          widget.room.currentTopic.id != null;
+//    }
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: Container(child: _buildCustomScrollView(context, [])),
+    );
+  }
+
+  List comments;
+
+  bool fetching = false;
+  bool error = false;
+  Widget _buildCustomScrollView(BuildContext context, List commentList) {
+    this.comments = commentList;
+
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Expanded(
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    centerTitle: false,
+                    leading: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(Icons.arrow_back_ios,
+                            size: 20, color: Colors.white)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16.0),
+                            bottomRight: Radius.circular(16.0))),
+                    pinned: true,
+                    title: appBarContent(context),
+                    actions:
+                        widget.isVentTheSteam ? <Widget>[_selectPopup()] : null,
+                    expandedHeight:
+                        widget.isVentTheSteam || !hasTopic ? 190 : 230,
+                    flexibleSpace: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(24.0),
+                          bottomRight: Radius.circular(24.0)),
+                      child: Container(
+                        child: SafeArea(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(height: 56),
+                                if (hasTopic && !widget.isVentTheSteam)
+                                  Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        SvgIconUtils.getSvgIcon(
+                                            SvgIconUtils.CLOCK,
+                                            color: Colors.white,
+                                            height: 18,
+                                            width: 18),
+                                        EmptySpace(),
+                                        CountDownToTopicEnd(widget.room)
+//                                            CountDownToTopicEnd(widget
+//                                                .room.currentTopic.startDate)
+                                      ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: Colors.white)),
+                                  )
+                                else
+                                  SizedBox(),
+                                EmptySpace(),
+                                TopicTitle(
+                                    room: widget.room,
+                                    isVentTheSteam: widget.isVentTheSteam)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  fetching
+                      ? SliverFillRemaining(
+                          child: LoadingSpinner(),
+                        )
+                      : error
+                          ? SliverFillRemaining(
+                              child: Center(
+                                  child: Text(
+                                      "Error fetching data\nPlease check your internet",
+                                      textAlign: TextAlign.center)),
+                            )
+                          : comments.isEmpty
+                              ? SliverFillRemaining(
+                                  child: Center(
+                                      child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SvgIconUtils.getSvgNoColor(
+                                            SvgIconUtils.NO_COMMENT,
+                                            width: 50,
+                                            height: 50),
+                                        EmptySpace(multiple: 2),
+                                        Text("No ongoing chat",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6,
+                                            textAlign: TextAlign.center),
+                                        EmptySpace(multiple: 0.5),
+                                        Text("Be the first to leave a comment",
+                                            textAlign: TextAlign.center),
+                                      ],
+                                    ),
+                                  )),
+                                )
+                              : commentArea()
+                ],
+              ),
+            ),
+            Material(
+              color: Colors.white,
+              elevation: 4.0,
+              child: Container(
+                width: double.maxFinite,
+                child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 8.0),
+                      child: widget.isVentTheSteam || isMember
+                          ? commentLayout()
+                          : EButton(label: "Join Room", onTap: joinRoom),
+                    )),
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+            bottom: 100,
+            right: 8,
+            child: widget.isVentTheSteam || !isMember || hasReply
+                ? SizedBox()
+                : FloatingActionButton(
+                    onPressed: () {
+                      _fabClicked(context);
+                    },
+                    child: Icon(Icons.add),
+                    mini: true)),
+      ],
+    );
+  }
+
+  Widget appBarContent(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: widget.isVentTheSteam
+          ? Text("Vent the Steam")
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text("${widget.group.groupName}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16.0,
+                        color: Colors.white.withOpacity(0.7))),
+                Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.white),
+                EmptySpace(multiple: 0.5),
+                Text("${widget.room.name}",
+                    style: TextStyle(fontSize: 16.0, color: Colors.white)),
+              ],
+            ),
+    );
+  }
+
+  commentArea() {
+    return SliverFillRemaining(
+        child: Container(
+      child: AnimatedList(
+          reverse: true,
+          key: animatedListKey,
+          initialItemCount: comments.length,
+          itemBuilder: (context, index, animation) {
+            var commentDTO = CommentDTO.fromJson(comments[index]);
+
+            var prevComment = commentDTO;
+
+            bool showDate = false;
+            if (index != 0) {
+              prevComment = CommentDTO.fromJson(comments[index - 1]);
+              var day = DateUtils.getTimeStamp(commentDTO.createdAt);
+
+              if (day != DateUtils.getTimeStamp(prevComment.createdAt)) {
+                showDate = true;
+              }
+            }
+
+            return SizeTransition(
+                axis: Axis.vertical,
+                sizeFactor: animation,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CommentListItems(
+                        commentDTO, userController.user, widget.room.members,
+                        replyClicked: (CommentDTO comment) {
+                      setState(() {
+                        reply = comment;
+                      });
+                    }, reportClicked: (CommentDTO comment) {
+                      showDialog(
+                          context: context,
+                          builder: (context) =>
+                              ReportCommentDialog(onSubmit: (String message) {
+                                reportComment(comment.id, message);
+                                Navigator.pop(context);
+                              }));
+                    }, like: (comment) {
+                      if (comment.liked) {
+                        unlikeComment(comment.id);
+                      } else {
+                        likeComment(comment.id);
+                      }
+                    }),
+                    showDate
+                        ? Row(
+                            children: <Widget>[
+                              Expanded(child: _line),
+                              Text(
+                                  "${DateUtils.getDate(prevComment.createdAt)}"),
+                              Expanded(child: _line),
+                            ],
+                          )
+                        : SizedBox(),
+                  ],
+                ));
+          }),
+    ));
+  }
+
+  Widget commentLayout() {
+    fetchAdvert();
+    return Column(
+      children: <Widget>[
+        commentImage != null && commentImage.isNotEmpty
+            ? SizedBox(
+                height: 110,
+                width: double.maxFinite,
+                child: ListView(
+                    reverse: true,
+                    scrollDirection: Axis.horizontal,
+                    children: List.generate(commentImage.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4.0),
+                            child: Stack(
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () {
+//                          Router.gotoWidget(ImagePreviewScreen(file: ), context);
+//                                    showImagePreview(context,
+//                                        file: commentImage[index]);
+                                  },
+                                  child: Container(
+                                    height: 100,
+                                    width: 130,
+                                    color: Colors.grey,
+                                    child: Hero(
+                                      tag: 'image',
+                                      child: Image(
+                                          image: FileImage(
+                                              commentImage[index] != null
+                                                  ? commentImage[index]
+                                                  : ""),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: GestureDetector(
+                                        child: Container(
+                                            color: Colors.black12,
+                                            child: Icon(Icons.cancel,
+                                                color: Colors.white)),
+                                        onTap: () {
+                                          setState(() {
+                                            commentImage.removeAt(index);
+                                          });
+                                        }))
+                              ],
+                            )),
+                      );
+                    })),
+              )
+            : SizedBox(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: GestureDetector(
+                onTap: pickImage,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgIconUtils.getSvgIcon(
+                      SvgIconUtils.COMMENT_ADD_IMAGE_SEND,
+                      color: Colors.grey,
+                      height: 20,
+                      width: 20),
+                ),
+              ),
+            ),
+            EmptySpace(multiple: 2),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  hasReply ? replyContainer() : SizedBox(),
+                  TextField(
+                    controller: commentController,
+                    maxLines: 10,
+                    minLines: 1,
+                    decoration: hasReply ||
+                            (commentImage != null && commentImage.isNotEmpty)
+                        ? InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              gapPadding: 4.0,
+                            ),
+                            hintText: "Type a message...",
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14))
+                        : InputDecoration.collapsed(
+                            hintText: "Type a message...",
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14)),
+                  ),
+                ],
+              ),
+            ),
+            EmptySpace(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: GestureDetector(
+                  onTap: () async {
+                    if (widget.room.currentTopic == null) {
+                      showErrorToast(
+                          "This room has no topic, please set a topic to start a discussion");
+                      return;
+                    }
+//                    FocusScope.of(context).requestFocus(new FocusNode());
+                    //send comment then refetch
+                    String message = commentController.text;
+                    if ((commentImage == null || commentImage.isEmpty) &&
+                        StringUtils.isEmpty(message)) {
+                      return;
+                    }
+                    ////print(message);
+
+//            var topicId = widget.room.currentTopic.id;
+
+                    setState(() {
+                      sending = true;
+                    });
+
+                    try {
+                      if (hasReply) {
+                        await replyComment(reply, message, commentImage);
+                      } else {
+                        await makeComment(message, commentImage);
+                      }
+
+                      setState(() {
+                        sending = false;
+                      });
+
+//              if (refetch != null) {
+//                refetch();
+//              }
+                    } catch (e) {
+                      ////print("Error => $e");
+                      showErrorToast(getErrorMessage(e));
+                      setState(() {
+                        sending = false;
+                      });
+                    }
+                  },
+                  child: sending
+                      ? Center(
+                          child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator()))
+                      : Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: SvgIconUtils.getSvgIcon(
+                              SvgIconUtils.COMMENT_SEND,
+                              color: Colors.grey,
+                              height: 20,
+                              width: 20),
+                        )),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget replyContainer() {
+    return Container(
+      width: double.maxFinite,
+      child: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 24.0, left: 8.0, right: 8.0, bottom: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "@${StringUtils.toTitleCase(reply.author.fullName)}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text("${reply.comment}"),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  reply = null;
+                });
+              },
+              child: Icon(Icons.cancel, size: 20, color: Colors.grey[700]),
+            ),
+          )
+        ],
+      ),
+      decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0))),
+    );
+  }
+
+  joinRoom() async {
+//    showLoadingDialog(context);
+  }
+
+  List<File> commentImage = [];
+
+  Future pickImage() async {
+    if (commentImage == null) {
+      commentImage = [];
+    }
+    try {
+//      checkPermission();
+
+      var image = await ImagePicker.pickImage(
+          source: ImageSource.gallery, maxWidth: 400, maxHeight: 400);
+//
+//      var image = await FilePicker.getFile(type: FileType.IMAGE);
+//      var images = await MultiImagePicker.pickImages(
+//        maxImages: 4,
+//      );
+
+      if (image != null) {
+        commentImage.add(image);
+//        commentImage.addAll(images);
+//        commentImage.add(File(await images[0].filePath));
+        setState(() {});
+      }
+    } on PlatformException catch (e) {
+      //print("Error => $e");
+    } catch (e) {
+      //print("Error => $e");
+    }
+  }
+
+  Future makeComment(String comment, List<File> file) async {
+    if (widget.room.currentTopic == null ||
+        widget.room.currentTopic.id == null) {
+      showNoTopicMessage();
+      return;
+    }
+  }
+
+  Future replyComment(
+      CommentDTO reply, String comment, List<File> file) async {}
+
+  Future reportComment(String commentId, String reportType) async {}
+
+  Future likeComment(String commentId) async {}
+
+  Future unlikeComment(String commentId) async {}
+
+  static const int SUGGEST_TOPIC = 1;
+  static const int CHANGE_TOPIC = 2;
+
+  Future _fabClicked(context) async {
+//    _voteChangeTopicDialog('123', 'Hello world', 'Some random description');
+//    return;
+    int choice = await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) => BottomSheet(
+              onClosing: () {},
+              backgroundColor: Colors.transparent,
+              builder: (context) => Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                        height: 42,
+                        width: double.maxFinite,
+                        child: RaisedButton(
+                            shape: StadiumBorder(),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.pop(context, SUGGEST_TOPIC);
+                            },
+                            child: Text(
+                              "Suggest Topic",
+                              style: TextStyle(color: Pallet.primaryColor),
+                            ))),
+                    EmptySpace(multiple: 2),
+                    SizedBox(
+                        height: 42,
+                        width: double.maxFinite,
+                        child: RaisedButton(
+                            shape: StadiumBorder(),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.pop(context, CHANGE_TOPIC);
+                            },
+                            child: Text(
+                              "Change Topic",
+                              style: TextStyle(color: Pallet.primaryColor),
+                            ))),
+                  ],
+                ),
+              ),
+            ));
+
+    if (choice == CHANGE_TOPIC) {
+      _changeTopicDialog();
+    } else if (choice == SUGGEST_TOPIC) {
+      _suggestTopicDialog();
+    }
+  }
+
+  TextStyle get popStyle => TextStyle(fontSize: 14);
+
+  Widget _selectPopup() => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+              value: 1,
+              child: Row(
+                children: <Widget>[
+                  ProfileImage(
+                      imageUrl: userController.user.avatar, radius: 30),
+                  EmptySpace(),
+                  Text("${userController.user.fullName}")
+                ],
+              )),
+          PopupMenuItem(
+            value: 3,
+            child: Text("Mute Notifications", style: popStyle),
+          ),
+          PopupMenuItem(
+            value: 7,
+            child: Text("Settings", style: popStyle),
+          ),
+        ],
+        initialValue: 1,
+        onCanceled: () {
+//      ////print("You have canceled the menu.");
+        },
+        onSelected: (value) {
+//      ////print("value:$value");
+          switch (value) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            default:
+              {
+                break;
+              }
+          }
+        },
+        icon: Icon(Icons.more_vert),
+        offset: Offset(0, 180),
+      );
+
+  var _suggestTopicIsShown = false;
+  _suggestTopicDialog() async {
+    try {
+      _suggestTopicIsShown = true;
+      await showDialog(
+          context: context,
+          builder: (context) => SuggestTopicDialog(widget.room));
+    } catch (err) {
+      if (_suggestTopicIsShown) {
+        _suggestTopicIsShown = false;
+      }
+    }
+  }
+
+  var _voteTopicIsShown = false;
+  _voteTopicResultDialog(String title, String description, bool change) async {
+    try {
+      if (_voteTopicIsShown) return;
+      if (widget.room.members != null && widget.room.members.length > 1) {
+        _voteTopicIsShown = true;
+        await showDialog(
+            context: context,
+            builder: (context) =>
+                VoteChangeTopicResultDialog(title, description, change));
+        _voteTopicIsShown = false;
+      }
+      setState(() {
+        room = null;
+      });
+    } catch (err) {
+      if (_voteTopicIsShown) {
+        _voteTopicIsShown = false;
+      }
+    }
+  }
+
+  bool changeFromMe = false;
+  _changeTopicDialog() async {
+    bool change = await showDialog(
+        context: context, builder: (context) => ChangeTopicDialog(widget.room));
+
+    if (change != null && change) {
+      changeFromMe = true;
+      if (widget.room.currentTopic == null) {
+        showSuccessToast("Request sent");
+      } else {
+        showSuccessToast("Request sent, voting will commence shortly");
+      }
+    }
+  }
+
+  _endOfTopicVotingDialog(TopicDTO topic, voteId) async {
+//    bool canVote = await LocalStorage.checkIfVoted(widget.room.voteId);
+//    if (!canVote) {
+//      return;
+//    }
+
+    VotingResult result = await showDialog(
+        context: context,
+        builder: (context) => EndOfTopicVotingDialog(topic, voteId));
+
+    if (result != null) {
+      Future.delayed(
+          Duration(seconds: 1), () => _endOfTopicVotingResultDialog(result));
+    }
+  }
+
+  _endOfTopicVotingResultDialog(VotingResult result) async {
+    await showDialog(
+        context: context,
+        builder: (context) =>
+            EndOfTopicVotingResultDialog(widget.room, result));
+  }
+
+  _voteChangeTopicDialog(
+      String voteId, String title, String description) async {
+    bool change = await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => VoteChangeTopicDialog(
+                voteId, title, description,
+                autoVote: widget.room.members.length != null &&
+                    widget.room.members.length == 1)) ??
+        false;
+
+    try {
+      if (widget.room.currentTopic == null) {
+//        if (changeFromMe && change != null && change) {
+//          Future.delayed(
+//              Duration(seconds: 3), () => closeVotingSession(voteId));
+//        }
+      } else {
+        if (changeFromMe) {
+          changeFromMe = false;
+          if (widget.room.members != null && widget.room.members.length == 1) {
+            room = null;
+            setState(() {});
+            return;
+          }
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                    content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "Voting in progress".toUpperCase(),
+                      style: TextStyle(color: Pallet.primaryColor),
+                    ),
+                    EmptySpace(multiple: 2),
+                    Text(
+                      "Voting for the topic you suggested has commenced. \n\nPlease note: A voting session takes 2 - 5 minutes. \n\nYou have to remain in the room while voting is in progress to successfully change the topic",
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ));
+              });
+          //print("Please wait, closing soon");
+
+        }
+//        //print("Voting failed");
+      }
+    } catch (e) {
+      //print(e);
+    }
+  }
+
+  showNoTopicMessage() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("You can't comment here, room currently has no topic."),
+      action: SnackBarAction(
+        label: "SET TOPIC",
+        onPressed: () {
+          _changeTopicDialog();
+        },
+      ),
+    ));
+  }
+
+  void initCommentSubscription() {}
+
+  void initVotingSubscription() {}
+
+  void initDiscussionSubscription() {}
+
+  void initTopicChangedSubscription() {}
+
+  Future closeVotingSession(String voteId) async {}
+
+  Future fetchVoting(voteId) async {}
+
+  bool fetched = false;
+  Future fetchAdvert() async {}
+
+  final _line = Container(
+    margin: EdgeInsets.symmetric(horizontal: 16),
+    height: 1,
+    width: double.maxFinite,
+    color: Colors.grey[300],
+  );
+
+  Future<void> checkPermission() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.mediaLibrary,
+      Permission.camera,
+      Permission.photos,
+      Permission.storage,
+    ].request();
+
+    statuses.values.forEach((status) {
+      if (!status.isGranted && !status.isPermanentlyDenied) {
+        showErrorToast('Some permissions were denied');
+      }
+    });
+  }
+}
+
+class CountDownToTopicEnd extends StatefulWidget {
+  CountDownToTopicEnd(this.topic);
+
+  RoomDTO topic;
+
+  @override
+  _CountDownToTopicEndState createState() => _CountDownToTopicEndState();
+}
+
+class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
+  Duration duration;
+  var format = DateFormat("H:m");
+
+  Timer _timer;
+  int _start = 10;
+
+  DateTime startDate;
+
+  @override
+  void initState() {
+    if (widget.topic.topicStartDate != null) {
+      try {
+        startDate = DateTime.parse(widget.topic.topicStartDate);
+      } catch (err) {
+//        print(err);
+      }
+    }
+    updateView();
+
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          updateView();
+        },
+      ),
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (startDate == null) {
+      return Text('');
+    }
+    return Text(
+      "${DateUtils.getTimeToTopicChange(duration)}",
+//                                              "5 Day(s) 15 Hours 56 Minutes",
+      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+    );
+  }
+
+  void updateView() {
+    if (startDate == null) return;
+
+//    print('updating...');
+
+    DateTime now = DateTime.now();
+    var hourMins = format.format(now);
+    var minute = 0;
+    var hour = 0;
+
+    try {
+      var split = hourMins.split(':');
+      hour = int.parse(split[0]);
+      minute = int.parse(split[1]);
+    } catch (e) {
+      //print(e);
+    }
+
+    var next7Days = startDate.add(Duration(days: 7));
+
+    /*var sunday = now.add(Duration(
+        days: DateTime.sunday - now.weekday,
+        hours: 23 - hour,
+        minutes: 59 - minute));*/
+
+    duration = next7Days.difference(now);
+  }
+}
