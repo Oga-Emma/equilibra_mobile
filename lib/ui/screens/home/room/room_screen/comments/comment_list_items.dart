@@ -43,6 +43,8 @@ class _CommentListItemsState extends State<CommentListItems> {
         border: Border.all(width: 0.6, color: Colors.grey.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(4.0));
 
+    bool liked = widget.comment.liked(widget.user.id);
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: isExpanded ? 8.0 : 0.0),
       child: Stack(
@@ -71,7 +73,7 @@ class _CommentListItemsState extends State<CommentListItems> {
                     children: <Widget>[
                       ProfileImage(
                         radius: 30,
-                        imageUrl: widget.comment.author.image ?? "",
+                        imageUrl: widget.comment.author.avatar ?? "",
                       ),
                       EmptySpace(multiple: 2),
                       Expanded(
@@ -87,7 +89,7 @@ class _CommentListItemsState extends State<CommentListItems> {
                                     Text(
                                         StringUtils.isEmpty(
                                                 widget.comment.author.username)
-                                            ? "${StringUtils.toTitleCase(widget.comment.author.fullName)}"
+                                            ? "${widget.comment.author.fullName}"
                                             : '@${widget.comment.author.username}',
                                         style: textTheme.title.copyWith(
                                             fontSize: 14,
@@ -130,18 +132,18 @@ class _CommentListItemsState extends State<CommentListItems> {
                                         fontSize: 13),
                                   ),
 //                            EmptySpace(multiple: 0.5),
-                            widget.comment.likes > 0
+                            widget.comment.likes.isNotEmpty
                                 ? Container(
                                     margin: EdgeInsets.only(top: 8),
                                     height: 24,
                                     width: 50,
                                     decoration: BoxDecoration(
-                                        color: widget.comment.liked
+                                        color: liked
                                             ? Colors.red.withOpacity(0.2)
                                             : Colors.grey[200],
                                         border: Border.all(
                                             width: 0.5,
-                                            color: widget.comment.liked
+                                            color: liked
                                                 ? Colors.red
                                                 : Colors.grey[800]),
                                         borderRadius:
@@ -150,19 +152,19 @@ class _CommentListItemsState extends State<CommentListItems> {
                                       children: <Widget>[
                                         EmptySpace(),
                                         SvgIconUtils.getSvgIcon(
-                                            widget.comment.liked
+                                            liked
                                                 ? SvgIconUtils.LIKED
                                                 : SvgIconUtils.LIKE,
                                             width: 16,
                                             height: 16,
-                                            color: widget.comment.liked
+                                            color: liked
                                                 ? Colors.red
                                                 : Colors.grey[800]),
                                         EmptySpace(),
                                         Text(
-                                          "${widget.comment.likes}",
+                                          "${widget.comment.likes.length}",
                                           style: TextStyle(
-                                              color: widget.comment.liked
+                                              color: liked
                                                   ? Colors.red
                                                   : Colors.grey[800]),
                                         ),
@@ -294,23 +296,23 @@ class _CommentListItemsState extends State<CommentListItems> {
                               width: 52,
                               child: InkWell(
                                   onTap: () {
-                                    widget.like(widget.comment);
-                                    if (widget.comment.liked) {
-                                      widget.comment.liked = false;
-                                      widget.comment.likes--;
-                                    } else {
-                                      widget.comment.liked = true;
-                                      widget.comment.likes++;
-                                    }
-                                    setState(() {});
+//                                    widget.like(widget.comment);
+//                                    if (widget.comment.liked) {
+//                                      widget.comment.liked = false;
+//                                      widget.comment.likes--;
+//                                    } else {
+//                                      widget.comment.liked = true;
+//                                      widget.comment.likes++;
+//                                    }
+//                                    setState(() {});
                                   },
                                   child: SvgIconUtils.getSvgIcon(
-                                      widget.comment.liked
+                                      liked
                                           ? SvgIconUtils.LIKED
                                           : SvgIconUtils.LIKE,
                                       width: 16,
                                       height: 16,
-                                      color: widget.comment.liked
+                                      color: liked
                                           ? Colors.red
                                           : Colors.grey[800]))),
                           /*Container(

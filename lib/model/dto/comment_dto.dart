@@ -23,29 +23,30 @@ successMessage: null
  */
 
 class CommentDTO {
-  var id;
-  var comment;
-  var reporter;
-  var report;
-  UserShortInfo author;
-  List replies = [];
-  List reports;
-  int likes;
-  bool liked;
-  bool reply;
-  bool replied;
-  bool edited;
-  bool reported;
-  var image;
-  var images = [];
-  var createdAt;
-  var updatedAt;
+  //{"
+  var id; //":"5f397cd357c4e611f7925e59",
+  List replies = []; //":[],
+  List likes = []; //":[],
+  var reply; //":false,
+  var replied; //":false,
+  var edited; //":false,
+  List images = []; //":[],
+  var reported; //":false,
+  var comment; //":"Okay",
+  // "topic":{"_id":"5f1c75ff4a2e612c906027ad","description":"Education in Nigeria","title":"EDUCATION"},"room":{"_id":"5e3d4a47fb9e016690a5bbc4","name":"Vent The Steam"},
+  var author; //":{"_id":"5f37df7ef39e9d5ca0aaf47e","avatar":"","suspended":false,"fullName":"Mokoman2","username":"mokoman2"},
+  var authorType; //":"Member","
+  List reports = []; //":[],
+  var createdAt; //":"2020-08-16T18:37:07.811Z",
+  var updatedAt; //":"2020-08-16T18:38:08.369Z",
+  var __v; //":1}
 
   String getDate() {
     if (updatedAt != null) {
       try {
-        int dateMilli = int.parse(updatedAt);
-        var date = DateTime.fromMillisecondsSinceEpoch(dateMilli);
+        var date = DateTime.tryParse(updatedAt);
+//        int dateMilli = int.parse(updatedAt);
+//        var date = DateTime.fromMillisecondsSinceEpoch(dateMilli);
 
         return dateFormat.format(date);
       } catch (e) {
@@ -67,25 +68,25 @@ class CommentDTO {
 //    reporter = data["reporter"];
 //    report = data["report"];
 //    reports = data["reports"];
-    likes = data["likes"] ?? 0;
-    liked = data["liked"];
+    likes.addAll(data["likes"] ?? []);
+//    liked = data["liked"];
     reported = data["reported"] ?? false;
     reply = data["reply"];
     replied = data["replied"];
     edited = data["edited"];
 //    reported = data["reported"];
-    image = data["image"];
     createdAt = data["createdAt"];
     updatedAt = data["updatedAt"];
     author = UserShortInfo.fromMap(data['author'] ?? {});
 
     replies.addAll(data["replies"] ?? []);
     images.addAll(data["images"] ?? []);
-
-    if (image != null) {
-      images.add(image);
-    }
+    reports.addAll(data["reports"] ?? []);
 
 //    print(images);
+  }
+
+  liked(id) {
+    return this.likes.contains(id);
   }
 }

@@ -28,7 +28,7 @@ class GroupsGridItem extends StatelessWidget {
     return Material(
       borderRadius: radius,
       child: Container(
-        padding: EdgeInsets.only(top: 24.0, left: 16, right: 16, bottom: 8),
+        padding: EdgeInsets.only(top: 24.0, left: 16, right: 16, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

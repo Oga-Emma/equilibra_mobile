@@ -33,11 +33,7 @@ class RoomController extends BaseViewModel {
   }
 
   Future<RoomDTO> fetchRoom(id) async {
-    setBusy(true);
-    var room = await _dataRepo.fetchRoom(id);
-    setBusy(false);
-
-    return room;
+    return await _dataRepo.fetchRoom(id);
   }
 
   BehaviorSubject<CommentDTO> commentStream;
@@ -53,7 +49,7 @@ class RoomController extends BaseViewModel {
 
   Future<List<CommentDTO>> fetchComments({page, limit, roomId, topicId}) async {
     return _roomRepo.fetchComments(
-        page: page, limit: limit, roomId: roomId, topicId: topicId);
+        page: page ?? 1, limit: limit ?? 100, roomId: roomId, topicId: topicId);
   }
 
   void showVentTheSteam(RoomDTO room) {

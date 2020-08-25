@@ -128,7 +128,7 @@ class UserShortInfo {
   var id;
   String fullName;
   String username;
-  String image;
+  String avatar;
   bool isSuspended;
   String role;
 
@@ -136,7 +136,7 @@ class UserShortInfo {
       : id = data['_id'] ?? "",
         fullName = data['fullName'] ?? "",
         username = data['username'] ?? "",
-        image = data['image'] ?? "",
+        avatar = data['avatar'] ?? "",
         isSuspended = data['isSuspended'] ?? false,
         role = data['role'] ?? "";
 }

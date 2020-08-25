@@ -36,21 +36,28 @@ class RoomServiceImpl with BaseApi implements RoomService {
       {page = 1, limit = 100, roomId, topicId}) async {
     try {
       var url = "$BASE_URL/comments/$page/$limit/$roomId/$topicId";
-      var header = {"Content-Type": "application/json"};
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      print(token);
+      print(url);
 
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
-        return [];
-//        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
-//            .map((e) => RoomDTO.fromMap(e))
-//            .toList());
+//        return [];
+        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
+            .map((e) => CommentDTO.fromJson(e))
+            .toList());
       } else {
         throw Exception(handleError(decode));
       }
     } catch (err) {
+      print(err);
       throw err;
     }
   }

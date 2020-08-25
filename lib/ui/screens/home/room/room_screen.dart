@@ -13,6 +13,7 @@ import 'package:equilibra_mobile/ui/core/utils/date_utisl.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
+import 'package:equilibra_mobile/ui/screens/home/room/room_screen/comments/room_comments.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/topic_title.dart';
 import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -32,7 +33,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
-import 'room_screen/comment_list_items.dart';
+import 'room_screen/comments/comment_list_items.dart';
 import 'room_screen/dialogs_in_room/change_topic_dialog.dart';
 import 'room_screen/dialogs_in_room/end_of_topic_voting_dialog.dart';
 import 'room_screen/dialogs_in_room/end_of_topic_voting_result_dialog.dart';
@@ -55,7 +56,6 @@ class RoomScreen extends StatefulWidget {
 
 class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final animatedListKey = GlobalKey<AnimatedListState>();
 
   var commentController = TextEditingController();
   bool hasTopic = false;
@@ -87,39 +87,32 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   @override
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
-    userController = Provider.of<UserController>(context);
-    roomController = Provider.of<RoomController>(context);
+    userController = Provider.of<UserController>(context, listen: false);
+    roomController = Provider.of<RoomController>(context, listen: false);
 
-    return ViewModelBuilder<RoomController>.reactive(
-        builder: (context, model, child) {
-          return Scaffold(
-              appBar: model.isBusy
-                  ? AppBar(
-                      leading: InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: Icon(Icons.arrow_back_ios,
-                              size: 20, color: Colors.white)),
-                    )
-                  : null,
-              body: FutureBuilder<RoomDTO>(
-                  future: model.fetchRoom(widget.room.id),
-                  builder: (context, snapshot) {
-                    print(snapshot.data);
-                    if (snapshot.hasData) {
-                      widget.room = snapshot.data;
-                      return body();
-                    }
-                    return LoadingSpinner();
-                  }));
-        },
-        viewModelBuilder: () => roomController,
-        disposeViewModel: false);
-
+    return Scaffold(
+//              appBar: loading
+//                  ? AppBar(
+//                      leading: InkWell(
+//                          onTap: () => Navigator.pop(context),
+//                          child: Icon(Icons.arrow_back_ios,
+//                              size: 20, color: Colors.white)),
+//                    )
+//                  : null,
+        body: FutureBuilder<RoomDTO>(
+            future: roomController.fetchRoom(widget.room.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                widget.room = snapshot.data;
+                return body();
+              }
+              return LoadingSpinner();
+            }));
 //    return Scaffold(key: _scaffoldKey, body: body());
   }
 
   Widget body() {
-    print('done');
+//    print('done');
 //    if (!widget.group.ventTheSteam) {
 //      hasTopic = widget.room.currentTopic != null &&
 //          widget.room.currentTopic.id != null;
@@ -207,43 +200,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                       ),
                     ),
                   ),
-                  fetching
-                      ? SliverFillRemaining(
-                          child: LoadingSpinner(),
-                        )
-                      : error
-                          ? SliverFillRemaining(
-                              child: Center(
-                                  child: Text(
-                                      "Error fetching data\nPlease check your internet",
-                                      textAlign: TextAlign.center)),
-                            )
-                          : comments.isEmpty
-                              ? SliverFillRemaining(
-                                  child: Center(
-                                      child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        SvgIconUtils.getSvgNoColor(
-                                            SvgIconUtils.NO_COMMENT,
-                                            width: 50,
-                                            height: 50),
-                                        EmptySpace(multiple: 2),
-                                        Text("No ongoing chat",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
-                                            textAlign: TextAlign.center),
-                                        EmptySpace(multiple: 0.5),
-                                        Text("Be the first to leave a comment",
-                                            textAlign: TextAlign.center),
-                                      ],
-                                    ),
-                                  )),
-                                )
-                              : commentArea()
+                  SliverFillRemaining(child: RoomComments(room: widget.room))
                 ],
               ),
             ),
@@ -300,71 +257,6 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
               ],
             ),
     );
-  }
-
-  commentArea() {
-    return SliverFillRemaining(
-        child: Container(
-      child: AnimatedList(
-          reverse: true,
-          key: animatedListKey,
-          initialItemCount: comments.length,
-          itemBuilder: (context, index, animation) {
-            var commentDTO = CommentDTO.fromJson(comments[index]);
-
-            var prevComment = commentDTO;
-
-            bool showDate = false;
-            if (index != 0) {
-              prevComment = CommentDTO.fromJson(comments[index - 1]);
-              var day = DateUtils.getTimeStamp(commentDTO.createdAt);
-
-              if (day != DateUtils.getTimeStamp(prevComment.createdAt)) {
-                showDate = true;
-              }
-            }
-
-            return SizeTransition(
-                axis: Axis.vertical,
-                sizeFactor: animation,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    CommentListItems(
-                        commentDTO, userController.user, widget.room.members,
-                        replyClicked: (CommentDTO comment) {
-                      setState(() {
-                        reply = comment;
-                      });
-                    }, reportClicked: (CommentDTO comment) {
-                      showDialog(
-                          context: context,
-                          builder: (context) =>
-                              ReportCommentDialog(onSubmit: (String message) {
-                                reportComment(comment.id, message);
-                                Navigator.pop(context);
-                              }));
-                    }, like: (comment) {
-                      if (comment.liked) {
-                        unlikeComment(comment.id);
-                      } else {
-                        likeComment(comment.id);
-                      }
-                    }),
-                    showDate
-                        ? Row(
-                            children: <Widget>[
-                              Expanded(child: _line),
-                              Text(
-                                  "${DateUtils.getDate(prevComment.createdAt)}"),
-                              Expanded(child: _line),
-                            ],
-                          )
-                        : SizedBox(),
-                  ],
-                ));
-          }),
-    ));
   }
 
   Widget commentLayout() {
@@ -887,13 +779,6 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   bool fetched = false;
   Future fetchAdvert() async {}
-
-  final _line = Container(
-    margin: EdgeInsets.symmetric(horizontal: 16),
-    height: 1,
-    width: double.maxFinite,
-    color: Colors.grey[300],
-  );
 
   Future<void> checkPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
