@@ -1,14 +1,5 @@
 import 'package:equilibra_mobile/model/dto/government_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
-import 'package:equilibra_mobile/model/dto/room_dto.dart';
 
 class CompleteSignupDTO {
   GovernmentDTO stateOfOrigin;

@@ -98,7 +98,7 @@ class _EndOfTopicVotingResultDialogState
                           color: Pallet.accentColor, height: 18, width: 18),
                       EmptySpace(),
                       Text(
-                        "${widget.room.currentTopic.startDate}",
+                        "${widget.room.currentTopic.createdAt}",
 //                                              "5 Day(s) 15 Hours 56 Minutes",
                         style: Theme.of(context)
                             .textTheme

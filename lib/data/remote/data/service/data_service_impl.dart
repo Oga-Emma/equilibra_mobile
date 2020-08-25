@@ -98,6 +98,28 @@ class DataServiceImpl with BaseApi implements DataService {
       throw err;
     }
   }
+
+  Future<RoomDTO> fetchRoom(String token, String id) async {
+    try {
+      var url = "$BASE_URL/rooms/$id/single";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.get(url, headers: header);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return RoomDTO.fromMap(decode['data']);
+      } else {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      print(err);
+      throw err;
+    }
+  }
 //  @override
 //  Future createAccount(
 //      {birthMonth,

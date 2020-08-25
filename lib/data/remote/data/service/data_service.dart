@@ -7,4 +7,5 @@ abstract class DataService {
   Future<List<RoomDTO>> fetchStateRooms(String token,
       {String type, String stateId, bool origin = false});
   Future<List<RoomDTO>> fetchFederalRooms(String token, String type);
+  Future<RoomDTO> fetchRoom(String token, String id);
 }

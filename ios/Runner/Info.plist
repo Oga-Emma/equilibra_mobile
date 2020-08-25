@@ -51,5 +51,20 @@
 		<string>ymail</string>
 		<string>fastmail</string>
 	</array>	
+	<key>NSCameraUsageDescription</key>
+	<string>Permission to capture image from camera</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Equilibra needs access to your location to provide a personalized user experience</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Equilibra needs access to your location to provide a personalized user experience</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Permission to capture image from camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Permission to select image from phone</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

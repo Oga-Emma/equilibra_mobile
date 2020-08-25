@@ -1,19 +1,20 @@
 import 'package:equilibra_mobile/model/dto/filterable_list_item.dart';
+import 'package:equilibra_mobile/model/dto/topic_dto.dart';
 
 class RoomDTO extends FilterableListItem {
   var changeTopic; //": false,
-  var id; //": "5e3d4a48fb9e016690a5be9c",
-  var roomType; //": "LGA",
-  var government; //": "5e3d4a46fb9e016690a5b898",
-  var name; //": "Abia North",
-  var slug; //": "abia-north",
-  var members; //": [],
-  var __v; //": 0,
-  var createdAt; //": "2020-02-07T11:30:18.585Z",
-  var updatedAt; //": "2020-07-08T14:25:59.071Z",
-  var currentTopic; //": null,
-  var topicStartDate; //": null,
-  var schedules; //": 0
+  var id; //": "5e3d4a47fb9e016690a5bbc4",
+  var roomType; //": "VTS",
+  var government; //": null,
+  var name; //": "Vent The Steam",
+  TopicDTO currentTopic;
+  List<RoomMember> members;
+  var createdAt; //-02-07T11:30:15.797Z",
+  var updatedAt; //-08-25T10:06:52.791Z",
+  var slug; //-The-Steam",
+  var __v; //
+  var topicStartDate; //-07-25T18:12:15.254Z",
+  var voteId; //"
 
   RoomDTO.fromMap(Map<String, dynamic> data) {
     changeTopic = data["changeTopic"] ?? false;
@@ -22,13 +23,15 @@ class RoomDTO extends FilterableListItem {
     government = data["government"];
     name = data["name"];
     slug = data["slug"];
-    members = data["members"];
+    members = List<RoomMember>.from(
+        (data["members"] ?? []).map((e) => RoomMember.fromMap(e)).toList());
     __v = data["__v"];
     createdAt = data["createdAt"];
     updatedAt = data["updatedAt"];
-    currentTopic = data["currentTopic"];
+    if (data["currentTopic"] != null) {
+      currentTopic = TopicDTO.fromMap(data["currentTopic"]);
+    }
     topicStartDate = data["topicStartDate"];
-    schedules = data["schedules"];
   }
 }
 
@@ -64,12 +67,17 @@ class RoomType {
 }
 
 class RoomMember {
+  //            {
+//                "moderatorType": "Member",
+//                "_id": "5f1c75bb4a2e612c906027ac",
+//                "member": "5f1c640b4a2e612c906026e6"
+//            },
   String member;
-  bool moderator;
+  String id;
   String moderatorType;
   RoomMember.fromMap(Map<dynamic, dynamic> data) {
     member = data['member'];
-    moderator = data['moderator'];
+    id = data['_id'];
     moderatorType = data['moderatorType'];
   }
 }

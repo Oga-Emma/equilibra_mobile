@@ -168,7 +168,6 @@ class HomePage extends StatelessWidget {
           if (snapshot.hasData) {
             user = snapshot.data;
 
-
             return ViewModelBuilder.reactive(
                 builder: (context, model, child) {
                   return Scaffold(
@@ -224,7 +223,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: .9,
+                              childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
@@ -271,7 +270,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: .9,
+                              childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
@@ -330,7 +329,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: .9,
+                              childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,

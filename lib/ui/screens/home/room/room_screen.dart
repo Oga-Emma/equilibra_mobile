@@ -14,6 +14,7 @@ import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/topic_title.dart';
+import 'package:equilibra_mobile/ui/screens/home/room/room_view_model.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/services.dart';
 
@@ -29,6 +30,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:stacked/stacked.dart';
 
 import 'room_screen/comment_list_items.dart';
 import 'room_screen/dialogs_in_room/change_topic_dialog.dart';
@@ -86,19 +88,32 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     textTheme = Theme.of(context).textTheme;
     userController = Provider.of<UserController>(context);
 
-    print(widget.room.id);
-    return Scaffold(
+    return ViewModelBuilder<RoomViewModel>.reactive(
+        builder: (context, model, child) {
+          return Scaffold(
 //        appBar: AppBar(
 //          leading: InkWell(
 //              onTap: () => Navigator.pop(context),
 //              child: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white)),
 //        ),
-        body: body());
+              body: FutureBuilder<RoomDTO>(
+                  future: model.fetchRoom(widget.room.id),
+                  builder: (context, snapshot) {
+                    print(snapshot.data);
+                    if (snapshot.hasData) {
+                      widget.room = snapshot.data;
+                      return body();
+                    }
+                    return LoadingSpinner();
+                  }));
+        },
+        viewModelBuilder: () => RoomViewModel());
 
 //    return Scaffold(key: _scaffoldKey, body: body());
   }
 
   Widget body() {
+    print('done');
 //    if (!widget.group.ventTheSteam) {
 //      hasTopic = widget.room.currentTopic != null &&
 //          widget.room.currentTopic.id != null;

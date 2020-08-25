@@ -28,7 +28,7 @@ class GroupsGridItem extends StatelessWidget {
     return Material(
       borderRadius: radius,
       child: Container(
-        padding: EdgeInsets.only(top: 16.0, left: 16, right: 16, bottom: 8),
+        padding: EdgeInsets.only(top: 8.0, left: 16, right: 16, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -67,6 +67,8 @@ class GroupsGridItem extends StatelessWidget {
               },
               child: Text(
                 "Join ${group.title}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             )

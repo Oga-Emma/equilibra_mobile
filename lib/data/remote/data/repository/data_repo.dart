@@ -11,4 +11,5 @@ abstract class DataRepo {
   Future<List<RoomDTO>> fetchStateRooms(
       {String stateId, String type, bool isOrigin});
   Future<List<RoomDTO>> fetchFederalRooms({String type});
+  Future<RoomDTO> fetchRoom(String id);
 }
