@@ -14,7 +14,7 @@ import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/topic_title.dart';
-import 'package:equilibra_mobile/ui/screens/home/room/room_view_model.dart';
+import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/services.dart';
 
@@ -88,7 +88,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     textTheme = Theme.of(context).textTheme;
     userController = Provider.of<UserController>(context);
 
-    return ViewModelBuilder<RoomViewModel>.reactive(
+    return ViewModelBuilder<RoomController>.reactive(
         builder: (context, model, child) {
           return Scaffold(
 //        appBar: AppBar(
@@ -107,7 +107,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     return LoadingSpinner();
                   }));
         },
-        viewModelBuilder: () => RoomViewModel());
+        viewModelBuilder: () => RoomController());
 
 //    return Scaffold(key: _scaffoldKey, body: body());
   }

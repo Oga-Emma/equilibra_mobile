@@ -6,6 +6,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import 'di/controllers/room_controller.dart';
 import 'di/controllers/user_controller.dart';
 import 'di/di.dart';
 
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserController>(create: (_) => UserController()),
-        ChangeNotifierProvider<DataController>(create: (_) => DataController())
+        ChangeNotifierProvider<DataController>(create: (_) => DataController()),
+        ChangeNotifierProvider<RoomController>(create: (_) => RoomController())
       ],
       child: OverlaySupport(
         child: MaterialApp(

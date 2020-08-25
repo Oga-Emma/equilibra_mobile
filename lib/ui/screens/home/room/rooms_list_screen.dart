@@ -2,7 +2,7 @@ import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
-import 'package:equilibra_mobile/ui/screens/home/room/room_view_model.dart';
+import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/loading_spinner.dart';
@@ -22,7 +22,7 @@ class RoomGroupsListScreen extends StatelessWidget {
     textTheme = Theme.of(context).textTheme;
     controller = Provider.of<DataController>(context);
 
-    return ViewModelBuilder<RoomViewModel>.nonReactive(
+    return ViewModelBuilder<RoomController>.nonReactive(
         builder: (context, model, child) {
           return Scaffold(
               appBar: RoomListAppBar(
@@ -71,7 +71,7 @@ class RoomGroupsListScreen extends StatelessWidget {
                         return LoadingSpinner();
                       })));
         },
-        viewModelBuilder: () => RoomViewModel());
+        viewModelBuilder: () => RoomController());
   }
 
   String getInitials(String name) {
@@ -111,7 +111,7 @@ class RoomGroupsListScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildRooms(List<RoomDTO> rooms, RoomViewModel model) {
+  Widget _buildRooms(List<RoomDTO> rooms, RoomController model) {
     if (getVentTheSteam) {
       Future.delayed(Duration.zero, () {
         var room = rooms.firstWhere(
