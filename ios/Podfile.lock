@@ -1,4 +1,8 @@
 PODS:
+  - adhara_socket_io (0.0.1):
+    - Flutter
+    - Socket.IO-Client-Swift
+    - Starscream
   - Flutter (1.0.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -13,13 +17,17 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - Socket.IO-Client-Swift (15.2.0):
+    - Starscream (~> 3.1)
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - Starscream (3.1.1)
   - url_launcher (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - adhara_socket_io (from `.symlinks/plugins/adhara_socket_io/ios`)
   - Flutter (from `Flutter`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - open_mail_app (from `.symlinks/plugins/open_mail_app/ios`)
@@ -32,8 +40,12 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
+    - Socket.IO-Client-Swift
+    - Starscream
 
 EXTERNAL SOURCES:
+  adhara_socket_io:
+    :path: ".symlinks/plugins/adhara_socket_io/ios"
   Flutter:
     :path: Flutter
   image_picker:
@@ -52,6 +64,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
+  adhara_socket_io: a2f8b3079a0de70a1a3f5080a8429a4fb7ae9bea
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
@@ -59,7 +72,9 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

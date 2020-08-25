@@ -82,20 +82,25 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   TextTheme textTheme;
   UserController userController;
+  RoomController roomController;
 
   @override
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
     userController = Provider.of<UserController>(context);
+    roomController = Provider.of<RoomController>(context);
 
     return ViewModelBuilder<RoomController>.reactive(
         builder: (context, model, child) {
           return Scaffold(
-//        appBar: AppBar(
-//          leading: InkWell(
-//              onTap: () => Navigator.pop(context),
-//              child: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white)),
-//        ),
+              appBar: model.isBusy
+                  ? AppBar(
+                      leading: InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(Icons.arrow_back_ios,
+                              size: 20, color: Colors.white)),
+                    )
+                  : null,
               body: FutureBuilder<RoomDTO>(
                   future: model.fetchRoom(widget.room.id),
                   builder: (context, snapshot) {
@@ -107,7 +112,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     return LoadingSpinner();
                   }));
         },
-        viewModelBuilder: () => RoomController());
+        viewModelBuilder: () => roomController,
+        disposeViewModel: false);
 
 //    return Scaffold(key: _scaffoldKey, body: body());
   }

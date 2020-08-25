@@ -17,10 +17,12 @@ class RoomGroupsListScreen extends StatelessWidget {
 
   TextTheme textTheme;
   DataController controller;
+  RoomController roomController;
   @override
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
     controller = Provider.of<DataController>(context);
+    roomController = Provider.of<RoomController>(context);
 
     return ViewModelBuilder<RoomController>.nonReactive(
         builder: (context, model, child) {
@@ -71,7 +73,8 @@ class RoomGroupsListScreen extends StatelessWidget {
                         return LoadingSpinner();
                       })));
         },
-        viewModelBuilder: () => RoomController());
+        viewModelBuilder: () => roomController,
+        disposeViewModel: false);
   }
 
   String getInitials(String name) {
