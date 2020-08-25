@@ -27,45 +27,55 @@ class GroupsGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: radius,
-      child: InkWell(
-        onTap: () {
-          _navigationService.navigateTo(Routes.roomGroupsListScreen,
-              arguments: RoomGroupsListScreenArguments(group: group));
-        },
-        child: Container(
-          padding: EdgeInsets.all(24.0),
-          child: loading
-              ? LoadingSpinner()
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      getIcon(),
-                      EmptySpace.v2(),
-                      Text("${group.title}",
-                          style: Theme.of(context).textTheme.title.copyWith(
-                              fontSize: 16,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.grey[800])),
-                      EmptySpace(),
-                      /*Text(
-                  "36 groups",
-                  style:
-                  TextStyle(fontSize: 14, color: isSelected ? Colors.white : Colors.grey[800]),
-                ),*/
-                    ],
-                  ),
-                ),
-          decoration: BoxDecoration(
-              color: isSelected ? Pallet.primaryColor : Pallet.groupBgColor,
-              borderRadius: radius,
-              border: Border.all(
-                  color: isSelected
-                      ? Pallet.primaryColor
-                      : Pallet.groupLineColor)),
+      child: Container(
+        padding: EdgeInsets.only(top: 16.0, left: 16, right: 16, bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            getIcon(),
+            EmptySpace.v2(),
+            Text("${group.title}",
+                style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: 18,
+                    color: isSelected ? Colors.white : Colors.grey[800])),
+            EmptySpace(),
+            Text(
+              "${group.description1}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 12, color: isSelected ? Colors.white : Colors.grey),
+            ),
+            EmptySpace(multiple: 0.5),
+            Text(
+              "${group.description2}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 12, color: isSelected ? Colors.white : Colors.grey),
+            ),
+            EmptySpace(),
+            MaterialButton(
+              minWidth: double.maxFinite,
+              shape: RoundedRectangleBorder(borderRadius: radius),
+              elevation: 0.0,
+              color: Pallet.primaryColor,
+              onPressed: () {
+                _navigationService.navigateTo(Routes.roomGroupsListScreen,
+                    arguments: RoomGroupsListScreenArguments(group: group));
+              },
+              child: Text(
+                "Join ${group.title}",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            )
+          ],
         ),
+        decoration: BoxDecoration(
+            color: isSelected ? Pallet.primaryColor : Pallet.groupBgColor,
+            borderRadius: radius,
+            border: Border.all(width: 0.2, color: Pallet.primaryColor)),
       ),
     );
   }

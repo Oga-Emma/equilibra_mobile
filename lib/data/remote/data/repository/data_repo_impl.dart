@@ -37,23 +37,14 @@ class DataRepoImpl implements DataRepo {
   }
 
   @override
-  Future<List<RoomDTO>> fetchHouseOfAssemblyRooms(
-      String stateId, bool isOrigin) {
-    return dataService.fetchRoom('HOA', stateId, origin: isOrigin);
+  Future<List<RoomDTO>> fetchStateRooms(
+      {String stateId, String type, bool isOrigin}) async {
+    return dataService.fetchStateRooms(await localCache.getToken(),
+        type: type, stateId: stateId, origin: isOrigin);
   }
 
   @override
-  Future<List<RoomDTO>> fetchHouseOfRepRooms(String stateId, bool isOrigin) {
-    return dataService.fetchRoom('HOR', stateId, origin: isOrigin);
-  }
-
-  @override
-  Future<List<RoomDTO>> fetchLGSRooms(String stateId, bool isOrigin) {
-    return dataService.fetchRoom('LGA', stateId, origin: isOrigin);
-  }
-
-  @override
-  Future<List<RoomDTO>> fetchSenateRooms(String stateId, bool isOrigin) {
-    return dataService.fetchRoom('SENATE', stateId, origin: isOrigin);
+  Future<List<RoomDTO>> fetchFederalRooms({String type}) async {
+    return dataService.fetchFederalRooms(await localCache.getToken(), type);
   }
 }

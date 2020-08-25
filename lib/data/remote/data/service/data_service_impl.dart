@@ -52,20 +52,45 @@ class DataServiceImpl with BaseApi implements DataService {
     }
   }
 
-  Future<List<RoomDTO>> fetchRoom(String type, String stateId,
-      {bool origin = false}) async {
+  Future<List<RoomDTO>> fetchFederalRooms(String token, String type) async {
     try {
-      var url = "$BASE_URL/rooms/$type/$stateId/$origin/1/40";
-      var header = {"Content-Type": "application/json"};
+      var url = "$BASE_URL/rooms/$type";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
 
       var response = await http.get(url, headers: header);
 
 //      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
-        return List<RoomDTO>.from((decode['data']['rooms'] ?? [])
-            .map((e) => RoomDTO.fromMap(e))
-            .toList());
+        return List<RoomDTO>.from(
+            (decode['data'] ?? []).map((e) => RoomDTO.fromMap(e)).toList());
+      } else {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  Future<List<RoomDTO>> fetchStateRooms(String token,
+      {String type, String stateId, bool origin = false}) async {
+    try {
+      var url = "$BASE_URL/rooms/$type/$stateId/$origin";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.get(url, headers: header);
+
+//      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return List<RoomDTO>.from(
+            (decode['data'] ?? []).map((e) => RoomDTO.fromMap(e)).toList());
       } else {
         throw Exception(handleError(decode));
       }

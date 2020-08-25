@@ -223,23 +223,29 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: 1.3,
+                              childAspectRatio: .9,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
 //                                  isSelected: false,
                                     group: RoomGroupDTO("Federal",
                                         RoomType.COURT, "Judiciary", 0,
+                                        description1: "The Supreme Court",
+                                        description2: "Courts of Appeal",
                                         isFederal: true)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO("Federal",
                                         RoomType.MINISTRY, "Executive", 0,
+                                        description1: "Office of the president",
+                                        description2: "Federal Ministries",
                                         isFederal: true)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
                                         "Federal", RoomType.SENATE, "Senate", 0,
+                                        description1: "The Senate",
+                                        description2: "Senatorial Districts",
                                         isFederal: true)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
@@ -248,6 +254,9 @@ class HomePage extends StatelessWidget {
                                         RoomType.HOUSE_OF_REPRESENTATIVE,
                                         "House of Reps.",
                                         0,
+                                        description1:
+                                            "The House of Representatives",
+                                        description2: "Federal Constituencies",
                                         isFederal: true)),
                               ],
                             ),
@@ -261,7 +270,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: 1.3,
+                              childAspectRatio: .9,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
@@ -270,7 +279,10 @@ class HomePage extends StatelessWidget {
                                         RoomType.COURT,
                                         "Judiciary",
                                         0,
-                                        isOrigin: true)),
+                                        isOrigin: true,
+                                        description1: "Sate High Courts",
+                                        description2: "Customary Courts",
+                                        roomId: user.stateOfOrigin.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
@@ -278,7 +290,10 @@ class HomePage extends StatelessWidget {
                                         RoomType.MINISTRY,
                                         "Executive",
                                         0,
-                                        isOrigin: true)),
+                                        description1: "Office of the Governor",
+                                        description2: "State Ministries",
+                                        isOrigin: true,
+                                        roomId: user.stateOfOrigin.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
@@ -286,7 +301,10 @@ class HomePage extends StatelessWidget {
                                         RoomType.HOUSE_OF_ASSEMBLY,
                                         "House of Assem.",
                                         0,
-                                        isOrigin: true)),
+                                        isOrigin: true,
+                                        description1: "House of Assembly",
+                                        description2: "State Constituencies",
+                                        roomId: user.stateOfOrigin.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
 //                      loading: '${user.localGovtOfOrigin.name}'.contains('LGA'),
@@ -295,7 +313,9 @@ class HomePage extends StatelessWidget {
                                         RoomType.LGA,
                                         "${user.localGovtOfOrigin.name}",
                                         0,
-                                        isOrigin: true)),
+                                        isOrigin: true,
+                                        description1: "Origin Local Government",
+                                        roomId: user.stateOfOrigin.id)),
                               ],
                             ),
                           ),
@@ -309,7 +329,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 2,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: 1.3,
+                              childAspectRatio: .9,
                               children: [
                                 GroupsGridItem(
                                     icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
@@ -317,28 +337,40 @@ class HomePage extends StatelessWidget {
                                         "${user.stateOfResidence.name}",
                                         RoomType.COURT,
                                         "Judiciary",
-                                        0)),
+                                        0,
+                                        description1: "Sate High Courts",
+                                        description2: "Customary Courts",
+                                        roomId: user.stateOfResidence.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
                                         "${user.stateOfResidence.name}",
                                         RoomType.MINISTRY,
                                         "Executive",
-                                        0)),
+                                        0,
+                                        description1: "Office of the Governor",
+                                        description2: "State Ministries",
+                                        roomId: user.stateOfResidence.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
                                         "${user.stateOfResidence.name}",
                                         RoomType.HOUSE_OF_ASSEMBLY,
                                         "House of Assem.",
-                                        0)),
+                                        0,
+                                        description1: "House of Assembly",
+                                        description2: "State Constituencies",
+                                        roomId: user.stateOfResidence.id)),
                                 GroupsGridItem(
                                     icon: SvgIconUtils.OTHER_GROUP_ICON,
                                     group: RoomGroupDTO(
                                         "${user.stateOfResidence.name}",
                                         RoomType.LGA,
-                                        "${user.localGovtOfOrigin}",
-                                        0)),
+                                        "${user.localGovtOfResidence.name}",
+                                        0,
+                                        description1:
+                                            "Resident Local Government",
+                                        roomId: user.stateOfResidence.id)),
                               ],
                             ),
                           ),

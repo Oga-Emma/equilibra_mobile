@@ -41,15 +41,22 @@ class RoomGroupDTO {
   bool ventTheSteam;
   int numberOfGroups;
 
+  String roomId;
+  String description1;
+  String description2;
+
   RoomGroupDTO(this.groupName, this.roomType, this.title, this.numberOfGroups,
       {this.isOrigin = false,
       this.isFederal = false,
-      this.ventTheSteam = false});
+      this.ventTheSteam = false,
+      this.roomId,
+      this.description1 = "",
+      this.description2 = ""});
 }
 
 class RoomType {
   static const String HOUSE_OF_REPRESENTATIVE = "HOR";
-  static const String HOUSE_OF_ASSEMBLY = "HOR";
+  static const String HOUSE_OF_ASSEMBLY = "HOA";
   static const String SENATE = "SENATE";
   static const String MINISTRY = "MINISTRY";
   static const String COURT = "COURT";

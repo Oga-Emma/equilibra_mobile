@@ -8,9 +8,7 @@ abstract class DataRepo {
   Future<List<RoomDTO>> fetchHomeLGSRooms(String stateId);
   Future<List<RoomDTO>> fetchHomeSenateRooms(String stateId);
 
-  Future<List<RoomDTO>> fetchLGSRooms(String stateId, bool isOrigin);
-  Future<List<RoomDTO>> fetchHouseOfAssemblyRooms(
-      String stateId, bool isOrigin);
-  Future<List<RoomDTO>> fetchHouseOfRepRooms(String stateId, bool isOrigin);
-  Future<List<RoomDTO>> fetchSenateRooms(String stateId, bool isOrigin);
+  Future<List<RoomDTO>> fetchStateRooms(
+      {String stateId, String type, bool isOrigin});
+  Future<List<RoomDTO>> fetchFederalRooms({String type});
 }

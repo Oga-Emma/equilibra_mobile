@@ -1,8 +1,10 @@
+import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/loading_spinner.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
 
 class RoomGroupsListScreen extends StatelessWidget {
@@ -11,9 +13,11 @@ class RoomGroupsListScreen extends StatelessWidget {
   RoomGroupDTO group;
 
   TextTheme textTheme;
+  DataController controller;
   @override
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
+    controller = Provider.of<DataController>(context);
 
     return Scaffold(
         appBar: RoomListAppBar(
@@ -25,7 +29,7 @@ class RoomGroupsListScreen extends StatelessWidget {
                   child: Icon(Icons.arrow_back_ios,
                       size: 20, color: Colors.white)),
               EmptySpace(),
-              Text("${group.groupName}",
+              Text(StringUtils.toTitleCase("${group.groupName}"),
                   style: TextStyle(fontSize: 16.0, color: Colors.white)),
               EmptySpace(multiple: 0.5),
               group.ventTheSteam
@@ -43,7 +47,24 @@ class RoomGroupsListScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: Container(child: _buildRooms([])));
+        body: Container(
+            child: StreamBuilder<Map<String, List<RoomDTO>>>(
+                stream: group.isFederal
+                    ? controller.fetchFederalRooms(group.roomType)
+                    : group.isOrigin
+                        ? controller.fetchStateOfOriginRooms(
+                            group.roomId, group.roomType)
+                        : controller.fetchStateOfResidenceRooms(
+                            group.roomId, group.roomType),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data.containsKey(group.roomType)) {
+                    print(snapshot.data);
+                    return _buildRooms(snapshot.data[group.roomType]);
+                  }
+
+                  return LoadingSpinner();
+                })));
   }
 
   String getInitials(String name) {
@@ -121,7 +142,7 @@ class RoomGroupsListScreen extends StatelessWidget {
                       child: Text(
                     "${getInitials(room.name)}",
                     style: textTheme.title
-                        .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        .copyWith(fontSize: 14, color: Pallet.primaryColor),
                   )),
                 ],
               ),
