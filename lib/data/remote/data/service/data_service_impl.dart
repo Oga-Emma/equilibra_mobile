@@ -71,6 +71,7 @@ class DataServiceImpl with BaseApi implements DataService {
         throw Exception(handleError(decode));
       }
     } catch (err) {
+      print(err);
       throw err;
     }
   }
@@ -95,6 +96,7 @@ class DataServiceImpl with BaseApi implements DataService {
         throw Exception(handleError(decode));
       }
     } catch (err) {
+      print(err);
       throw err;
     }
   }

@@ -37,11 +37,11 @@ class GroupsGridItem extends StatelessWidget {
             EmptySpace.v2(),
             Text("${group.title}",
                 style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: isSelected ? Colors.white : Colors.grey[800])),
             EmptySpace(),
             Text(
-              "${group.description1}",
+              "${group.description1} ",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -49,7 +49,7 @@ class GroupsGridItem extends StatelessWidget {
             ),
             EmptySpace(multiple: 0.5),
             Text(
-              "${group.description2}",
+              "${group.description2} ",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

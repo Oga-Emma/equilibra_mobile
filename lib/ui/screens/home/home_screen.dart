@@ -168,7 +168,7 @@ class HomePage extends StatelessWidget {
           if (snapshot.hasData) {
             user = snapshot.data;
 
-            return ViewModelBuilder.reactive(
+            return ViewModelBuilder<HomeViewModel>.reactive(
                 builder: (context, model, child) {
                   return Scaffold(
                       appBar: EAppBar(onLeadingPressed: () {
@@ -189,25 +189,20 @@ class HomePage extends StatelessWidget {
                                   color: Pallet.primaryColor,
                                   child: InkWell(
                                     onTap: () {
-//                    Router.gotoWidget(RoomScreen(null,
-//                        RoomDTO.fromMap(json.decode('''{_id: 5d6d182665530af60e78acae, name: Vent The Steam, members: [{_id: 5d5d7c3c3e34cc1cdb39943e}, {_id: 5d71dc1a32e918586dc73ff6}, {_id: 5d72213032e918586dc74000}, {_id: 5d7224b232e918586dc74002}, {_id: 5d63b87daa36da1d6fc5a868}], currentTopic: {_id: 5d72276d32e918586dc74003, title: Vent The Steam}, slug: Vent-The-Steam, roomType: VTS, government: null}'''))), context);
-//
+                                      model.getVentTheSteam();
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16.0, vertical: 12.0),
-                                      child: InkWell(
-                                        onTap: () async {},
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                                child: Text("Vent the Steam",
-                                                    style: TextStyle(
-                                                        color: Colors.white))),
-                                            Icon(EvaIcons.arrowIosForward,
-                                                color: Colors.white),
-                                          ],
-                                        ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                              child: Text("Vent the Steam",
+                                                  style: TextStyle(
+                                                      color: Colors.white))),
+                                          Icon(EvaIcons.arrowIosForward,
+                                              color: Colors.white),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -221,8 +216,8 @@ class HomePage extends StatelessWidget {
                                 horizontal: 16.0, vertical: 8.0),
                             sliver: SliverGrid.count(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 16.0,
-                              mainAxisSpacing: 16.0,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
                               childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(
@@ -268,8 +263,8 @@ class HomePage extends StatelessWidget {
                                 horizontal: 16.0, vertical: 8.0),
                             sliver: SliverGrid.count(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 16.0,
-                              mainAxisSpacing: 16.0,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
                               childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(
@@ -327,8 +322,8 @@ class HomePage extends StatelessWidget {
                                 horizontal: 16.0, vertical: 8.0),
                             sliver: SliverGrid.count(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 16.0,
-                              mainAxisSpacing: 16.0,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
                               childAspectRatio: .75,
                               children: [
                                 GroupsGridItem(

@@ -125,7 +125,10 @@ class Router extends RouterBase {
     RoomGroupsListScreen: (data) {
       final args = data.getArgs<RoomGroupsListScreenArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => RoomGroupsListScreen(args.group),
+        builder: (context) => RoomGroupsListScreen(
+          args.group,
+          getVentTheSteam: args.getVentTheSteam,
+        ),
         settings: data,
       );
     },
@@ -180,7 +183,9 @@ class Router extends RouterBase {
 /// RoomGroupsListScreen arguments holder class
 class RoomGroupsListScreenArguments {
   final RoomGroupDTO group;
-  RoomGroupsListScreenArguments({@required this.group});
+  final bool getVentTheSteam;
+  RoomGroupsListScreenArguments(
+      {@required this.group, this.getVentTheSteam = false});
 }
 
 /// RoomScreen arguments holder class

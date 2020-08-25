@@ -28,10 +28,11 @@ class RoomDTO extends FilterableListItem {
     __v = data["__v"];
     createdAt = data["createdAt"];
     updatedAt = data["updatedAt"];
-    if (data["currentTopic"] != null) {
+
+    topicStartDate = data["topicStartDate"];
+    if (data["currentTopic"] != null && data["currentTopic"] is Map) {
       currentTopic = TopicDTO.fromMap(data["currentTopic"]);
     }
-    topicStartDate = data["topicStartDate"];
   }
 }
 

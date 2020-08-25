@@ -20,4 +20,8 @@ class RoomViewModel extends BaseViewModel {
   Future<RoomDTO> fetchRoom(id) {
     return _dataRepo.fetchRoom(id);
   }
+
+  void showVentTheSteam(RoomDTO room) {
+    _navigationService.back(result: room);
+  }
 }

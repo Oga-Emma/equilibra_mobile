@@ -10,9 +10,10 @@ import 'package:helper_widgets/string_utils/string_utils.dart';
 import 'package:stacked/stacked.dart';
 
 class RoomGroupsListScreen extends StatelessWidget {
-  RoomGroupsListScreen(this.group);
+  RoomGroupsListScreen(this.group, {this.getVentTheSteam = false});
 
   RoomGroupDTO group;
+  bool getVentTheSteam;
 
   TextTheme textTheme;
   DataController controller;
@@ -111,6 +112,16 @@ class RoomGroupsListScreen extends StatelessWidget {
   }
 
   Widget _buildRooms(List<RoomDTO> rooms, RoomViewModel model) {
+    if (getVentTheSteam) {
+      Future.delayed(Duration.zero, () {
+        var room = rooms.firstWhere(
+            (room) => room.name.toLowerCase().contains("vent"),
+            orElse: () => null);
+        if (room != null) {
+          model.showVentTheSteam(room);
+        }
+      });
+    }
     return ListView.builder(
         itemCount: rooms.length,
         itemBuilder: (context, index) {
