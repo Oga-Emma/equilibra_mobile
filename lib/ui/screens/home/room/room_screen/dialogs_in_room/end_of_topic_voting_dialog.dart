@@ -1,10 +1,14 @@
+import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:equilibra_mobile/model/dto/_voting_dtos.dart';
 import 'package:equilibra_mobile/model/dto/topic_dto.dart';
 import 'package:equilibra_mobile/model/dto/vote_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:flutter/material.dart';
+import 'package:helper_widgets/custom_toasts.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart';
+import 'package:provider/provider.dart';
 
 class EndOfTopicVotingDialog extends StatefulWidget {
   EndOfTopicVotingDialog(this.topic, this.voteId);
@@ -15,7 +19,8 @@ class EndOfTopicVotingDialog extends StatefulWidget {
   _EndOfTopicVotingDialogState createState() => _EndOfTopicVotingDialogState();
 }
 
-class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog> {
+class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog>
+    with ErrorHandler {
   var _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
 
@@ -33,8 +38,10 @@ class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog> {
         VoteValues.EXCELLENT_VOTE),
   ];
 
+  RoomController controller;
   @override
   Widget build(BuildContext context) {
+    controller = Provider.of<RoomController>(context);
 //    print("ROOM ID => ${widget.room.id}");
 //    print("ROOM ID => ${widget.appState.token}");
 
@@ -97,11 +104,7 @@ class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog> {
                             (index) => _option(options[index].title, index))),
                       ),
                       EmptySpace(multiple: 2),
-                      _sending
-                          ? Center(child: CircularProgressIndicator())
-                          : SizedBox(
-                              height: 42,
-                              child: EButton(label: "Vote", onTap: vote)),
+                      EButton(loading: _sending, label: "Vote", onTap: vote),
                       EmptySpace(multiple: 2),
                     ],
                   ),
@@ -190,10 +193,23 @@ class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog> {
     );
   }
 
-  String topic;
-  String description;
   bool _sending = false;
-  vote() async {}
+  vote() async {
+    setState(() {
+      _sending = true;
+    });
+    try {
+      await controller.voteDiscussion(
+          widget.voteId, options[selectedIndex].voteType);
+    } catch (e) {
+      if (mounted) {
+        showErrorToast(getErrorMessage(e));
+      }
+    }
+    setState(() {
+      _sending = false;
+    });
+  }
 
   _option(String label, int index) {
     return Card(

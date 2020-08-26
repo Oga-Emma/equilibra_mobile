@@ -221,26 +221,23 @@ class RoomController extends BaseViewModel {
       addEvent(EventHandler(EventTypes.TOPIC_CHANGED, data));
     });
     _socket.on('vote-topic-change', (data) {
-//      log('vote-topic-change => $data');
-//      print("vote-topic-change => data ${data}");
-//      print("vote-topic-change => vote ${data['vote']}");
-//      print("vote-topic-change => topic ${data['vote']['topicId']}");
-//      print("vote-topic-change => room ${data['vote']['roomId']}");
-
       addEvent(EventHandler(EventTypes.VOTE_TOPIC_CHANGE, data));
     });
-    _socket.on('new-vote', (data) {
-      print("new-vote $data");
-    });
+//    _socket.on('new-vote', (data) {
+//      print("new-vote $data");
+//    });
     _socket.on('vote-topic-closed', (data) {
 //      log("vote-topic-closed $data");
       addEvent(EventHandler(EventTypes.VOTE_TOPIC_CLOSED, data));
     });
     _socket.on('topic-discussion-vote', (data) {
-      print("topic-discussion-vote $data");
+//      log("topic-discussion-vote $data");
+
+      addEvent(EventHandler(EventTypes.VOTE_DISCUSSION, data));
     });
     _socket.on('close-discussion-vote', (data) {
-      print("close-discussion-vote $data");
+//      log("close-discussion-vote $data");
+      addEvent(EventHandler(EventTypes.VOTE_DISCUSSION_CLOSED, data));
     });
     _socket.on('disconnect', (data) {});
 

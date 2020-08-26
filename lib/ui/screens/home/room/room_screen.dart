@@ -140,6 +140,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   bool fetching = false;
   bool error = false;
+
   Widget _buildCustomScrollView(BuildContext context, List commentList) {
     this.comments = commentList;
 
@@ -712,6 +713,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       );
 
   var _suggestTopicIsShown = false;
+
   _suggestTopicDialog() async {
     try {
       _suggestTopicIsShown = true;
@@ -725,6 +727,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   var _voteTopicIsShown = false;
+
   _voteTopicResultDialog(String title, String description, bool change) async {
     try {
       if (_voteTopicIsShown) return;
@@ -747,6 +750,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   bool changeFromMe = false;
+
   _changeTopicDialog() async {
     bool change = await showDialog(
         context: context, builder: (context) => ChangeTopicDialog(room));
@@ -758,82 +762,6 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       } else {
         showSuccessToast("Request sent, voting will commence shortly");
       }
-    }
-  }
-
-  _endOfTopicVotingDialog(TopicDTO topic, voteId) async {
-//    bool canVote = await LocalStorage.checkIfVoted(widget.room.voteId);
-//    if (!canVote) {
-//      return;
-//    }
-
-    VotingResult result = await showDialog(
-        context: context,
-        builder: (context) => EndOfTopicVotingDialog(topic, voteId));
-
-    if (result != null) {
-      Future.delayed(
-          Duration(seconds: 1), () => _endOfTopicVotingResultDialog(result));
-    }
-  }
-
-  _endOfTopicVotingResultDialog(VotingResult result) async {
-    await showDialog(
-        context: context,
-        builder: (context) => EndOfTopicVotingResultDialog(room, result));
-  }
-
-  _voteChangeTopicDialog(
-      String voteId, String title, String description) async {
-    bool change = await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => VoteChangeTopicDialog(
-                voteId, title, description,
-                autoVote:
-                    room.members.length != null && room.members.length == 1)) ??
-        false;
-
-    try {
-      if (room.currentTopic == null) {
-//        if (changeFromMe && change != null && change) {
-//          Future.delayed(
-//              Duration(seconds: 3), () => closeVotingSession(voteId));
-//        }
-      } else {
-        if (changeFromMe) {
-          changeFromMe = false;
-          if (room.members != null && room.members.length == 1) {
-            room = null;
-            setState(() {});
-            return;
-          }
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                    content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "Voting in progress".toUpperCase(),
-                      style: TextStyle(color: Pallet.primaryColor),
-                    ),
-                    EmptySpace(multiple: 2),
-                    Text(
-                      "Voting for the topic you suggested has commenced. \n\nPlease note: A voting session takes 2 - 5 minutes. \n\nYou have to remain in the room while voting is in progress to successfully change the topic",
-                      textAlign: TextAlign.center,
-                    )
-                  ],
-                ));
-              });
-          //print("Please wait, closing soon");
-
-        }
-//        //print("Voting failed");
-      }
-    } catch (e) {
-      //print(e);
     }
   }
 
@@ -849,19 +777,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     ));
   }
 
-  void initCommentSubscription() {}
-
-  void initVotingSubscription() {}
-
-  void initDiscussionSubscription() {}
-
-  void initTopicChangedSubscription() {}
-
-  Future closeVotingSession(String voteId) async {}
-
-  Future fetchVoting(voteId) async {}
-
   bool fetched = false;
+
   Future fetchAdvert() async {}
 
   Future<void> checkPermission() async {
@@ -884,37 +801,40 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       case EventTypes.COMMENT:
         // TODO: Handle this case.
         break;
+
       case EventTypes.JOIN_ROOM:
         if (userController.user.id == event.data["user"]) {
           refreshPage();
         }
         print("join event => ${event.data}");
         break;
+
       case EventTypes.LEAVE_ROOM:
         refreshPage();
         break;
+
       case EventTypes.TOPIC_CHANGED:
         refreshPage();
         break;
+
       case EventTypes.VOTE_TOPIC_CHANGE:
         var vote = VoteDTO.fromMap(event.data['vote']);
-        print("Vote topic change => ${vote.id}");
-        print("Vote topic change => ${vote.topicId.id}");
-
         voteChangeTopic(vote);
         break;
+
       case EventTypes.VOTE_TOPIC_CLOSED:
         var vote = VoteDTO.fromMap(event.data['vote']);
-        print("Vote topic change closed => ${vote.id}");
-        print("Vote topic change closed => ${vote.topicId.id}");
-
         showChangeTopicVotingResult(vote);
         break;
+
       case EventTypes.VOTE_DISCUSSION:
-        // TODO: Handle this case.
+        var vote = VoteDTO.fromMap(event.data['vote']);
+        showDiscussionVote(vote);
         break;
+
       case EventTypes.VOTE_DISCUSSION_CLOSED:
-        // TODO: Handle this case.
+        var vote = VoteDTO.fromMap(event.data['vote']);
+        endOfTopicVotingResultDialog(vote);
         break;
     }
   }
@@ -998,6 +918,20 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       refreshPage();
     }
   }
+
+  Future<void> showDiscussionVote(VoteDTO vote) async {
+    VotingResult result = await showDialog(
+        context: context,
+        builder: (context) => EndOfTopicVotingDialog(vote.topicId, vote.id));
+  }
+
+  endOfTopicVotingResultDialog(VoteDTO vote) async {
+    await showDialog(
+        context: context,
+        builder: (context) => EndOfTopicVotingResultDialog(vote));
+  }
+
+  closeVotingSession(id) {}
 }
 
 class CountDownToTopicEnd extends StatefulWidget {
@@ -1095,7 +1029,9 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
 
 class JoinRoom extends StatelessWidget {
   JoinRoom(this.roomId);
+
   final String roomId;
+
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<RoomController>(context);

@@ -1,14 +1,14 @@
 import 'package:equilibra_mobile/model/dto/_voting_dtos.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
+import 'package:equilibra_mobile/model/dto/vote_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 
 class EndOfTopicVotingResultDialog extends StatefulWidget {
-  EndOfTopicVotingResultDialog(this.room, this.result);
-  RoomDTO room;
-  VotingResult result;
+  EndOfTopicVotingResultDialog(this.vote);
+  VoteDTO vote;
 
   @override
   _EndOfTopicVotingResultDialogState createState() =>
@@ -24,40 +24,40 @@ class _EndOfTopicVotingResultDialogState
 
   @override
   initState() {
-    var total = widget.result.voters ?? 0;
-    var max = widget.result.poorVotes;
-    if (widget.result.excellentVotes > max) {
-      max = widget.result.excellentVotes;
+    var total = widget.vote.voters ?? 0;
+    var max = widget.vote.poorVotes?.length;
+    if (widget.vote.excellentVotes?.length > max) {
+      max = widget.vote.excellentVotes?.length;
     }
 
-    if (widget.result.votenotAcceptableVotes > max) {
-      max = widget.result.votenotAcceptableVotes;
+    if (widget.vote.notAcceptableVotes?.length > max) {
+      max = widget.vote.notAcceptableVotes?.length;
     }
 
-    if (widget.result.challengesVotes > max) {
-      max = widget.result.challengesVotes;
+    if (widget.vote.challengesVotes?.length > max) {
+      max = widget.vote.challengesVotes?.length;
     }
 
-    if (widget.result.commendableVotes > max) {
-      max = widget.result.commendableVotes;
+    if (widget.vote.commendableVotes?.length > max) {
+      max = widget.vote.commendableVotes?.length;
     }
 
     results.addAll([
       Result(0, "Poor, not fit for purpose - Change Required",
-          getPercent(total, widget.result.poorVotes ?? 0),
-          isHighest: widget.result.poorVotes == max),
+          getPercent(total, widget.vote.poorVotes?.length ?? 0),
+          isHighest: widget.vote.poorVotes?.length == max),
       Result(1, "Not acceptable - Urgent Improvement Required",
-          getPercent(total, widget.result.votenotAcceptableVotes ?? 0),
-          isHighest: widget.result.votenotAcceptableVotes == max),
+          getPercent(total, widget.vote.notAcceptableVotes?.length ?? 0),
+          isHighest: widget.vote.notAcceptableVotes?.length == max),
       Result(2, "Challenges - But Improvement Required",
-          getPercent(total, widget.result.challengesVotes ?? 0),
-          isHighest: widget.result.challengesVotes == max),
+          getPercent(total, widget.vote.challengesVotes?.length ?? 0),
+          isHighest: widget.vote.challengesVotes?.length == max),
       Result(3, "Commendable - Service Level",
-          getPercent(total, widget.result.commendableVotes ?? 0),
-          isHighest: widget.result.commendableVotes == max),
+          getPercent(total, widget.vote.commendableVotes?.length ?? 0),
+          isHighest: widget.vote.commendableVotes?.length == max),
       Result(4, "Excellent or Outstanding - Service Level",
-          getPercent(total, widget.result.excellentVotes ?? 0),
-          isHighest: widget.result.excellentVotes == max)
+          getPercent(total, widget.vote.excellentVotes?.length ?? 0),
+          isHighest: widget.vote.excellentVotes?.length == max)
     ]);
 
     super.initState();
@@ -98,7 +98,7 @@ class _EndOfTopicVotingResultDialogState
                           color: Pallet.accentColor, height: 18, width: 18),
                       EmptySpace(),
                       Text(
-                        "${widget.room.currentTopic.createdAt}",
+                        "${widget.vote.topicId?.createdAt}",
 //                                              "5 Day(s) 15 Hours 56 Minutes",
                         style: Theme.of(context)
                             .textTheme
@@ -166,13 +166,12 @@ class _EndOfTopicVotingResultDialogState
                           style: TextStyle(
                               fontSize: 12, color: Pallet.primaryColor)),
                       TextSpan(
-                          text:
-                              "${widget.room.currentTopic.title}".toUpperCase(),
+                          text: "${widget.vote.topicId?.title}".toUpperCase(),
                           style: TextStyle(fontSize: 12, color: Colors.black))
                     ])),
                     EmptySpace(),
                     Text(
-                      "${widget.room.currentTopic.description}",
+                      "${widget.vote.topicId?.description}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style:

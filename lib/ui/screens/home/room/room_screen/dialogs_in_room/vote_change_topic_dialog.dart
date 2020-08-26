@@ -128,7 +128,9 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
         voted = true;
       });
     } catch (err) {
-      showErrorToast(getErrorMessage(err));
+      if (mounted) {
+        showErrorToast(getErrorMessage(err));
+      }
     }
   }
 
