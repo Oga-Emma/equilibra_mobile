@@ -57,8 +57,12 @@ class RoomController extends BaseViewModel {
   }
 
   addEvent(EventHandler event) {
-    if (eventHandlerStream != null && eventHandlerStream.hasListener) {
-      eventHandlerStream.sink.add(event);
+    try {
+      if (eventHandlerStream != null && eventHandlerStream.hasListener) {
+        eventHandlerStream.sink.add(event);
+      }
+    } catch (err) {
+      logger.e(err);
     }
   }
 
@@ -102,8 +106,26 @@ class RoomController extends BaseViewModel {
     return await _roomRepo.reportComment(commentId: commentId, report: report);
   }
 
-  void showVentTheSteam(RoomDTO room) {
-    _navigationService.back(result: room);
+  Future joinRoom(roomId) async {
+    try {
+      setBusy(true);
+      await _roomRepo.joinRoom(roomId);
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
+  }
+
+  Future leaveRoom(roomId) async {
+    try {
+      setBusy(true);
+      await _roomRepo.leaveRoom(roomId);
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
   }
 
   SocketIOManager _manager;
@@ -133,20 +155,17 @@ class RoomController extends BaseViewModel {
     });
 
     _socket.on('comment', (data) {
-      print("comment $data");
-      try {
-        addEvent(EventHandler(EventTypes.COMMENT, SocketComment.fromMap(data)));
-      } catch (err) {
-        logger.d(err);
-      }
+//      print("comment $data");
+      addEvent(EventHandler(EventTypes.COMMENT, data));
     });
-
+//    {user: 5f40eca257c4e611f7925e7f, room: 5e3d4a48fb9e016690a5bc08}
     _socket.on('join-room', (data) {
-      print("join-room $data");
+//      print("join-room $data");
+      addEvent(EventHandler(EventTypes.JOIN_ROOM, data));
     });
 
     _socket.on('leave-room', (data) {
-      print("leave-room $data");
+      addEvent(EventHandler(EventTypes.LEAVE_ROOM, data));
     });
 
     _socket.on('topic-changed', (data) {
@@ -188,6 +207,10 @@ class RoomController extends BaseViewModel {
     ///manager.
   }
 
+  void showVentTheSteam(RoomDTO room) {
+    _navigationService.back(result: room);
+  }
+
   @override
   void dispose() {
     _manager?.clearInstance(_socket);
@@ -204,4 +227,6 @@ class EventHandler {
 
 enum EventTypes {
   COMMENT,
+  JOIN_ROOM,
+  LEAVE_ROOM,
 }

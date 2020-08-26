@@ -69,6 +69,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   List dates = [];
   bool isMember = false;
 
+  get loading => room == null;
+
   @override
   void initState() {
     super.initState();
@@ -90,34 +92,39 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     userController = Provider.of<UserController>(context, listen: false);
     roomController = Provider.of<RoomController>(context, listen: false);
 
+    if (room != null) {}
     return Scaffold(
         backgroundColor: Colors.white,
-//              appBar: loading
-//                  ? AppBar(
-//                      leading: InkWell(
-//                          onTap: () => Navigator.pop(context),
-//                          child: Icon(Icons.arrow_back_ios,
-//                              size: 20, color: Colors.white)),
-//                    )
-//                  : null,
-        body: FutureBuilder<RoomDTO>(
-            future: roomController.fetchRoom(widget.room.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                widget.room = snapshot.data;
-                return body();
-              }
-              return LoadingSpinner();
-            }));
+        appBar: loading
+            ? AppBar(
+                leading: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.arrow_back_ios,
+                        size: 20, color: Colors.white)),
+              )
+            : null,
+        body: room != null
+            ? body()
+            : FutureBuilder<RoomDTO>(
+                future: roomController.fetchRoom(widget.room.id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    room = snapshot.data;
+                    widget.room = snapshot.data;
+                    Future.delayed(Duration.zero, () {
+                      setState(() {});
+                    });
+//                    return body();
+                  }
+                  return LoadingSpinner();
+                }));
 //    return Scaffold(key: _scaffoldKey, body: body());
   }
 
   Widget body() {
-//    print('done');
-//    if (!widget.group.ventTheSteam) {
-//      hasTopic = widget.room.currentTopic != null &&
-//          widget.room.currentTopic.id != null;
-//    }
+    isMember =
+        room.members.any((element) => element.member == userController.user.id);
+
     return WillPopScope(
       onWillPop: () async {
         return true;
@@ -207,6 +214,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     SliverFillRemaining(
                         child: RoomComments(
                             room: widget.room,
+                            handleEvent: handleEvent,
                             replyClicked: (CommentDTO comment) {
                               setState(() {
                                 reply = comment;
@@ -240,12 +248,11 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                 child: SafeArea(
                     top: false,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 8.0),
-                      child: widget.isVentTheSteam || isMember
-                          ? commentLayout()
-                          : EButton(label: "Join Room", onTap: joinRoom),
-                    )),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 8.0),
+                        child: widget.isVentTheSteam || isMember
+                            ? commentLayout()
+                            : JoinRoom(widget.room.id))),
               ),
             ),
           ],
@@ -871,6 +878,29 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       }
     });
   }
+
+  handleEvent(EventHandler event) {
+    switch (event.type) {
+      case EventTypes.COMMENT:
+        // TODO: Handle this case.
+        break;
+      case EventTypes.JOIN_ROOM:
+        if (userController.user.id == event.data["user"]) {
+          refreshPage();
+        }
+        print("join event => ${event.data}");
+        break;
+      case EventTypes.LEAVE_ROOM:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
+  void refreshPage() {
+    setState(() {
+      room = null;
+    });
+  }
 }
 
 class CountDownToTopicEnd extends StatefulWidget {
@@ -958,5 +988,21 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
         minutes: 59 - minute));*/
 
     duration = next7Days.difference(now);
+  }
+}
+
+class JoinRoom extends StatelessWidget {
+  JoinRoom(this.roomId);
+  final String roomId;
+  @override
+  Widget build(BuildContext context) {
+    var controller = Provider.of<RoomController>(context);
+    return EButton(
+        label: "Join Room",
+        onTap: () {
+//          print(roomId);
+          controller.joinRoom(roomId);
+        },
+        loading: controller.isBusy);
   }
 }

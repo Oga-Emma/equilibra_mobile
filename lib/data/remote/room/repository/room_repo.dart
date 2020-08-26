@@ -15,6 +15,9 @@ abstract class RoomRepo {
   Future unlikeComment({commentId});
   Future deleteComment({commentId});
 
+  Future joinRoom(roomId);
+  Future leaveRoom(roomId);
+
   Future suggestTopic({title, description});
   Future changeTopic({title, description});
   Future voteTopicChange({voteId, vote});

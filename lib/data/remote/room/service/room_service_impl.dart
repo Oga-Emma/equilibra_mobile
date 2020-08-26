@@ -217,6 +217,47 @@ class RoomServiceImpl with BaseApi implements RoomService {
     throw UnimplementedError();
   }
 
+  @override
+  Future joinRoom(token, {roomId}) async {
+    try {
+      var url = "$BASE_URL/rooms/join/$roomId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @override
+  Future leaveRoom(token, {roomId}) async {
+    try {
+      var url = "$BASE_URL/rooms/leave/$roomId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
 //  Future<List<RoomDTO>> fetchHomeRoom(String type, String stateId) async {
 //    try {
 //      var url = "$BASE_URL/home/rooms/$type/$stateId/1/40";

@@ -85,4 +85,14 @@ class RoomRepoImpl implements RoomRepo {
     // TODO: implement voteTopicChange
     throw UnimplementedError();
   }
+
+  @override
+  Future joinRoom(roomId) async {
+    return roomService.joinRoom(await localCache.getToken(), roomId: roomId);
+  }
+
+  @override
+  Future leaveRoom(roomId) async {
+    return roomService.leaveRoom(await localCache.getToken(), roomId: roomId);
+  }
 }

@@ -12,11 +12,17 @@ import 'package:helper_widgets/loading_spinner.dart';
 import 'comment_list_items.dart';
 
 class RoomComments extends StatefulWidget {
-  RoomComments({this.room, this.replyClicked, this.reportClicked, this.like});
+  RoomComments(
+      {this.room,
+      this.replyClicked,
+      this.reportClicked,
+      this.like,
+      this.handleEvent});
   RoomDTO room;
   Function(CommentDTO comment) replyClicked;
   Function(CommentDTO comment) reportClicked;
   Function(CommentDTO comment) like;
+  Function(EventHandler event) handleEvent;
   @override
   _RoomCommentsState createState() => _RoomCommentsState();
 }
@@ -154,11 +160,11 @@ class _RoomCommentsState extends State<RoomComments> {
   );
 
   void handleEvents(EventHandler event) {
+    if (event.data['room'] != widget.room.id) return;
     if (event.type == EventTypes.COMMENT) {
-      var socketComment = event.data as SocketComment;
+      var socketComment = SocketComment.fromMap(event.data);
 
-      if (socketComment.room == widget.room.id &&
-          widget.room.currentTopic != null &&
+      if (widget.room.currentTopic != null &&
           socketComment.topic == widget.room.currentTopic.id) {
         var comment = socketComment.fullComment;
         switch (socketComment.type) {
@@ -192,6 +198,8 @@ class _RoomCommentsState extends State<RoomComments> {
             }
         }
       }
+    } else {
+      widget.handleEvent(event);
     }
   }
 }
