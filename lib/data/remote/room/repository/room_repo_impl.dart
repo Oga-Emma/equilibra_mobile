@@ -63,27 +63,27 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future changeTopic({title, description}) {
-    // TODO: implement changeTopic
-    throw UnimplementedError();
+  Future changeTopic({title, description}) async {
+    return roomService.changeTopic(await localCache.getToken(),
+        title: title, description: description);
   }
 
   @override
-  Future suggestTopic({title, description}) {
-    // TODO: implement suggestTopic
-    throw UnimplementedError();
+  Future suggestTopic({title, description}) async {
+    return roomService.suggestTopic(await localCache.getToken(),
+        title: title, description: description);
   }
 
   @override
-  Future voteEndOfDiscussionPoll({voteId, vote}) {
-    // TODO: implement voteEndOfDiscussionPoll
-    throw UnimplementedError();
+  Future voteEndOfDiscussionPoll({voteId, vote}) async {
+    return roomService.voteEndOfDiscussionPoll(await localCache.getToken(),
+        vote: vote, voteId: voteId);
   }
 
   @override
-  Future voteTopicChange({voteId, vote}) {
-    // TODO: implement voteTopicChange
-    throw UnimplementedError();
+  Future voteTopicChange({voteId, vote}) async {
+    return roomService.voteTopicChange(await localCache.getToken(),
+        vote: vote, voteId: voteId);
   }
 
   @override

@@ -16,7 +16,7 @@ class RoomDTO extends FilterableListItem {
   var topicStartDate; //-07-25T18:12:15.254Z",
   var voteId; //"
 
-  RoomDTO.fromMap(Map<String, dynamic> data) {
+  RoomDTO.fromMap(Map<dynamic, dynamic> data) {
     changeTopic = data["changeTopic"] ?? false;
     id = data["_id"];
     roomType = data["roomType"];

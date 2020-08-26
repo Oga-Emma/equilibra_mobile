@@ -113,7 +113,6 @@ class DataServiceImpl with BaseApi implements DataService {
 
       var decode = json.decode(response.body);
 
-      print(decode['data']['members']);
       if (response.statusCode == 200) {
         return RoomDTO.fromMap(decode['data']);
       } else {

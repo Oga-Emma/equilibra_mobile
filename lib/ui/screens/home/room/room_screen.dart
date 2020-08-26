@@ -8,6 +8,7 @@ import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/topic_dto.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
+import 'package:equilibra_mobile/model/dto/vote_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/date_utisl.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
@@ -92,7 +93,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     userController = Provider.of<UserController>(context, listen: false);
     roomController = Provider.of<RoomController>(context, listen: false);
 
-    if (room != null) {}
+//    if (room != null) {}
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: loading
@@ -125,6 +127,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     isMember =
         room.members.any((element) => element.member == userController.user.id);
 
+    hasTopic = room.currentTopic != null && room.currentTopic.id != null;
     return WillPopScope(
       onWillPop: () async {
         return true;
@@ -202,7 +205,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                     SizedBox(),
                                   EmptySpace(),
                                   TopicTitle(
-                                      room: widget.room,
+                                      room: room,
                                       isVentTheSteam: widget.isVentTheSteam)
                                 ],
                               ),
@@ -213,7 +216,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     ),
                     SliverFillRemaining(
                         child: RoomComments(
-                            room: widget.room,
+                            room: room,
                             handleEvent: handleEvent,
                             replyClicked: (CommentDTO comment) {
                               setState(() {
@@ -252,7 +255,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                             vertical: 8.0, horizontal: 8.0),
                         child: widget.isVentTheSteam || isMember
                             ? commentLayout()
-                            : JoinRoom(widget.room.id))),
+                            : JoinRoom(room.id))),
               ),
             ),
           ],
@@ -287,7 +290,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                         color: Colors.white.withOpacity(0.7))),
                 Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.white),
                 EmptySpace(multiple: 0.5),
-                Text("${widget.room.name}",
+                Text("${room.name}",
                     style: TextStyle(fontSize: 16.0, color: Colors.white)),
               ],
             ),
@@ -400,7 +403,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
               EmptySpace(),
               GestureDetector(
                   onTap: () async {
-                    if (widget.room.currentTopic == null) {
+                    if (room.currentTopic == null) {
                       showErrorToast(
                           "This room has no topic, please set a topic to start a discussion");
                       return;
@@ -539,8 +542,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   Future makeComment(String comment, List<File> file) async {
     try {
-      if (widget.room.currentTopic == null ||
-          widget.room.currentTopic.id == null) {
+      if (room.currentTopic == null || room.currentTopic.id == null) {
         showNoTopicMessage();
         return;
       }
@@ -548,8 +550,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       await roomController.createComments(
           images: file,
           comment: comment,
-          topicId: widget.room.currentTopic.id,
-          roomId: widget.room.id);
+          topicId: room.currentTopic.id,
+          roomId: room.id);
 
       clearComment();
     } catch (err) {
@@ -580,7 +582,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Future reportComment(String commentId, String reportType) async {
     try {
       await roomController.reportComment(
-          report: reportType, commentId: widget.room.id);
+          report: reportType, commentId: room.id);
       showSuccessToast("Comment reported");
     } catch (err) {
       print(err);
@@ -714,8 +716,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     try {
       _suggestTopicIsShown = true;
       await showDialog(
-          context: context,
-          builder: (context) => SuggestTopicDialog(widget.room));
+          context: context, builder: (context) => SuggestTopicDialog(room));
     } catch (err) {
       if (_suggestTopicIsShown) {
         _suggestTopicIsShown = false;
@@ -727,7 +728,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   _voteTopicResultDialog(String title, String description, bool change) async {
     try {
       if (_voteTopicIsShown) return;
-      if (widget.room.members != null && widget.room.members.length > 1) {
+      if (room.members != null && room.members.length > 1) {
         _voteTopicIsShown = true;
         await showDialog(
             context: context,
@@ -748,11 +749,11 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   bool changeFromMe = false;
   _changeTopicDialog() async {
     bool change = await showDialog(
-        context: context, builder: (context) => ChangeTopicDialog(widget.room));
+        context: context, builder: (context) => ChangeTopicDialog(room));
 
     if (change != null && change) {
       changeFromMe = true;
-      if (widget.room.currentTopic == null) {
+      if (room.currentTopic == null) {
         showSuccessToast("Request sent");
       } else {
         showSuccessToast("Request sent, voting will commence shortly");
@@ -779,8 +780,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   _endOfTopicVotingResultDialog(VotingResult result) async {
     await showDialog(
         context: context,
-        builder: (context) =>
-            EndOfTopicVotingResultDialog(widget.room, result));
+        builder: (context) => EndOfTopicVotingResultDialog(room, result));
   }
 
   _voteChangeTopicDialog(
@@ -790,12 +790,12 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
             context: context,
             builder: (context) => VoteChangeTopicDialog(
                 voteId, title, description,
-                autoVote: widget.room.members.length != null &&
-                    widget.room.members.length == 1)) ??
+                autoVote:
+                    room.members.length != null && room.members.length == 1)) ??
         false;
 
     try {
-      if (widget.room.currentTopic == null) {
+      if (room.currentTopic == null) {
 //        if (changeFromMe && change != null && change) {
 //          Future.delayed(
 //              Duration(seconds: 3), () => closeVotingSession(voteId));
@@ -803,7 +803,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       } else {
         if (changeFromMe) {
           changeFromMe = false;
-          if (widget.room.members != null && widget.room.members.length == 1) {
+          if (room.members != null && room.members.length == 1) {
             room = null;
             setState(() {});
             return;
@@ -891,6 +891,29 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         print("join event => ${event.data}");
         break;
       case EventTypes.LEAVE_ROOM:
+        refreshPage();
+        break;
+      case EventTypes.TOPIC_CHANGED:
+        refreshPage();
+        break;
+      case EventTypes.VOTE_TOPIC_CHANGE:
+        var vote = VoteDTO.fromMap(event.data['vote']);
+        print("Vote topic change => ${vote.id}");
+        print("Vote topic change => ${vote.topicId.id}");
+
+        voteChangeTopic(vote);
+        break;
+      case EventTypes.VOTE_TOPIC_CLOSED:
+        var vote = VoteDTO.fromMap(event.data['vote']);
+        print("Vote topic change closed => ${vote.id}");
+        print("Vote topic change closed => ${vote.topicId.id}");
+
+        showChangeTopicVotingResult(vote);
+        break;
+      case EventTypes.VOTE_DISCUSSION:
+        // TODO: Handle this case.
+        break;
+      case EventTypes.VOTE_DISCUSSION_CLOSED:
         // TODO: Handle this case.
         break;
     }
@@ -901,12 +924,86 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       room = null;
     });
   }
+
+  void voteChangeTopic(VoteDTO vote) async {
+    DateTime stopAt = DateTime.now()..add(Duration(seconds: 5));
+    if (vote.stopAt != null) {
+      stopAt = DateTime.tryParse(vote.stopAt);
+    }
+
+    var difference = DateTime.now().difference(stopAt);
+
+    await showDialog(
+        context: context,
+        builder: (context) => VoteChangeTopicDialog(
+            vote.id, vote.topicId.title, vote.topicId.description,
+            autoVote: widget.room.members.length != null &&
+                widget.room.members.length == 1,
+            stopAt: stopAt));
+
+    try {
+      if (widget.room.currentTopic == null) {
+        if (changeFromMe) {
+          Future.delayed(difference.inSeconds < 1 ? Duration.zero : difference,
+              () => closeVotingSession(vote.id));
+        }
+      } else {
+        if (changeFromMe) {
+          changeFromMe = false;
+          if (widget.room.members != null && widget.room.members.length == 1) {
+            refreshPage();
+            return;
+          }
+
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                    content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "Voting in progress".toUpperCase(),
+                      style: TextStyle(color: Pallet.primaryColor),
+                    ),
+                    EmptySpace(multiple: 2),
+                    Text(
+                      "Voting for the topic you suggested has commenced. \n\nPlease note: A voting session takes 2 - 5 minutes. \n\nYou have to remain in the room while voting is in progress to successfully change the topic",
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ));
+              });
+          //print("Please wait, closing soon");
+
+        }
+//        //print("Voting failed");
+      }
+    } catch (e) {
+      //print(e);
+    }
+  }
+
+  Future<void> showChangeTopicVotingResult(VoteDTO vote) async {
+    bool changed = vote.status != "un-changed";
+    if (vote.roomId.members != null && vote.roomId.members.length > 1) {
+      _voteTopicIsShown = true;
+      await showDialog(
+          context: context,
+          builder: (context) => VoteChangeTopicResultDialog(
+              vote.topicId.title, vote.topicId.description, changed));
+      _voteTopicIsShown = false;
+    }
+    if (changed) {
+      refreshPage();
+    }
+  }
 }
 
 class CountDownToTopicEnd extends StatefulWidget {
-  CountDownToTopicEnd(this.topic);
+  CountDownToTopicEnd(this.room);
 
-  RoomDTO topic;
+  RoomDTO room;
 
   @override
   _CountDownToTopicEndState createState() => _CountDownToTopicEndState();
@@ -923,11 +1020,16 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
 
   @override
   void initState() {
-    if (widget.topic.topicStartDate != null) {
+//    print("${widget.room}");
+//    print("${widget.room.updatedAt}");
+//    print("${widget.room.topicStartDate}");
+//    print("${widget.room.createdAt}");
+
+    if (widget.room.topicStartDate != null) {
       try {
-        startDate = DateTime.parse(widget.topic.topicStartDate);
+        startDate = DateTime.tryParse(widget.room.topicStartDate);
       } catch (err) {
-//        print(err);
+        print(err);
       }
     }
     updateView();

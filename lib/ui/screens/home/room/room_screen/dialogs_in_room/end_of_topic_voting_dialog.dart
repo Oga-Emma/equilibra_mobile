@@ -23,13 +23,14 @@ class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog> {
 
   List<Option> options = [
     Option(
-        0, "Poor, not fit for purpose - Change Required", VoteType.POOR_VOTE),
+        0, "Poor, not fit for purpose - Change Required", VoteValues.POOR_VOTE),
     Option(1, "Not acceptable - Urgent Improvement Required",
-        VoteType.NOT_ACCEPTABLE_VOTE),
-    Option(2, "Challenges - But Improvement Required", VoteType.CHALLENGE_VOTE),
-    Option(3, "Commendable - Service Level", VoteType.COMMENDABLE_VOTE),
+        VoteValues.NOT_ACCEPTABLE_VOTE),
     Option(
-        4, "Excellent or Outstanding - Service Level", VoteType.EXCELLENT_VOTE),
+        2, "Challenges - But Improvement Required", VoteValues.CHALLENGE_VOTE),
+    Option(3, "Commendable - Service Level", VoteValues.COMMENDABLE_VOTE),
+    Option(4, "Excellent or Outstanding - Service Level",
+        VoteValues.EXCELLENT_VOTE),
   ];
 
   @override

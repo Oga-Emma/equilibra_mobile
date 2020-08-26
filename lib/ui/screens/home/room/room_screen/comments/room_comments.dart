@@ -170,8 +170,13 @@ class _RoomCommentsState extends State<RoomComments> {
         switch (socketComment.type) {
           case SocketCommentTypes.NEW_COMMENT:
             {
-              comments.insert(0, comment);
-              animatedListKey.currentState.insertItem(0);
+              if (comments == null || comments.isEmpty) {
+                comments = [comment];
+                setState(() {});
+              } else {
+                comments.insert(0, comment);
+                animatedListKey.currentState.insertItem(0);
+              }
               break;
             }
           case SocketCommentTypes.DELETE:

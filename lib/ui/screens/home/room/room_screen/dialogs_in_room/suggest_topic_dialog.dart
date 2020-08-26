@@ -1,9 +1,13 @@
+import 'package:equilibra_mobile/di/controllers/data_controller.dart';
+import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:equilibra_mobile/input_validators.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:flutter/material.dart';
+import 'package:helper_widgets/custom_toasts.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart';
 
 class SuggestTopicDialog extends StatefulWidget {
   SuggestTopicDialog(this.room);
@@ -12,12 +16,15 @@ class SuggestTopicDialog extends StatefulWidget {
   _SuggestTopicDialogState createState() => _SuggestTopicDialogState();
 }
 
-class _SuggestTopicDialogState extends State<SuggestTopicDialog> {
+class _SuggestTopicDialogState extends State<SuggestTopicDialog>
+    with ErrorHandler {
   var _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
 
+  RoomController controller;
   @override
   Widget build(BuildContext context) {
+    controller = Provider.of<RoomController>(context);
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
       contentPadding: EdgeInsets.all(0),
@@ -100,11 +107,10 @@ class _SuggestTopicDialogState extends State<SuggestTopicDialog> {
                                 borderRadius: BorderRadius.circular(4.0))),
                       ),
                       EmptySpace(multiple: 2),
-                      SizedBox(
-                          height: 42,
-                          child: EButton(
-                              label: "Suggest Topic",
-                              onTap: requestTopicChange)),
+                      EButton(
+                          loading: controller.isBusy,
+                          label: "Suggest Topic",
+                          onTap: requestTopicChange),
                       EmptySpace(multiple: 2),
                     ],
                   ),
@@ -199,6 +205,12 @@ class _SuggestTopicDialogState extends State<SuggestTopicDialog> {
   requestTopicChange() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      try {
+        await controller.suggestTopic(topic, description);
+        Navigator.pop(context);
+      } catch (err) {
+        showErrorToast(getErrorMessage(err));
+      }
     }
   }
 }

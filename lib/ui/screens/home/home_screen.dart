@@ -1,3 +1,4 @@
+import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
@@ -150,6 +151,8 @@ class HomePage extends StatelessWidget {
   GlobalKey<ScaffoldState> scaffoldKey;
   UserProfileDTO user;
 
+  UserController controller;
+  RoomController roomController;
   @override
   Widget build(BuildContext context) {
     makeHeader(String headerText) {
@@ -161,7 +164,9 @@ class HomePage extends StatelessWidget {
       ));
     }
 
-    UserController controller = Provider.of<UserController>(context);
+    controller = Provider.of<UserController>(context);
+    roomController = Provider.of<RoomController>(context);
+    roomController.setupSocket();
     return StreamBuilder<UserProfileDTO>(
         stream: controller.fetchProfile(),
         builder: (context, snapshot) {

@@ -13,12 +13,6 @@ export 'room_service.dart';
 
 class RoomServiceImpl with BaseApi implements RoomService {
   @override
-  Future changeTopic(token, {title, description}) {
-    // TODO: implement changeTopic
-    throw UnimplementedError();
-  }
-
-  @override
   Future createComment(token,
       {List<File> images,
       String comment,
@@ -180,12 +174,6 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future suggestTopic(token, {title, description}) {
-    // TODO: implement suggestTopic
-    throw UnimplementedError();
-  }
-
-  @override
   Future unlikeComment(token, {commentId}) async {
     try {
       var url = "$BASE_URL/comments/unlike/$commentId";
@@ -206,15 +194,96 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future voteEndOfDiscussionPoll(token, {voteId, vote}) {
-    // TODO: implement voteEndOfDiscussionPoll
-    throw UnimplementedError();
+  Future voteEndOfDiscussionPoll(token, {voteId, vote}) async {
+    try {
+      var url = "$BASE_URL/topics/vote-disscussion/$voteId/$vote";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      print("vote end of discussion poll => ${response.body}");
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
-  Future voteTopicChange(token, {voteId, vote}) {
-    // TODO: implement voteTopicChange
-    throw UnimplementedError();
+  Future changeTopic(token, {title, description}) async {
+    try {
+      var url = "$BASE_URL/topics/set-topic";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.post(url,
+          headers: headers,
+          body: json.encode({"title": title, "description": description}));
+
+      print("Set topic => ${response.body}");
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @override
+  Future suggestTopic(token, {title, description}) async {
+    try {
+      var url = "$BASE_URL/topics/suggest";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var payload = {"title": title, "description": description};
+
+//      print(payload);
+      var response =
+          await http.post(url, headers: headers, body: json.encode(payload));
+
+      print("Suggest topic => ${response.body}");
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @override
+  Future voteTopicChange(token, {voteId, vote}) async {
+    try {
+      var url = "$BASE_URL/topics/vote-topic-change/$voteId/$vote";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      print(url);
+
+      var response = await http.patch(url, headers: headers);
+
+      print("Topic change => ${response.body}");
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
