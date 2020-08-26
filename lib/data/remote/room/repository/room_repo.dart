@@ -6,15 +6,14 @@ import 'package:equilibra_mobile/model/dto/room_dto.dart';
 
 abstract class RoomRepo {
   Future<List<CommentDTO>> fetchComments({page, limit, roomId, topicId});
-  Future<CommentDTO> createComment(token,
+  Future createComment(
       {List<File> images, String comment, String topicId, String roomId});
-  Future<CommentDTO> replyComment(token,
-      {List<File> images, String comment, commentId});
-  Future<CommentDTO> reportComment({String report, commentId});
+  Future replyComment({List<File> images, String comment, commentId});
+  Future reportComment({String report, commentId});
 
-  Future<CommentDTO> likeComment({commentId});
-  Future<CommentDTO> unlikeComment({commentId});
-  Future<CommentDTO> deleteComment({commentId});
+  Future likeComment({commentId});
+  Future unlikeComment({commentId});
+  Future deleteComment({commentId});
 
   Future suggestTopic({title, description});
   Future changeTopic({title, description});

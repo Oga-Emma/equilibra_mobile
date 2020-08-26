@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:equilibra_mobile/data/config/base_api.dart';
 import 'package:equilibra_mobile/data/remote/data/repository/data_repo.dart';
@@ -49,13 +52,27 @@ class RoomController extends BaseViewModel {
   }
 
   closeEventHandlerStream() {
-    eventHandlerStream.close();
+    eventHandlerStream?.close();
     eventHandlerStream = null;
   }
 
   Future<List<CommentDTO>> fetchComments({page, limit, roomId, topicId}) async {
     return _roomRepo.fetchComments(
         page: page ?? 1, limit: limit ?? 100, roomId: roomId, topicId: topicId);
+  }
+
+  Future<CommentDTO> createComments(
+      {List<File> images,
+      String comment,
+      String topicId,
+      String roomId}) async {
+    return await _roomRepo.createComment(
+        comment: comment, images: images, topicId: topicId, roomId: roomId);
+  }
+
+  Future replyComment({images, comment, commentId}) async {
+    return await _roomRepo.replyComment(
+        comment: comment, images: images, commentId: commentId);
   }
 
   void showVentTheSteam(RoomDTO room) {
@@ -94,8 +111,12 @@ class RoomController extends BaseViewModel {
       print("leave-room $data");
     });
     _socket.on('comment', (data) {
-      print("comment $data");
-      addEvent(EventHandler(EventTypes.COMMENT, CommentDTO.fromJson(data)));
+//      print("comment $data");
+      try {
+        addEvent(EventHandler(EventTypes.COMMENT, SocketComment.fromMap(data)));
+      } catch (err) {
+        logger.d(err);
+      }
     });
     _socket.on('topic-changed', (data) {
       print("topic-changed $data");

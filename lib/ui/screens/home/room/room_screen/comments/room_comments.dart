@@ -12,8 +12,11 @@ import 'package:helper_widgets/loading_spinner.dart';
 import 'comment_list_items.dart';
 
 class RoomComments extends StatefulWidget {
-  RoomComments({this.room});
+  RoomComments({this.room, this.replyClicked, this.reportClicked, this.like});
   RoomDTO room;
+  Function(CommentDTO comment) replyClicked;
+  Function(CommentDTO comment) reportClicked;
+  Function(CommentDTO comment) like;
   @override
   _RoomCommentsState createState() => _RoomCommentsState();
 }
@@ -102,25 +105,9 @@ class _RoomCommentsState extends State<RoomComments> {
                   children: <Widget>[
                     CommentListItems(
                         commentDTO, userController.user, widget.room.members,
-                        replyClicked: (CommentDTO comment) {
-//                      setState(() {
-//                        reply = comment;
-//                      });
-                    }, reportClicked: (CommentDTO comment) {
-                      showDialog(
-                          context: context,
-                          builder: (context) =>
-                              ReportCommentDialog(onSubmit: (String message) {
-//                                reportComment(comment.id, message);
-//                                Navigator.pop(context);
-                              }));
-                    }, like: (comment) {
-//                      if (comment.liked) {
-//                        unlikeComment(comment.id);
-//                      } else {
-//                        likeComment(comment.id);
-//                      }
-                    }),
+                        replyClicked: widget.replyClicked,
+                        like: widget.like,
+                        reportClicked: widget.reportClicked),
                     showDate
                         ? Row(
                             children: <Widget>[
@@ -168,8 +155,42 @@ class _RoomCommentsState extends State<RoomComments> {
 
   void handleEvents(EventHandler event) {
     if (event.type == EventTypes.COMMENT) {
-      comments.insert(0, event.data as CommentDTO);
-      animatedListKey.currentState.insertItem(0);
+      var socketComment = event.data as SocketComment;
+
+      if (socketComment.room == widget.room.id &&
+          widget.room.currentTopic != null &&
+          socketComment.topic == widget.room.currentTopic.id) {
+        var comment = socketComment.fullComment;
+        switch (socketComment.type) {
+          case SocketCommentTypes.NEW_COMMENT:
+            {
+              comments.insert(0, comment);
+              animatedListKey.currentState.insertItem(0);
+              break;
+            }
+          case SocketCommentTypes.DELETE:
+            {
+              var index =
+                  comments.indexWhere((element) => element.id == comment.id);
+              if (index != -1) {
+                setState(() {
+                  comments.removeAt(index);
+                });
+//                animatedListKey.currentState.removeItem(index);
+              }
+              break;
+            }
+          default:
+            {
+              var index =
+                  comments.indexWhere((element) => element.id == comment.id);
+              if (index != -1) {
+                comments[index] = comment;
+                setState(() {});
+              }
+            }
+        }
+      }
     }
   }
 }

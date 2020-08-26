@@ -91,6 +91,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     roomController = Provider.of<RoomController>(context, listen: false);
 
     return Scaffold(
+        backgroundColor: Colors.white,
 //              appBar: loading
 //                  ? AppBar(
 //                      leading: InkWell(
@@ -137,76 +138,103 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         Column(
           children: <Widget>[
             Expanded(
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    centerTitle: false,
-                    leading: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(Icons.arrow_back_ios,
-                            size: 20, color: Colors.white)),
-                    shape: RoundedRectangleBorder(
+              child: Container(
+                color: Colors.grey[100],
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      centerTitle: false,
+                      leading: InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(Icons.arrow_back_ios,
+                              size: 20, color: Colors.white)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16.0),
+                              bottomRight: Radius.circular(16.0))),
+                      pinned: true,
+                      title: appBarContent(context),
+                      actions: widget.isVentTheSteam
+                          ? <Widget>[_selectPopup()]
+                          : null,
+                      expandedHeight:
+                          widget.isVentTheSteam || !hasTopic ? 190 : 230,
+                      flexibleSpace: ClipRRect(
                         borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16.0),
-                            bottomRight: Radius.circular(16.0))),
-                    pinned: true,
-                    title: appBarContent(context),
-                    actions:
-                        widget.isVentTheSteam ? <Widget>[_selectPopup()] : null,
-                    expandedHeight:
-                        widget.isVentTheSteam || !hasTopic ? 190 : 230,
-                    flexibleSpace: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(24.0),
-                          bottomRight: Radius.circular(24.0)),
-                      child: Container(
-                        child: SafeArea(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(height: 56),
-                                if (hasTopic && !widget.isVentTheSteam)
-                                  Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        SvgIconUtils.getSvgIcon(
-                                            SvgIconUtils.CLOCK,
-                                            color: Colors.white,
-                                            height: 18,
-                                            width: 18),
-                                        EmptySpace(),
-                                        CountDownToTopicEnd(widget.room)
+                            bottomLeft: Radius.circular(24.0),
+                            bottomRight: Radius.circular(24.0)),
+                        child: Container(
+                          child: SafeArea(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(height: 56),
+                                  if (hasTopic && !widget.isVentTheSteam)
+                                    Container(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          SvgIconUtils.getSvgIcon(
+                                              SvgIconUtils.CLOCK,
+                                              color: Colors.white,
+                                              height: 18,
+                                              width: 18),
+                                          EmptySpace(),
+                                          CountDownToTopicEnd(widget.room)
 //                                            CountDownToTopicEnd(widget
 //                                                .room.currentTopic.startDate)
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: Colors.white)),
-                                  )
-                                else
-                                  SizedBox(),
-                                EmptySpace(),
-                                TopicTitle(
-                                    room: widget.room,
-                                    isVentTheSteam: widget.isVentTheSteam)
-                              ],
+                                        ],
+                                      ),
+                                      decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.white)),
+                                    )
+                                  else
+                                    SizedBox(),
+                                  EmptySpace(),
+                                  TopicTitle(
+                                      room: widget.room,
+                                      isVentTheSteam: widget.isVentTheSteam)
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SliverFillRemaining(child: RoomComments(room: widget.room))
-                ],
+                    SliverFillRemaining(
+                        child: RoomComments(
+                            room: widget.room,
+                            replyClicked: (CommentDTO comment) {
+                              setState(() {
+                                reply = comment;
+                              });
+                            },
+                            reportClicked: (CommentDTO comment) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => ReportCommentDialog(
+                                          onSubmit: (String message) {
+//                                reportComment(comment.id, message);
+//                                Navigator.pop(context);
+                                      }));
+                            },
+                            like: (comment) {
+                              if (comment.liked(userController.user.id)) {
+                                unlikeComment(comment.id);
+                              } else {
+                                likeComment(comment.id);
+                              }
+                            }))
+                  ],
+                ),
               ),
             ),
             Material(
               color: Colors.white,
-              elevation: 4.0,
+              elevation: 0.0,
               child: Container(
                 width: double.maxFinite,
                 child: SafeArea(
@@ -317,12 +345,12 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     })),
               )
             : SizedBox(),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: GestureDetector(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
                 onTap: pickImage,
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -333,40 +361,37 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                       width: 20),
                 ),
               ),
-            ),
-            EmptySpace(multiple: 2),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  hasReply ? replyContainer() : SizedBox(),
-                  TextField(
-                    controller: commentController,
-                    maxLines: 10,
-                    minLines: 1,
-                    decoration: hasReply ||
-                            (commentImage != null && commentImage.isNotEmpty)
-                        ? InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              gapPadding: 4.0,
-                            ),
-                            hintText: "Type a message...",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 14))
-                        : InputDecoration.collapsed(
-                            hintText: "Type a message...",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 14)),
-                  ),
-                ],
+              EmptySpace(multiple: 2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    hasReply ? replyContainer() : SizedBox(),
+                    TextField(
+                      controller: commentController,
+                      maxLines: 10,
+                      minLines: 1,
+                      decoration: hasReply ||
+                              (commentImage != null && commentImage.isNotEmpty)
+                          ? InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                gapPadding: 4.0,
+                              ),
+                              hintText: "Type a message...",
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 14))
+                          : InputDecoration.collapsed(
+                              hintText: "Type a message...",
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 14)),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            EmptySpace(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: GestureDetector(
+              EmptySpace(),
+              GestureDetector(
                   onTap: () async {
                     if (widget.room.currentTopic == null) {
                       showErrorToast(
@@ -423,9 +448,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                               color: Colors.grey,
                               height: 20,
                               width: 20),
-                        )),
-            )
-          ],
+                        ))
+            ],
+          ),
         ),
       ],
     );
@@ -506,15 +531,43 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Future makeComment(String comment, List<File> file) async {
-    if (widget.room.currentTopic == null ||
-        widget.room.currentTopic.id == null) {
-      showNoTopicMessage();
-      return;
+    try {
+      if (widget.room.currentTopic == null ||
+          widget.room.currentTopic.id == null) {
+        showNoTopicMessage();
+        return;
+      }
+
+      await roomController.createComments(
+          images: file,
+          comment: comment,
+          topicId: widget.room.currentTopic.id,
+          roomId: widget.room.id);
+
+      clearComment();
+    } catch (err) {
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
     }
   }
 
-  Future replyComment(
-      CommentDTO reply, String comment, List<File> file) async {}
+  clearComment() {
+    setState(() {
+      reply = null;
+      commentImage = null;
+      commentController.clear();
+    });
+  }
+
+  Future replyComment(CommentDTO reply, String comment, List<File> file) async {
+    try {
+      await roomController.replyComment(
+          images: file, comment: comment, commentId: widget.room.id);
+
+      clearComment();
+    } catch (err) {
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
+    }
+  }
 
   Future reportComment(String commentId, String reportType) async {}
 

@@ -23,14 +23,17 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future<CommentDTO> createComment(token,
-      {List<File> images, String comment, String topicId, String roomId}) {
-    // TODO: implement createComment
-    throw UnimplementedError();
+  Future createComment(
+      {List<File> images,
+      String comment,
+      String topicId,
+      String roomId}) async {
+    return roomService.createComment(await localCache.getToken(),
+        comment: comment, images: images, topicId: topicId, roomId: roomId);
   }
 
   @override
-  Future<CommentDTO> deleteComment({commentId}) {
+  Future deleteComment({commentId}) {
     // TODO: implement deleteComment
     throw UnimplementedError();
   }
@@ -42,20 +45,19 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future<CommentDTO> likeComment({commentId}) {
+  Future likeComment({commentId}) {
     // TODO: implement likeComment
     throw UnimplementedError();
   }
 
   @override
-  Future<CommentDTO> replyComment(token,
-      {List<File> images, String comment, commentId}) {
-    // TODO: implement replyComment
-    throw UnimplementedError();
+  Future replyComment({List<File> images, String comment, commentId}) async {
+    return roomService.replyComment(await localCache.getToken(),
+        images: images, comment: comment, commentId: commentId);
   }
 
   @override
-  Future<CommentDTO> reportComment({String report, commentId}) {
+  Future reportComment({String report, commentId}) {
     // TODO: implement reportComment
     throw UnimplementedError();
   }
@@ -67,7 +69,7 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future<CommentDTO> unlikeComment({commentId}) {
+  Future unlikeComment({commentId}) {
     // TODO: implement unlikeComment
     throw UnimplementedError();
   }

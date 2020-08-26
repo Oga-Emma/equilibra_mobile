@@ -19,14 +19,41 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future<CommentDTO> createComment(token,
-      {List<File> images, String comment, String topicId, String roomId}) {
-    // TODO: implement createComment
-    throw UnimplementedError();
+  Future createComment(token,
+      {List<File> images,
+      String comment,
+      String topicId,
+      String roomId}) async {
+    try {
+      var url = "$BASE_URL/comments/save-comment";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll(headers);
+      request.fields['comment'] =
+          json.encode({"comment": comment, "topic": topicId, "room": roomId});
+
+      if (images != null && images.isNotEmpty) {
+        request.files.addAll(images.map((e) => http.MultipartFile(
+            'images', e.readAsBytes().asStream(), e.lengthSync(),
+            filename: e.path.split("/").last)));
+      }
+      var response = await http.Response.fromStream(await request.send());
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
-  Future<CommentDTO> deleteComment(token, {commentId}) {
+  Future deleteComment(token, {commentId}) {
     // TODO: implement deleteComment
     throw UnimplementedError();
   }
@@ -66,14 +93,39 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future<CommentDTO> replyComment(token,
-      {List<File> images, String comment, commentId}) {
-    // TODO: implement replyComment
-    throw UnimplementedError();
+  Future replyComment(token,
+      {List<File> images, String comment, commentId}) async {
+    try {
+      var url = "$BASE_URL/comments/save-comment";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll(headers);
+      request.fields['comment'] =
+          json.encode({"comment": comment, "commentId": commentId});
+
+      if (images != null && images.isNotEmpty) {
+        request.files.addAll(images.map((e) => http.MultipartFile(
+            'images', e.readAsBytes().asStream(), e.lengthSync(),
+            filename: e.path.split("/").last)));
+      }
+      var response = await http.Response.fromStream(await request.send());
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
-  Future<CommentDTO> reportComment(token, {String report, commentId}) {
+  Future reportComment(token, {String report, commentId}) {
     // TODO: implement reportComment
     throw UnimplementedError();
   }
@@ -85,7 +137,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future<CommentDTO> unlikeComment(token, {commentId}) {
+  Future unlikeComment(token, {commentId}) {
     // TODO: implement unlikeComment
     throw UnimplementedError();
   }
