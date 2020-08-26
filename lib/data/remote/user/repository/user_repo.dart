@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 
 abstract class UserRepo {
@@ -12,6 +14,7 @@ abstract class UserRepo {
 
   Future login({email, password});
   Future completeSignup(data);
+  Future updateProfile(updateProfile, {File avatar});
 
   Future changePassword({oldPassword, newPassword});
   Future<UserDTO> fetchMyProfile();

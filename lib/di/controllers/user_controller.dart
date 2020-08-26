@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equilibra_mobile/data/remote/user/repository/user_repo.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:get_it/get_it.dart';
@@ -31,6 +33,19 @@ class UserController extends BaseViewModel {
   Future changePassword({newPassword, oldPassword}) {
     return _userRepo.changePassword(
         newPassword: newPassword, oldPassword: oldPassword);
+  }
+
+  updateProfile(Map<String, dynamic> data, {File avatar}) async {
+    try {
+      setBusy(true);
+      await _userRepo.updateProfile(data, avatar: avatar);
+      _profileController = BehaviorSubject<UserProfileDTO>();
+      fetchProfile();
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
   }
 
   @override
