@@ -118,6 +118,7 @@ class DrawerLayout extends StatelessWidget {
               width: double.maxFinite,
               child: InkWell(
                 onTap: () {
+                  controller.logout();
 //                  googleSignIn.signOut();
 //                  appState.signout();
 //                  Router.gotoNamed(Routes.LANDING, context, clearStack: true);

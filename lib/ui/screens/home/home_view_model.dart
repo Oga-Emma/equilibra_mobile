@@ -1,3 +1,4 @@
+import 'package:equilibra_mobile/data/remote/user/repository/user_repo.dart';
 import 'package:equilibra_mobile/di/di.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/router/router.gr.dart';
@@ -6,6 +7,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 class HomeViewModel extends BaseViewModel {
   var _navigationService = getIt<NavigationService>();
+  var _userRepo = getIt<UserRepo>();
 
   int _currentPage = 0;
   int get currentPage => _currentPage;
@@ -42,5 +44,8 @@ class HomeViewModel extends BaseViewModel {
     _navigationService.navigateTo(Routes.settingsScreen);
   }
 
-  logout() {}
+  logout() {
+    _userRepo.logout();
+    _navigationService.navigateTo(Routes.landingScreen);
+  }
 }

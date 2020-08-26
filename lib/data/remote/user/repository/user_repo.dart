@@ -18,4 +18,6 @@ abstract class UserRepo {
 
   Future changePassword({oldPassword, newPassword});
   Future<UserDTO> fetchMyProfile();
+
+  void logout();
 }

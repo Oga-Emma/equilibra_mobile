@@ -31,7 +31,7 @@ class _RoomCommentsState extends State<RoomComments> {
   @override
   void dispose() {
     if (roomController != null) {
-      roomController.closeEventHandlerStream();
+      roomController.connectHomeEvent();
     }
     super.dispose();
   }
@@ -42,7 +42,7 @@ class _RoomCommentsState extends State<RoomComments> {
 
     if (roomController == null) {
       roomController = Provider.of<RoomController>(context);
-      roomController.initEventHandlerStream().listen(handleEvents);
+      roomController.connectRoomEvent().listen(handleEvents);
     }
 
 //    print(widget.room);
@@ -185,8 +185,9 @@ class _RoomCommentsState extends State<RoomComments> {
               var index =
                   comments.indexWhere((element) => element.id == comment.id);
               if (index != -1) {
-                comments[index] = comment;
-                setState(() {});
+                setState(() {
+                  comments[index] = comment;
+                });
               }
             }
         }

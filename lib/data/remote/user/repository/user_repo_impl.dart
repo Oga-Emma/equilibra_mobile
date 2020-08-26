@@ -66,4 +66,9 @@ class UserRepoImpl implements UserRepo {
     return userService.changePassword(await localCache.getToken(),
         newPassword: newPassword, oldPassword: oldPassword);
   }
+
+  @override
+  void logout() {
+    localCache.clear();
+  }
 }

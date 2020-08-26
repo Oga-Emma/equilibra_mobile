@@ -40,7 +40,18 @@ class RoomController extends BaseViewModel {
   }
 
   BehaviorSubject<EventHandler> eventHandlerStream;
-  Stream<EventHandler> initEventHandlerStream() {
+  Stream<EventHandler> connectRoomEvent() {
+    if (eventHandlerStream != null) {
+      eventHandlerStream.close();
+    }
+    eventHandlerStream = BehaviorSubject<EventHandler>();
+    return eventHandlerStream.stream;
+  }
+
+  Stream<EventHandler> connectHomeEvent() {
+    if (eventHandlerStream != null) {
+      eventHandlerStream.close();
+    }
     eventHandlerStream = BehaviorSubject<EventHandler>();
     return eventHandlerStream.stream;
   }
@@ -75,6 +86,22 @@ class RoomController extends BaseViewModel {
         comment: comment, images: images, commentId: commentId);
   }
 
+  Future likeComment(commentId) async {
+    return await _roomRepo.likeComment(commentId: commentId);
+  }
+
+  Future unlikeComment(commentId) async {
+    return await _roomRepo.unlikeComment(commentId: commentId);
+  }
+
+  Future deleteComment(commentId) async {
+    return await _roomRepo.deleteComment(commentId: commentId);
+  }
+
+  Future reportComment({report, commentId}) async {
+    return await _roomRepo.reportComment(commentId: commentId, report: report);
+  }
+
   void showVentTheSteam(RoomDTO room) {
     _navigationService.back(result: room);
   }
@@ -104,20 +131,24 @@ class RoomController extends BaseViewModel {
     _socket.on('connect', (data) {
       print("connect $data");
     });
-    _socket.on('join-room', (data) {
-      print("join-room $data");
-    });
-    _socket.on('leave-room', (data) {
-      print("leave-room $data");
-    });
+
     _socket.on('comment', (data) {
-//      print("comment $data");
+      print("comment $data");
       try {
         addEvent(EventHandler(EventTypes.COMMENT, SocketComment.fromMap(data)));
       } catch (err) {
         logger.d(err);
       }
     });
+
+    _socket.on('join-room', (data) {
+      print("join-room $data");
+    });
+
+    _socket.on('leave-room', (data) {
+      print("leave-room $data");
+    });
+
     _socket.on('topic-changed', (data) {
       print("topic-changed $data");
     });

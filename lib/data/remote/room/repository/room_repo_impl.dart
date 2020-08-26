@@ -17,12 +17,6 @@ class RoomRepoImpl implements RoomRepo {
   RoomRepoImpl({this.localCache, this.roomService});
 
   @override
-  Future changeTopic({title, description}) {
-    // TODO: implement changeTopic
-    throw UnimplementedError();
-  }
-
-  @override
   Future createComment(
       {List<File> images,
       String comment,
@@ -33,9 +27,9 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future deleteComment({commentId}) {
-    // TODO: implement deleteComment
-    throw UnimplementedError();
+  Future deleteComment({commentId}) async {
+    return roomService.deleteComment(await localCache.getToken(),
+        commentId: commentId);
   }
 
   @override
@@ -45,9 +39,9 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future likeComment({commentId}) {
-    // TODO: implement likeComment
-    throw UnimplementedError();
+  Future likeComment({commentId}) async {
+    return roomService.likeComment(await localCache.getToken(),
+        commentId: commentId);
   }
 
   @override
@@ -57,20 +51,26 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future reportComment({String report, commentId}) {
-    // TODO: implement reportComment
+  Future reportComment({String report, commentId}) async {
+    return roomService.reportComment(await localCache.getToken(),
+        report: report, commentId: commentId);
+  }
+
+  @override
+  Future unlikeComment({commentId}) async {
+    return roomService.unlikeComment(await localCache.getToken(),
+        commentId: commentId);
+  }
+
+  @override
+  Future changeTopic({title, description}) {
+    // TODO: implement changeTopic
     throw UnimplementedError();
   }
 
   @override
   Future suggestTopic({title, description}) {
     // TODO: implement suggestTopic
-    throw UnimplementedError();
-  }
-
-  @override
-  Future unlikeComment({commentId}) {
-    // TODO: implement unlikeComment
     throw UnimplementedError();
   }
 

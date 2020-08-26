@@ -53,9 +53,23 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future deleteComment(token, {commentId}) {
-    // TODO: implement deleteComment
-    throw UnimplementedError();
+  Future deleteComment(token, {commentId}) async {
+    try {
+      var url = "$BASE_URL/comments/$commentId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.delete(url, headers: headers);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
@@ -87,22 +101,36 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future<CommentDTO> likeComment(token, {commentId}) {
-    // TODO: implement likeComment
-    throw UnimplementedError();
+  Future likeComment(token, {commentId}) async {
+    try {
+      var url = "$BASE_URL/comments/like/$commentId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
   Future replyComment(token,
       {List<File> images, String comment, commentId}) async {
     try {
-      var url = "$BASE_URL/comments/save-comment";
+      var url = "$BASE_URL/comments/reply-comment";
       var headers = {
         "Content-Type": "application/json",
         "x-access-token": "Bearer $token"
       };
 
-      var request = http.MultipartRequest('POST', Uri.parse(url));
+      var request = http.MultipartRequest('PUT', Uri.parse(url));
 
       request.headers.addAll(headers);
       request.fields['comment'] =
@@ -115,6 +143,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
       }
       var response = await http.Response.fromStream(await request.send());
 
+      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -125,9 +154,29 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future reportComment(token, {String report, commentId}) {
-    // TODO: implement reportComment
-    throw UnimplementedError();
+  Future reportComment(token, {String report, commentId}) async {
+    try {
+      var url = "$BASE_URL/comments/report-comment";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+//      print(report);
+//      print(commentId);
+
+      var response = await http.patch(url,
+          headers: headers,
+          body: json.encode({"report": report, "comment": commentId}));
+
+//      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override
@@ -137,9 +186,23 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future unlikeComment(token, {commentId}) {
-    // TODO: implement unlikeComment
-    throw UnimplementedError();
+  Future unlikeComment(token, {commentId}) async {
+    try {
+      var url = "$BASE_URL/comments/unlike/$commentId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   @override

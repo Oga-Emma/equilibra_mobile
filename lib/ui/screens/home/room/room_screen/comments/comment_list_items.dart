@@ -296,15 +296,14 @@ class _CommentListItemsState extends State<CommentListItems> {
                               width: 52,
                               child: InkWell(
                                   onTap: () {
-//                                    widget.like(widget.comment);
-//                                    if (widget.comment.liked) {
-//                                      widget.comment.liked = false;
-//                                      widget.comment.likes--;
-//                                    } else {
-//                                      widget.comment.liked = true;
-//                                      widget.comment.likes++;
-//                                    }
-//                                    setState(() {});
+                                    widget.like(widget.comment);
+                                    if (widget.comment.liked(widget.user.id)) {
+                                      widget.comment.likes
+                                          .remove(widget.user.id);
+                                    } else {
+                                      widget.comment.likes.add(widget.user.id);
+                                    }
+                                    setState(() {});
                                   },
                                   child: SvgIconUtils.getSvgIcon(
                                       liked

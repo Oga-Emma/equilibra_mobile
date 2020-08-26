@@ -102,8 +102,8 @@ class SocketComment {
       fullComment; //: {updatedAt: 2020-08-26T09:19:36.844Z, authorType: Member, edited: false, author: {username: seventy, _id: 5f40eca257c4e611f7925e7f, fullName: Seventy Seven1, suspended: false, avatar: https://res.cloudinary.com/theequilibra/image/upload/v1598432410/profile/bllph2voginjteq7n9op.jpg}, reported: false, likes: [], _id: 5f462928a443cd3b2bf1bd84, reply: false, replied: false, comment: Hello from mobile still yet yet, topic: {_id: 5f1c75ff4a2e612c906027ad, title: EDUCATION, description: Education in Nigeria}, replies: [], room: {_id: 5e3d4a47fb9e016690a5bbc4, name: Vent The Steam}, reports: [], images: [], __v: 0, createdAt: 2020-08-26T09:19:36.844Z}}
 
   SocketComment.fromMap(Map<dynamic, dynamic> data) {
-    print(data);
-    print(data["fullComment"]);
+//    print(data);
+//    print(data["fullComment"]);
     author = data["author"];
     message = data["message"];
     topic = data["topic"];

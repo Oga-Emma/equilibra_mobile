@@ -217,8 +217,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                   context: context,
                                   builder: (context) => ReportCommentDialog(
                                           onSubmit: (String message) {
-//                                reportComment(comment.id, message);
-//                                Navigator.pop(context);
+                                        Navigator.pop(context);
+                                        reportComment(comment.id, message);
                                       }));
                             },
                             like: (comment) {
@@ -559,9 +559,10 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Future replyComment(CommentDTO reply, String comment, List<File> file) async {
+    print("replying...");
     try {
       await roomController.replyComment(
-          images: file, comment: comment, commentId: widget.room.id);
+          images: file, comment: comment, commentId: reply.id);
 
       clearComment();
     } catch (err) {
@@ -569,11 +570,34 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     }
   }
 
-  Future reportComment(String commentId, String reportType) async {}
+  Future reportComment(String commentId, String reportType) async {
+    try {
+      await roomController.reportComment(
+          report: reportType, commentId: widget.room.id);
+      showSuccessToast("Comment reported");
+    } catch (err) {
+      print(err);
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
+    }
+  }
 
-  Future likeComment(String commentId) async {}
+  Future likeComment(String commentId) async {
+    try {
+      await roomController.likeComment(commentId);
+      clearComment();
+    } catch (err) {
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
+    }
+  }
 
-  Future unlikeComment(String commentId) async {}
+  Future unlikeComment(String commentId) async {
+    try {
+      await roomController.unlikeComment(commentId);
+      clearComment();
+    } catch (err) {
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
+    }
+  }
 
   static const int SUGGEST_TOPIC = 1;
   static const int CHANGE_TOPIC = 2;
