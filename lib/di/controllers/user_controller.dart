@@ -48,6 +48,19 @@ class UserController extends BaseViewModel {
     setBusy(false);
   }
 
+  Future changeStateOfResidence(Map<String, dynamic> data) async {
+    try {
+      setBusy(true);
+      await _userRepo.changeStateOfResidence(data);
+      _profileController = BehaviorSubject<UserProfileDTO>();
+      fetchProfile();
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
+  }
+
   @override
   void dispose() {
     _profileController.close();

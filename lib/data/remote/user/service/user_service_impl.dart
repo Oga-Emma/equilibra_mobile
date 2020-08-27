@@ -163,6 +163,32 @@ class UserServiceImpl with BaseApi implements UserService {
   }
 
   @override
+  Future changeStateOfResidence(token, data) async {
+    try {
+      var url = "$BASE_URL/accounts/change-residence";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.post(url,
+          headers: headers, body: json.encode({"update": data}));
+
+      final body = json.decode(response.body);
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+//        return AuthResponseDTO.fromMap(decode['data']);
+
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @override
   Future changePassword(token, {oldPassword, newPassword}) async {
     try {
       var url = "$BASE_URL/accounts/update-password";

@@ -33,8 +33,16 @@ class EFormTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text("$labelText"),
-        EmptySpace(),
+        Visibility(
+          visible: labelText.isNotEmpty,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("$labelText"),
+              EmptySpace(),
+            ],
+          ),
+        ),
         ClipRRect(
           borderRadius: BorderRadius.circular(4.0),
           child: Container(

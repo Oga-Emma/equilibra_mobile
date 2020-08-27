@@ -16,6 +16,7 @@ abstract class UserService {
   Future<AuthResponseDTO> login({email, password});
   Future completeSignup(token, data);
   Future updateProfile(token, data, {File avatar});
+  Future changeStateOfResidence(token, data);
 
   Future changePassword(token, {oldPassword, newPassword});
   Future<UserProfileDTO> fetchMyProfile(token);

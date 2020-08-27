@@ -15,6 +15,7 @@ abstract class UserRepo {
   Future login({email, password});
   Future completeSignup(data);
   Future updateProfile(updateProfile, {File avatar});
+  Future changeStateOfResidence(data);
 
   Future changePassword({oldPassword, newPassword});
   Future<UserDTO> fetchMyProfile();
