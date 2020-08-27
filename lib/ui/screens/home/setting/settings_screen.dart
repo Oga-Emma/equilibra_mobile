@@ -50,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                     Divider(),
                     SizedBox(
                       child: InkWell(
-                        onTap: HomeViewModel().logout(),
+                        onTap: () => HomeViewModel().logout(),
                         child: Text(
                           "Signout of Equilibra",
                           textAlign: TextAlign.left,

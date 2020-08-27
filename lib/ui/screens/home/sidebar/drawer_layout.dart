@@ -59,10 +59,10 @@ class DrawerLayout extends StatelessWidget {
                   SideBarItem(
                     label: "About Us",
                     icon: SvgIconUtils.ABOUT_US,
-                    selected: controller.currentPage == 2,
+                    selected: controller.currentPage == 1,
                     onTap: () {
                       Navigator.pop(context);
-                      controller.currentPage = 2;
+                      controller.currentPage = 1;
 //                      appState.selectedTab = 1;
                     },
                   ),
@@ -70,7 +70,7 @@ class DrawerLayout extends StatelessWidget {
                   SideBarItem(
                     label: "Contact Us",
                     icon: SvgIconUtils.CONTACT_US,
-                    selected: controller.currentPage == 3,
+                    selected: controller.currentPage == 2,
                     onTap: () {
                       Navigator.pop(context);
 

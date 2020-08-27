@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen>
                       inputType: TextInputType.emailAddress,
                       validator: Validators.validateEmail(),
                       onSaved: (value) {
-                        email = value;
+                        email = value.trim().replaceAll(" ", "");
                       },
                       hintText: "Email Address",
                       icon: SvgIconUtils.getSvgIcon(SvgIconUtils.PERSON_AVATER,

@@ -78,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen>
                       validator: Validators.validateEmail(),
                       onSaved: (value) {
                         //signup.email = value;
-                        email = value;
+                        email = value.trim().replaceAll(" ", "");
                       },
                       hintText: "Email",
                       inputType: TextInputType.emailAddress,
