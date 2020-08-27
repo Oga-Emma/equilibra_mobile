@@ -22,4 +22,8 @@ abstract class RoomRepo {
   Future changeTopic({title, description});
   Future voteTopicChange({voteId, vote});
   Future voteEndOfDiscussionPoll({voteId, vote});
+
+  Future fetchRoomAdvert({page, limit, roomId, visibility});
+  Future fetchAdminNotification({roomId, userId});
+  Future muteAdminNotification({notificationId, userId});
 }

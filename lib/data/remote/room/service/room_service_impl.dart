@@ -392,6 +392,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
       };
 
       var response = await http.patch(url, headers: headers);
+      print(response.body);
 
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {

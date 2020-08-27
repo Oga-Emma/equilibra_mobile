@@ -95,4 +95,22 @@ class RoomRepoImpl implements RoomRepo {
   Future leaveRoom(roomId) async {
     return roomService.leaveRoom(await localCache.getToken(), roomId: roomId);
   }
+
+  @override
+  Future fetchAdminNotification({roomId, userId}) async {
+    return roomService.fetchAdminNotification(await localCache.getToken(),
+        roomId: roomId, userId: userId);
+  }
+
+  @override
+  Future fetchRoomAdvert({page, limit, roomId, visibility}) async {
+    return roomService.fetchRoomAdvert(await localCache.getToken(),
+        page: page, limit: limit, visibility: visibility);
+  }
+
+  @override
+  Future muteAdminNotification({notificationId, userId}) async {
+    return roomService.muteAdminNotification(await localCache.getToken(),
+        notificationId: notificationId, userId: userId);
+  }
 }
