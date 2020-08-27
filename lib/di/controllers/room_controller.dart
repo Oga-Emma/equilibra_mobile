@@ -129,11 +129,12 @@ class RoomController extends BaseViewModel {
     setBusy(false);
   }
 
-  Future setTopic(title, description) async {
+  Future setTopic(title, description, roomId) async {
     try {
       setBusy(true);
       runtTimeOut();
-      await _roomRepo.changeTopic(title: title, description: description);
+      await _roomRepo.changeTopic(
+          title: title, description: description, roomId: roomId);
     } catch (err) {
       setBusy(false);
       throw err;
@@ -141,11 +142,12 @@ class RoomController extends BaseViewModel {
     setBusy(false);
   }
 
-  Future suggestTopic(title, description) async {
+  Future suggestTopic(title, description, roomId) async {
     try {
       setBusy(true);
       runtTimeOut();
-      await _roomRepo.suggestTopic(title: title, description: description);
+      await _roomRepo.suggestTopic(
+          title: title, description: description, roomId: roomId);
     } catch (err) {
       setBusy(false);
       throw err;

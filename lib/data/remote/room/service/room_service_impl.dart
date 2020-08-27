@@ -217,7 +217,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future changeTopic(token, {title, description}) async {
+  Future changeTopic(token, {title, description, roomId}) async {
     try {
       var url = "$BASE_URL/topics/set-topic";
       var headers = {
@@ -225,9 +225,13 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
+      var payLoad = {
+        "title": title,
+        "description": description,
+        "room": roomId
+      };
       var response = await http.post(url,
-          headers: headers,
-          body: json.encode({"title": title, "description": description}));
+          headers: headers, body: json.encode({"topicPayload": payLoad}));
 
       print("Set topic => ${response.body}");
       var decode = json.decode(response.body);
@@ -240,7 +244,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future suggestTopic(token, {title, description}) async {
+  Future suggestTopic(token, {title, description, roomId}) async {
     try {
       var url = "$BASE_URL/topics/suggest";
       var headers = {
@@ -248,11 +252,15 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
-      var payload = {"title": title, "description": description};
+      var payload = {
+        "title": title,
+        "description": description,
+        "room": roomId
+      };
 
-//      print(payload);
-      var response =
-          await http.post(url, headers: headers, body: json.encode(payload));
+      print(payload);
+      var response = await http.post(url,
+          headers: headers, body: json.encode({"topicPayload": payload}));
 
       print("Suggest topic => ${response.body}");
 

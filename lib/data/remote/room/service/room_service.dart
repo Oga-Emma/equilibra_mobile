@@ -20,8 +20,8 @@ abstract class RoomService {
   Future joinRoom(token, {roomId});
   Future leaveRoom(token, {roomId});
 
-  Future suggestTopic(token, {title, description});
-  Future changeTopic(token, {title, description});
+  Future suggestTopic(token, {title, description, roomId});
+  Future changeTopic(token, {title, description, roomId});
   Future voteTopicChange(token, {voteId, vote});
   Future voteEndOfDiscussionPoll(token, {voteId, vote});
 

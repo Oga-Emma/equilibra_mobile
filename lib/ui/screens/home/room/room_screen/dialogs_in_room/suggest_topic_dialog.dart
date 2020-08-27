@@ -206,9 +206,10 @@ class _SuggestTopicDialogState extends State<SuggestTopicDialog>
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        await controller.suggestTopic(topic, description);
+        await controller.suggestTopic(topic, description, widget.room.id);
         Navigator.pop(context);
       } catch (err) {
+        print(err);
         showErrorToast(getErrorMessage(err));
       }
     }

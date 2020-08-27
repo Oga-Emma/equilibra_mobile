@@ -20,8 +20,8 @@ abstract class RoomRepo {
   Future joinRoom(roomId);
   Future leaveRoom(roomId);
 
-  Future suggestTopic({title, description});
-  Future changeTopic({title, description});
+  Future suggestTopic({title, description, roomId});
+  Future changeTopic({title, description, roomId});
   Future voteTopicChange({voteId, vote});
   Future voteEndOfDiscussionPoll({voteId, vote});
 

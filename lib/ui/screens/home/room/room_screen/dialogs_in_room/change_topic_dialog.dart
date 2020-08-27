@@ -211,7 +211,7 @@ class _ChangeTopicDialogState extends State<ChangeTopicDialog>
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        await controller.setTopic(topic, description);
+        await controller.setTopic(topic, description, widget.room.id);
         Navigator.pop(context);
       } catch (err) {
         showErrorToast(getErrorMessage(err));

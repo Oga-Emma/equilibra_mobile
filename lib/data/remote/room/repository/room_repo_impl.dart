@@ -65,15 +65,15 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future changeTopic({title, description}) async {
+  Future changeTopic({title, description, roomId}) async {
     return roomService.changeTopic(await localCache.getToken(),
-        title: title, description: description);
+        title: title, description: description, roomId: roomId);
   }
 
   @override
-  Future suggestTopic({title, description}) async {
+  Future suggestTopic({title, description, roomId}) async {
     return roomService.suggestTopic(await localCache.getToken(),
-        title: title, description: description);
+        title: title, description: description, roomId: roomId);
   }
 
   @override
