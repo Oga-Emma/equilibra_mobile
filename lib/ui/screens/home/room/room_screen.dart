@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/_voting_dtos.dart';
+import 'package:equilibra_mobile/model/dto/admin_notification.dart';
+import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/topic_dto.dart';
@@ -86,6 +88,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   TextTheme textTheme;
   UserController userController;
   RoomController roomController;
+  AdminNotificationDTO _adminNotification;
 
   @override
   Widget build(BuildContext context) {
@@ -220,30 +223,39 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                       ),
                     ),
                     SliverFillRemaining(
-                        child: RoomComments(
-                            room: room,
-                            handleEvent: handleEvent,
-                            replyClicked: (CommentDTO comment) {
-                              setState(() {
-                                reply = comment;
-                              });
-                            },
-                            reportClicked: (CommentDTO comment) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => ReportCommentDialog(
-                                          onSubmit: (String message) {
-                                        Navigator.pop(context);
-                                        reportComment(comment.id, message);
-                                      }));
-                            },
-                            like: (comment) {
-                              if (comment.liked(userController.user.id)) {
-                                unlikeComment(comment.id);
-                              } else {
-                                likeComment(comment.id);
-                              }
-                            }))
+                        child: Column(
+                      children: [
+                        _adminNotification != null
+                            ? _buildAdminNotification()
+                            : SizedBox(),
+                        Expanded(
+                          child: RoomComments(
+                              room: room,
+                              handleEvent: handleEvent,
+                              replyClicked: (CommentDTO comment) {
+                                setState(() {
+                                  reply = comment;
+                                });
+                              },
+                              reportClicked: (CommentDTO comment) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => ReportCommentDialog(
+                                            onSubmit: (String message) {
+                                          Navigator.pop(context);
+                                          reportComment(comment.id, message);
+                                        }));
+                              },
+                              like: (comment) {
+                                if (comment.liked(userController.user.id)) {
+                                  unlikeComment(comment.id);
+                                } else {
+                                  likeComment(comment.id);
+                                }
+                              }),
+                        ),
+                      ],
+                    ))
                   ],
                 ),
               ),
@@ -941,19 +953,83 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     try {
       roomController
           .fetchRoomAdvert(roomId: widget.room.id)
-          .then((value) {})
-          .catchError((err) {
+          .then((List<AdvertDTO> value) {
+        if (value.isEmpty) return;
+        value..shuffle();
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            insetPadding: EdgeInsets.all(8),
+            content: CachedNetworkImage(
+              placeholder: (context, text) => SizedBox(
+                  height: 200,
+                  width: double.maxFinite,
+                  child: LoadingSpinner()),
+              errorWidget: (context, _, __) {
+                return Container(
+                  height: 200,
+                  width: double.maxFinite,
+                  color: Colors.grey,
+                );
+              },
+              imageUrl: value.last.image,
+              fit: BoxFit.contain,
+            ),
+          ),
+        );
+      }).catchError((err) {
         print(err);
       });
 
       roomController
           .fetchAdminNotification(
               roomId: widget.room.id, userId: userController.user.id)
-          .then((value) {})
-          .catchError((err) {
+          .then((AdminNotificationDTO value) {
+        if (value.rooms.contains(widget.room.id)) {
+          setState(() {
+            _adminNotification = value;
+          });
+        }
+      }).catchError((err) {
         print(err);
       });
     } catch (err) {}
+  }
+
+  Widget _buildAdminNotification() {
+    return Visibility(
+      visible: !_adminNotification.mutedUsers.contains(userController.user.id),
+      child: Container(
+          width: double.maxFinite,
+          margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          color: Pallet.primaryColor,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _adminNotification.message,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(Icons.close, color: Colors.white, size: 16),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _adminNotification.mutedUsers.add(userController.user.id);
+                    });
+                    roomController.muteAdminNotification(
+                        notificationId: _adminNotification.id,
+                        userId: userController.user.id);
+                  })
+            ],
+          )),
+    );
   }
 }
 
