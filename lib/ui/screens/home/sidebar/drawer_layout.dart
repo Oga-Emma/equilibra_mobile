@@ -44,17 +44,17 @@ class DrawerLayout extends StatelessWidget {
                       controller.currentPage = 0;
                     },
                   ),
-                  EmptySpace(),
-                  SideBarItem(
-                    label: "Notifications",
-                    icon: SvgIconUtils.NOTIFICATION,
-                    selected: controller.currentPage == 1,
-                    onTap: () {
-                      Navigator.pop(context);
-                      controller.currentPage = 1;
-//                      Router.gotoNamed(Routes.NOTIFICATION, context);
-                    },
-                  ),
+//                  EmptySpace(),
+//                  SideBarItem(
+//                    label: "Notifications",
+//                    icon: SvgIconUtils.NOTIFICATION,
+//                    selected: controller.currentPage == 1,
+//                    onTap: () {
+//                      Navigator.pop(context);
+//                      controller.currentPage = 1;
+////                      Router.gotoNamed(Routes.NOTIFICATION, context);
+//                    },
+//                  ),
                   EmptySpace(),
                   SideBarItem(
                     label: "About Us",
