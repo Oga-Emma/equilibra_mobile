@@ -81,4 +81,17 @@ class LocalCacheImpl implements LocalCache {
   Future setNotFirstTime() async {
     sharedPreferences.setBool('not-first-time', true);
   }
+
+  @override
+  Future<String> getFcmToken() async {
+    if (sharedPreferences.containsKey("token")) {
+      return sharedPreferences.getString("token");
+    }
+    return "";
+  }
+
+  @override
+  Future saveFcmToken(String token) async {
+    sharedPreferences.setString('token', token);
+  }
 }

@@ -61,6 +61,7 @@ dependencies:
   auto_route:
   stacked_services:
   rxdart: ^0.24.1
+  firebase_messaging: ^7.0.0
 
   # Local Storage/Database
   shared_preferences: ^0.5.7+1

@@ -21,4 +21,7 @@ abstract class UserRepo {
   Future<UserDTO> fetchMyProfile();
 
   void logout();
+
+  Future<String> getFcmToken();
+  Future saveFCMToken(String token);
 }

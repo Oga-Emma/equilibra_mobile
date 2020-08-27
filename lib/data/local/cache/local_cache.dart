@@ -9,4 +9,6 @@ abstract class LocalCache {
 
   Future<void> clear();
   Future setNotFirstTime();
+  Future<String> getFcmToken();
+  Future saveFcmToken(String token);
 }

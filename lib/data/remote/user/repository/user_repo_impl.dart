@@ -77,4 +77,14 @@ class UserRepoImpl implements UserRepo {
   void logout() {
     localCache.clear();
   }
+
+  @override
+  Future<String> getFcmToken() {
+    return localCache.getFcmToken();
+  }
+
+  @override
+  Future saveFCMToken(String token) {
+    return localCache.saveToken(token);
+  }
 }

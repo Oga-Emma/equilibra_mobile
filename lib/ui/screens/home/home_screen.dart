@@ -9,6 +9,7 @@ import 'package:equilibra_mobile/ui/core/widgets/home_screen_toolbar.dart';
 import 'package:equilibra_mobile/ui/screens/home/home_view_model.dart';
 import 'package:equilibra_mobile/ui/screens/home/sidebar/drawer_layout.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/loading_spinner.dart';
@@ -26,27 +27,26 @@ class _HomeScreenState extends State<HomeScreen> {
   var federal = [];
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
-//
-//  static Future<dynamic> myBackgroundMessageHandler(
-//      Map<String, dynamic> message) async {
-////    print("onBackgroundMessage $message");
-//    if (message.containsKey('data')) {
-//      // Handle data message
-//      final dynamic data = message['data'];
-////      print("MESSAGE $data");
-////    showOverlayMessage(data);
-////      handleNotification(data);
-//    }
-//
-//    if (message.containsKey('notification')) {
-//      // Handle notification message
-//      final dynamic notification = message['notification'];
-//      print("MESSAGE $notification");
-////    showOverlayMessage(data);
-//    }
-//  }
-//
-//  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+//    print("onBackgroundMessage $message");
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+//      print("MESSAGE $data");
+//    showOverlayMessage(data);
+//      handleNotification(data);
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+      print("MESSAGE $notification");
+//    showOverlayMessage(data);
+    }
+  }
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
@@ -54,8 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  UserController controller;
   @override
   Widget build(BuildContext context) {
+    controller = Provider.of<UserController>(context, listen: false);
     var children = <Widget>[
       HomePage(_scaffoldKey),
       AboutContact(_scaffoldKey, isAbout: true),
@@ -73,49 +75,45 @@ class _HomeScreenState extends State<HomeScreen> {
         disposeViewModel: false);
   }
 
-//  void setupFcm() {
-//    _firebaseMessaging.requestNotificationPermissions(
-//        const IosNotificationSettings(sound: true, badge: true, alert: true));
-//
-//    _firebaseMessaging.onIosSettingsRegistered
-//        .listen((IosNotificationSettings settings) {
-//      //print("Settings registered: $settings");
-//    });
-//
-//    //addMobileToken(mobileToken: String!): user
-//    _firebaseMessaging.configure(
-//      onBackgroundMessage: _HomeScreenState.myBackgroundMessageHandler,
-//      onMessage: (Map<String, dynamic> message) async {
-////        print("onMessage: $message");
-//
-//        handleNotification(message);
-//
-////        _showItemDialog(messsage);
-//      },
-//      onLaunch: (Map<String, dynamic> message) async {
-////        print("onLaunch: $message");
-//
+  void setupFcm() {
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      //print("Settings registered: $settings");
+    });
+
+    //addMobileToken(mobileToken: String!): user
+    _firebaseMessaging.configure(
+      onBackgroundMessage: _HomeScreenState.myBackgroundMessageHandler,
+      onMessage: (Map<String, dynamic> message) async {
+//        print("onMessage: $message");
+
+        handleNotification(message);
+
+//        _showItemDialog(messsage);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+//        print("onLaunch: $message");
+
 //        navigateToPage(message);
-////        _navigateToItemDetail(message);
-//      },
-//      onResume: (Map<String, dynamic> message) async {
-////        print("onResume: $message");
-//
+//        _navigateToItemDetail(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+//        print("onResume: $message");
+
 //        navigateToPage(message);
-////        _navigateToItemDetail(message);
-//      },
-//    );
-//
-//    _firebaseMessaging.getToken().then((String token) async {
-//      if (token != null) {
-////        print("FCM TOKEN => $token");
-//        var cachedToken = await LocalStorage.getFCMToken();
-//        if (cachedToken == null || cachedToken != token) {
-//          Future.delayed(Duration.zero, () => _sendTokenToServer(token));
-//        }
-//      }
-//    });
-//  }
+//        _navigateToItemDetail(message);
+      },
+    );
+
+    _firebaseMessaging.getToken().then((String token) async {
+      if (token != null) {
+        controller.updateFCMToken(token);
+      }
+    });
+  }
 
   _sendTokenToServer(String fcmToken) async {
     try {
@@ -439,6 +437,20 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+//
+//Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+//  if (message.containsKey('data')) {
+//    // Handle data message
+//    final dynamic data = message['data'];
+//  }
+//
+//  if (message.containsKey('notification')) {
+//    // Handle notification message
+//    final dynamic notification = message['notification'];
+//  }
+//
+//  // Or do other work.
+//}
 
 class DoNotDisturbSwitch extends StatefulWidget {
   @override
