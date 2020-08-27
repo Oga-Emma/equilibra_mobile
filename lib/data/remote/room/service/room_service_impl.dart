@@ -327,6 +327,81 @@ class RoomServiceImpl with BaseApi implements RoomService {
     }
   }
 
+  @override
+  Future fetchAdminNotification(token, {roomId, userId}) async {
+    try {
+      var url = "$BASE_URL/adverts/notifications/$roomId/$userId";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.get(url, headers: header);
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+//        return [];
+//        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
+//            .map((e) => CommentDTO.fromJson(e))
+//            .toList());
+      } else {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      print(err);
+      throw err;
+    }
+  }
+
+  @override
+  Future fetchRoomAdvert(token, {page, limit, roomId, visibility}) async {
+    try {
+      var url =
+          "$BASE_URL/home/${page ?? 1}/${limit ?? 10}/$roomId/$visibility";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.get(url, headers: header);
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+//        return [];
+//        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
+//            .map((e) => CommentDTO.fromJson(e))
+//            .toList());
+      } else {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      print(err);
+      throw err;
+    }
+  }
+
+  @override
+  Future muteAdminNotification(token, {notificationId, userId}) async {
+    try {
+      var url = "$BASE_URL/adverts/mute-notification/$notificationId/$userId";
+      var headers = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var response = await http.patch(url, headers: headers);
+
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
 //  Future<List<RoomDTO>> fetchHomeRoom(String type, String stateId) async {
 //    try {
 //      var url = "$BASE_URL/home/rooms/$type/$stateId/1/40";

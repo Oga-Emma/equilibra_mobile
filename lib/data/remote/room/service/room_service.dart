@@ -22,4 +22,8 @@ abstract class RoomService {
   Future changeTopic(token, {title, description});
   Future voteTopicChange(token, {voteId, vote});
   Future voteEndOfDiscussionPoll(token, {voteId, vote});
+
+  Future fetchRoomAdvert(token, {page, limit, roomId, visibility});
+  Future fetchAdminNotification(token, {roomId, userId});
+  Future muteAdminNotification(token, {notificationId, userId});
 }
