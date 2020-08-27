@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:equilibra_mobile/data/config/base_api.dart';
+import 'package:equilibra_mobile/model/dto/admin_notification.dart';
+import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/government_dto.dart';
@@ -328,7 +330,8 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future fetchAdminNotification(token, {roomId, userId}) async {
+  Future<AdminNotificationDTO> fetchAdminNotification(token,
+      {roomId, userId}) async {
     try {
       var url = "$BASE_URL/adverts/notifications/$roomId/$userId";
       var header = {
@@ -336,11 +339,15 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
+//      print(token);
+//      print(url);
+
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
+        return AdminNotificationDTO.fromMap(decode['data']);
 //        return [];
 //        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
 //            .map((e) => CommentDTO.fromJson(e))
@@ -355,24 +362,28 @@ class RoomServiceImpl with BaseApi implements RoomService {
   }
 
   @override
-  Future fetchRoomAdvert(token, {page, limit, roomId, visibility}) async {
+  Future<List<AdvertDTO>> fetchRoomAdvert(token,
+      {page, limit, roomId, visibility}) async {
     try {
       var url =
-          "$BASE_URL/home/${page ?? 1}/${limit ?? 10}/$roomId/$visibility";
+          "$BASE_URL/home/${page ?? 1}/${limit ?? 10}/$roomId/${visibility ?? "room"}";
       var header = {
         "Content-Type": "application/json",
         "x-access-token": "Bearer $token"
       };
 
+//      print(token);
+//      print(url);
+
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
 //        return [];
-//        return List<CommentDTO>.from((decode['data']['comments'] ?? [])
-//            .map((e) => CommentDTO.fromJson(e))
-//            .toList());
+        return List<AdvertDTO>.from((decode['data']['adverts'] ?? [])
+            .map((e) => AdvertDTO.fromMap(e))
+            .toList());
       } else {
         throw Exception(handleError(decode));
       }

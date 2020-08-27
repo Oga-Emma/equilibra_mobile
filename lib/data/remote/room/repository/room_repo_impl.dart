@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:equilibra_mobile/data/local/cache/local_cache.dart';
 import 'package:equilibra_mobile/data/remote/data/service/data_service.dart';
 import 'package:equilibra_mobile/data/remote/room/service/room_service.dart';
+import 'package:equilibra_mobile/model/dto/admin_notification.dart';
+import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/government_dto.dart';
@@ -97,15 +99,16 @@ class RoomRepoImpl implements RoomRepo {
   }
 
   @override
-  Future fetchAdminNotification({roomId, userId}) async {
+  Future<AdminNotificationDTO> fetchAdminNotification({roomId, userId}) async {
     return roomService.fetchAdminNotification(await localCache.getToken(),
         roomId: roomId, userId: userId);
   }
 
   @override
-  Future fetchRoomAdvert({page, limit, roomId, visibility}) async {
+  Future<List<AdvertDTO>> fetchRoomAdvert(
+      {page, limit, roomId, visibility}) async {
     return roomService.fetchRoomAdvert(await localCache.getToken(),
-        page: page, limit: limit, visibility: visibility);
+        page: page, limit: limit, roomId: roomId, visibility: visibility);
   }
 
   @override

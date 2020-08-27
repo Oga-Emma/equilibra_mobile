@@ -8,6 +8,8 @@ import 'package:equilibra_mobile/data/remote/data/repository/data_repo.dart';
 import 'package:equilibra_mobile/data/remote/data/service/data_service.dart';
 import 'package:equilibra_mobile/data/remote/room/repository/room_repo.dart';
 import 'package:equilibra_mobile/di/di.dart';
+import 'package:equilibra_mobile/model/dto/admin_notification.dart';
+import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/vote_dto.dart';
@@ -173,6 +175,20 @@ class RoomController extends BaseViewModel {
       throw err;
     }
     setBusy(false);
+  }
+
+  Future<List<AdvertDTO>> fetchRoomAdvert({page, limit, roomId, visibility}) {
+    return _roomRepo.fetchRoomAdvert(
+        page: page, limit: limit, roomId: roomId, visibility: visibility);
+  }
+
+  Future<AdminNotificationDTO> fetchAdminNotification({roomId, userId}) {
+    return _roomRepo.fetchAdminNotification(roomId: roomId, userId: userId);
+  }
+
+  Future muteAdminNotification({notificationId, userId}) {
+    return _roomRepo.muteAdminNotification(
+        notificationId: notificationId, userId: userId);
   }
 
   SocketIOManager _manager;

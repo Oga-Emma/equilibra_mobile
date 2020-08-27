@@ -91,7 +91,11 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
     userController = Provider.of<UserController>(context, listen: false);
-    roomController = Provider.of<RoomController>(context, listen: false);
+
+    if (roomController == null) {
+      roomController = Provider.of<RoomController>(context, listen: false);
+      fetchNotificationAndAdverts();
+    }
 
 //    if (room != null) {}
 
@@ -932,6 +936,25 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   closeVotingSession(id) {}
+
+  Future<void> fetchNotificationAndAdverts() async {
+    try {
+      roomController
+          .fetchRoomAdvert(roomId: widget.room.id)
+          .then((value) {})
+          .catchError((err) {
+        print(err);
+      });
+
+      roomController
+          .fetchAdminNotification(
+              roomId: widget.room.id, userId: userController.user.id)
+          .then((value) {})
+          .catchError((err) {
+        print(err);
+      });
+    } catch (err) {}
+  }
 }
 
 class CountDownToTopicEnd extends StatefulWidget {

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:equilibra_mobile/model/dto/admin_notification.dart';
+import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/government_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
@@ -23,7 +25,7 @@ abstract class RoomRepo {
   Future voteTopicChange({voteId, vote});
   Future voteEndOfDiscussionPoll({voteId, vote});
 
-  Future fetchRoomAdvert({page, limit, roomId, visibility});
-  Future fetchAdminNotification({roomId, userId});
+  Future<List<AdvertDTO>> fetchRoomAdvert({page, limit, roomId, visibility});
+  Future<AdminNotificationDTO> fetchAdminNotification({roomId, userId});
   Future muteAdminNotification({notificationId, userId});
 }
