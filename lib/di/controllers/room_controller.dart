@@ -197,21 +197,63 @@ class RoomController extends BaseViewModel {
   SocketIO _socket;
   IO.Socket socket;
   setupSocket() async {
+
+//    socket = IO.io('http://localhost:3000', );
+//    socket1.on('connect', (_) {
+//      print('connect');
+//      socket1.emit('msg', 'test');
+//    });
+
 //    final localCache = getIt<LocalCache>();
 //    final token = await localCache.getToken();
+
+//    IO.Socket socket = IO.io(
+//        'http://10.0.2.2:3000',
+//        <String, dynamic>{
+//          'transports': ['websocket'],
+////      'extraHeaders': {
+//////        'connection': 'upgrade',
+//////        'upgrade': 'websocket',
+//////        'content-length': 0,
+////        'origins': '*:*',
+////      } // optional
+//        });
+//    socket.on('connect', (data) {
+//      print('connected => $data');
+//    });
+//    socket.on('connect_error', (data) {
+//      print('connect_error => $data');
+//    });
+//    socket.on('connect_timeout', (data) {
+//      print('connect_timeout => $data');
+//    });
+//    socket.on('disconnect', (data) {
+//      print('disconnect => $data');
+//    });
+//    socket.on('error', (data) {
+//      print('error => $data');
+//    });
+//    return;
 
     if (_manager != null) return;
     if (_socket != null && await _socket.isConnected()) return;
 //    final user = await localCache.getUser();
     _manager = SocketIOManager();
     SocketOptions options = SocketOptions(
-      '${BaseApi().BASE_URL}/', /*query: {'token': 'Bearer $token'}*/
+      'https://equiliba-socket-service.herokuapp.com/',
+//      'https://api.equilibra-admin.test.natterbase.com/users-api/',
+//      'http://10.0.2.2:3000',
+//      'http://100.107.210.64:3000/',
+//      'http://localhost:3000/',
+
+      /*query: {'token': 'Bearer $token'}*/
+      enableLogging: true,
     );
     _socket = await _manager
         .createInstance(options); //TODO change the port  accordingly
 
     _socket.onConnect((data) {
-      log('connected');
+      log('connected => $data');
 
 //      _socket.emit("room connection", [room]);
     });
@@ -271,7 +313,7 @@ class RoomController extends BaseViewModel {
       _socket.connect();
     } catch (err) {
       log(err);
-//      showErrorToast('Network error');
+      showErrorToast('Network error');
     }
 
     ///disconnect using
@@ -284,8 +326,9 @@ class RoomController extends BaseViewModel {
 
   @override
   void dispose() {
-    _manager?.clearInstance(_socket);
-    socket?.disconnect();
+    socket?.dispose();
+//    _manager?.clearInstance(_socket);
+//    socket?.disconnect();
     super.dispose();
   }
 

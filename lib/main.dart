@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
@@ -13,6 +15,8 @@ import 'di/di.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  HttpOverrides.global = new MyHttpOverrides();
   await init();
   runApp(
     MyApp(),
@@ -45,5 +49,14 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

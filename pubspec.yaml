@@ -38,7 +38,7 @@ dependencies:
 
   permission_handler: ^5.0.1+1
 
-  socket_io_client: ^0.9.10
+#  socket_io_client: ^0.9.10
   socket_io: ^0.9.4
   adhara_socket_io: ^0.4.2+1
 
@@ -62,6 +62,7 @@ dependencies:
   stacked_services:
   rxdart: ^0.24.1
   firebase_messaging: ^7.0.0
+  socket_io_client: ^0.9.11
 
   # Local Storage/Database
   shared_preferences: ^0.5.7+1
