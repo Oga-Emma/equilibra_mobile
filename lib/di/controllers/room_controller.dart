@@ -265,13 +265,13 @@ class RoomController extends BaseViewModel {
     });
     _socket.onError((data) {
       log('error => ${data}');
-      showErrorToast('Network error');
+//      showErrorToast('Network error');
     });
     try {
       _socket.connect();
     } catch (err) {
       log(err);
-      showErrorToast('Network error');
+//      showErrorToast('Network error');
     }
 
     ///disconnect using

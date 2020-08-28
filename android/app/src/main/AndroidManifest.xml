@@ -15,7 +15,7 @@
 
     <application
         android:name=".Application"
-        android:label="equilibra_mobile"
+        android:label="Equilibra"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
