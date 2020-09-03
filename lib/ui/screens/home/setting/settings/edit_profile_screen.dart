@@ -14,6 +14,8 @@ import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/error_handler.dart';
 import 'package:helper_widgets/loading_spinner.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
+import 'package:helper_widgets/validators.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../input_validators.dart';
@@ -27,14 +29,26 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     with UISnackBarProvider, ErrorHandler {
   var _formkey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  var _monthController = TextEditingController();
+  var _yearController = TextEditingController();
+
   File image;
   bool _autoValidate = false;
   String fullName = "";
   String userName = "";
+  String birthYear, birthMonth;
 
   UserProfileDTO user;
-
   UserController controller;
+
+  @override
+  void dispose() {
+    _monthController.dispose();
+    _yearController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     controller = Provider.of<UserController>(context);
@@ -52,6 +66,13 @@ class _EditProfileScreenState extends State<EditProfileScreen>
               if (snapshot.hasData) {
                 user = snapshot.data;
 
+                if (StringUtils.isEmpty(_monthController.text)) {
+                  _monthController.text = user.birthMonth;
+                }
+
+                if (StringUtils.isEmpty(_yearController.text)) {
+                  _yearController.text = user.birthYear;
+                }
                 return Form(
                   key: _formkey,
                   child: Container(
@@ -110,29 +131,63 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                             EmptySpace(),
                             Expanded(
                                 child: EFormTextField(
-                                    autoValidate: _autoValidate,
-                                    labelText: "Full Name",
-                                    isEnabled: true,
-                                    validator: InputValidators.validateString,
-                                    initialValue: user.fullName,
-                                    onSaved: (value) {
-                                      fullName = value;
-                                    }))
+                              labelText: "Email Address",
+                              isEnabled: false,
+                              initialValue: user.email,
+                            ))
                           ],
                         ),
                         EmptySpace(multiple: 3),
                         EFormTextField(
                             autoValidate: _autoValidate,
                             labelText: "Username",
-                            isEnabled: false,
+                            validator: Validators.validateString(),
+                            onSaved: (value) {
+                              userName = value;
+                            },
                             initialValue: user.username),
 
                         EmptySpace(multiple: 2),
                         EFormTextField(
-                          labelText: "Email Address",
-                          isEnabled: false,
-                          initialValue: user.email,
-                        ),
+                            autoValidate: _autoValidate,
+                            labelText: "Full Name",
+                            isEnabled: true,
+                            validator: InputValidators.validateString,
+                            initialValue: user.fullName,
+                            onSaved: (value) {
+                              fullName = value;
+                            }),
+                        EmptySpace(multiple: 2),
+
+                        GestureDetector(
+                            onTap: () => _selectDate(),
+                            child: AbsorbPointer(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: EFormTextField(
+                                      controller: _monthController,
+                                      labelText: "Birth Month",
+                                      validator: Validators.validateString(),
+                                      onSaved: (value) {
+                                        birthMonth = value;
+                                      },
+                                    ),
+                                  ),
+                                  EmptySpace.horizontal(multiple: 2),
+                                  Expanded(
+                                    child: EFormTextField(
+                                      controller: _yearController,
+                                      labelText: "Birth Year",
+                                      validator: Validators.validateString(),
+                                      onSaved: (value) {
+                                        birthYear = value;
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
 //              EmptySpace(multiple: 2),
 //              EFormTextField(labelText: "Phone Number", isEnabled: true, initialValue: user.phoneNumber),
 //                EmptySpace(multiple: 2),
@@ -158,7 +213,12 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     if (_formkey.currentState.validate()) {
       _formkey.currentState.save();
       try {
-        await controller.updateProfile({"fullName": fullName}, avatar: image);
+        await controller.updateProfile({
+          "fullName": fullName,
+          "username": userName,
+          "birthMonth": birthMonth,
+          "birthYear": birthYear,
+        }, avatar: image);
 
         showInSnackBar(context, "Account updated");
       } catch (err) {
@@ -178,12 +238,22 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   @override
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
-  getDateOfBirth(String dob) {
-    try {
-      var split = dob.split('/');
-      return "${split[2]} - ${split[1]} - ${split[0]}";
-    } catch (e) {
-      return dob;
+  var dateFormat = DateFormat("yyyy - MMMM - dd");
+  DateTime selectedDate = DateTime.now();
+  Future<Null> _selectDate() async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate ?? DateTime(1990, 1), //selectedDate,
+        firstDate: DateTime(1960, 1),
+        lastDate: DateTime(DateTime.now().year - 15));
+    if (picked != null && picked != selectedDate) {
+      var split = dateFormat.format(picked).split(' - ');
+      print(split);
+      _monthController.text = split[1];
+      _yearController.text = split[0];
+      setState(() {
+        selectedDate = picked;
+      });
     }
   }
 }
