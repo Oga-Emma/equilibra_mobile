@@ -4,6 +4,7 @@ import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/core/widgets/image_preview_screen.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
@@ -228,9 +229,9 @@ class _CommentListItemsState extends State<CommentListItems> {
                                                 BorderRadius.circular(8.0),
                                             child: GestureDetector(
                                               onTap: () {
-//                                                showImagePreview(context,
-//                                                    imageUrl: widget
-//                                                        .comment.images[index]);
+                                                showImagePreview(context,
+                                                    imageUrl: widget
+                                                        .comment.images[index]);
 //                                                Router.gotoWidget(
 //                                                    ImagePreviewScreen(
 //                                                        imageUrl: widget.comment

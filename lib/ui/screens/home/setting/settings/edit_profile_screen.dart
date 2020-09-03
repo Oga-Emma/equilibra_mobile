@@ -6,6 +6,7 @@ import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/widgets/custom_dialogs.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_form_textfield.dart';
+import 'package:equilibra_mobile/ui/core/widgets/image_preview_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/custom_snackbar/ui_snackbar.dart';
@@ -14,7 +15,6 @@ import 'package:helper_widgets/error_handler.dart';
 import 'package:helper_widgets/loading_spinner.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../input_validators.dart';
 
@@ -60,40 +60,51 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4.0),
-                              child: Stack(
-                                children: <Widget>[
-                                  Container(
-                                    height: 100,
-                                    width: 100,
-                                    color: Colors.grey[300],
-                                    child: Image(
-                                        image: image != null
-                                            ? FileImage(image)
-                                            : CachedNetworkImageProvider(
-                                                user.avatar),
-                                        fit: BoxFit.cover),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    child: Container(
-                                      color: Colors.black12,
+                            InkWell(
+                              onTap: () {
+                                if (image != null) {
+                                  showImagePreview(context, file: image);
+                                } else if (StringUtils.isNotEmpty(
+                                    user.avatar)) {
+                                  showImagePreview(context,
+                                      imageUrl: user.avatar);
+                                }
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4.0),
+                                child: Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 100,
+                                      width: 100,
+                                      color: Colors.grey[300],
+                                      child: Image(
+                                          image: image != null
+                                              ? FileImage(image)
+                                              : CachedNetworkImageProvider(
+                                                  user.avatar),
+                                          fit: BoxFit.cover),
                                     ),
-                                  ),
-                                  Positioned(
-                                    bottom: 4,
-                                    right: 4,
-                                    child: InkWell(
-                                      onTap: _selectImage,
-                                      child: Icon(Icons.camera_alt,
-                                          color: Colors.white),
+                                    Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        color: Colors.black12,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Positioned(
+                                      bottom: 4,
+                                      right: 4,
+                                      child: InkWell(
+                                        onTap: _selectImage,
+                                        child: Icon(Icons.camera_alt,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             EmptySpace(),

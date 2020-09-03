@@ -15,6 +15,7 @@ import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/date_utisl.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
+import 'package:equilibra_mobile/ui/core/widgets/image_preview_screen.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/comments/room_comments.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/topic_title.dart';
@@ -172,11 +173,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                               bottomRight: Radius.circular(16.0))),
                       pinned: true,
                       title: appBarContent(context),
-                      actions: widget.isVentTheSteam
-                          ? <Widget>[_selectPopup()]
-                          : null,
+                      actions: <Widget>[_selectPopup()],
                       expandedHeight:
-                          widget.isVentTheSteam || !hasTopic ? 190 : 230,
+                          widget.isVentTheSteam ? 56 : !hasTopic ? 190 : 230,
                       flexibleSpace: ClipRRect(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(24.0),
@@ -211,10 +210,10 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                     )
                                   else
                                     SizedBox(),
-                                  EmptySpace(),
-                                  TopicTitle(
-                                      room: room,
-                                      isVentTheSteam: widget.isVentTheSteam)
+//                                  EmptySpace(),
+//                                  TopicTitle(
+//                                      room: room,
+//                                      isVentTheSteam: widget.isVentTheSteam)
                                 ],
                               ),
                             ),
@@ -335,8 +334,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                 GestureDetector(
                                   onTap: () {
 //                          Router.gotoWidget(ImagePreviewScreen(file: ), context);
-//                                    showImagePreview(context,
-//                                        file: commentImage[index]);
+                                    showImagePreview(context,
+                                        file: commentImage[index]);
                                   },
                                   child: Container(
                                     height: 100,
@@ -692,17 +691,18 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                   ProfileImage(
                       imageUrl: userController.user.avatar, radius: 30),
                   EmptySpace(),
-                  Text("${userController.user.fullName}")
+                  Text(
+                      "${userController.user.username ?? userController.user.fullName}")
                 ],
               )),
-          PopupMenuItem(
-            value: 3,
-            child: Text("Mute Notifications", style: popStyle),
-          ),
-          PopupMenuItem(
-            value: 7,
-            child: Text("Settings", style: popStyle),
-          ),
+//          PopupMenuItem(
+//            value: 3,
+//            child: Text("Mute Notifications", style: popStyle),
+//          ),
+//          PopupMenuItem(
+//            value: 7,
+//            child: Text("Settings", style: popStyle),
+//          ),
         ],
         initialValue: 1,
         onCanceled: () {
