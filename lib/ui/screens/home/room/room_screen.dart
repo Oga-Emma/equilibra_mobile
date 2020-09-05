@@ -823,6 +823,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
       case EventTypes.JOIN_ROOM:
         if (userController.user.id == event.data["user"]) {
+          if (votingTopicChange) {
+            Navigator.pop(context);
+          }
           refreshPage();
         }
         print("join event => ${event.data}");
@@ -842,6 +845,10 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         break;
 
       case EventTypes.VOTE_TOPIC_CLOSED:
+        if (votingTopicChange) {
+          Navigator.pop(context);
+        }
+
         var vote = VoteDTO.fromMap(event.data['vote']);
         showChangeTopicVotingResult(vote);
         break;
@@ -864,14 +871,20 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     });
   }
 
+  bool votingTopicChange = false;
   void voteChangeTopic(VoteDTO vote) async {
-    DateTime stopAt = DateTime.now()..add(Duration(seconds: 5));
+    DateTime stopAt = DateTime.now()..add(Duration(seconds: 30));
     if (vote.stopAt != null) {
       stopAt = DateTime.tryParse(vote.stopAt);
     }
 
     var difference = DateTime.now().difference(stopAt);
+//
+//    if(changeFromMe){
+//
+//    }
 
+    votingTopicChange = true;
     await showDialog(
         context: context,
         builder: (context) => VoteChangeTopicDialog(
@@ -879,6 +892,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
             autoVote: widget.room.members.length != null &&
                 widget.room.members.length == 1,
             stopAt: stopAt));
+
+    votingTopicChange = false;
 
     try {
       if (widget.room.currentTopic == null) {

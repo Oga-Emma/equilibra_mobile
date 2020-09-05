@@ -135,7 +135,8 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
   }
 
   votedField() {
-    var time = Duration(seconds: 5); //DateTime.now().difference(widget.stopAt);
+    var time =
+        Duration(seconds: 30); //DateTime.now().difference(widget.stopAt);
 
     return Container(
       width: double.maxFinite,
@@ -158,7 +159,7 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
                   child: StreamBuilder<int>(
                       stream: Stream.periodic(Duration(seconds: 1),
                           (value) => time.inSeconds - value),
-                      initialData: 120,
+                      initialData: 30,
                       builder: (context, snapshot) {
                         if (snapshot.data <= 1) {
                           Future.delayed(
