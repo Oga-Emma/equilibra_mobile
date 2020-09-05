@@ -19,7 +19,7 @@ class VoteDTO {
 
   VoteDTO.fromMap(Map<dynamic, dynamic> data) {
     id = data['_id'];
-//    print(data['roomId']);
+//    print(data['voters']);
     roomId = RoomDTO.fromMap(data['roomId']);
     topicId = TopicDTO.fromMap(data['topicId']);
     isClosed = data['isClosed'] ?? true;

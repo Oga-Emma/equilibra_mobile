@@ -201,6 +201,7 @@ class _EndOfTopicVotingDialogState extends State<EndOfTopicVotingDialog>
     try {
       await controller.voteDiscussion(
           widget.voteId, options[selectedIndex].voteType);
+      Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         showErrorToast(getErrorMessage(e));

@@ -198,7 +198,9 @@ class RoomServiceImpl with BaseApi implements RoomService {
   @override
   Future voteEndOfDiscussionPoll(token, {voteId, vote}) async {
     try {
-      var url = "$BASE_URL/topics/vote-disscussion/$voteId/$vote";
+      var url = "$BASE_URL/topics/vote-discussion/$voteId/$vote";
+
+      print(url);
       var headers = {
         "Content-Type": "application/json",
         "x-access-token": "Bearer $token"

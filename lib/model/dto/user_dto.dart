@@ -133,7 +133,7 @@ class UserShortInfo {
   String role;
 
   UserShortInfo.fromMap(Map<dynamic, dynamic> data) {
-    print(data);
+//    print(data);
     id = data['_id'] ?? "";
     fullName = data['fullName'] ?? "";
     username = data['username'] ?? "";

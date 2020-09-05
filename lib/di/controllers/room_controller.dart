@@ -172,6 +172,7 @@ class RoomController extends BaseViewModel {
       setBusy(true);
       runtTimeOut();
       await _roomRepo.voteEndOfDiscussionPoll(vote: vote, voteId: voteId);
+
     } catch (err) {
       setBusy(false);
       throw err;

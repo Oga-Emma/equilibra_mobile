@@ -61,7 +61,7 @@ class CommentDTO {
 //  static var dateFormat = DateFormat("hh:mm a | MMM-dd");
 
   CommentDTO.fromJson(Map<dynamic, dynamic> data) {
-    print("COMMENT => $data");
+//    print("COMMENT => $data");
 
     id = data["_id"];
     comment = data["comment"];

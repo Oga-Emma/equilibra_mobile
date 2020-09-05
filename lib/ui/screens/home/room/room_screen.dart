@@ -854,8 +854,12 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         break;
 
       case EventTypes.VOTE_DISCUSSION:
+//        print(event.data['vote']);
         var vote = VoteDTO.fromMap(event.data['vote']);
-        showDiscussionVote(vote);
+
+        if (!vote.voters.contains(userController.user.id)) {
+          showDiscussionVote(vote);
+        }
         break;
 
       case EventTypes.VOTE_DISCUSSION_CLOSED:
