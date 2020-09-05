@@ -62,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen>
                     autoValidate: _autoValidate,
                     obscureText: true,
                     validator: Validators.validatePlainPass(),
+                    isLastTextField: true,
                     onSaved: (value) {
                       password = value;
                     },

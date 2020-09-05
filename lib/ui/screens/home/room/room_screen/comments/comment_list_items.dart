@@ -375,13 +375,17 @@ class _CommentListItemsState extends State<CommentListItems> {
   }
 
   getColor() {
-    var moderator = widget.members.firstWhere(
-        (element) => element.member == widget.comment.author.id,
-        orElse: () => null);
+//    var moderator = widget.members.firstWhere(
+//        (element) => element.member == widget.comment.author.id,
+//        orElse: () => null);
+
+    var moderator = widget.comment.authorType;
 
     if (moderator == null) {
       return Colors.grey[800];
     }
+
+    moderator = widget.comment.authorType.toLowerCase();
 
     var role = moderator.moderatorType.toLowerCase();
 

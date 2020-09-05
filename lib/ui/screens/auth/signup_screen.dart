@@ -124,6 +124,7 @@ class _SignupScreenState extends State<SignupScreen>
                     hintText: "Confirm Password",
                     icon: SvgIconUtils.getSvgIcon(SvgIconUtils.LOCK,
                         width: 20, height: 20),
+                    isLastTextField: true,
                   ),
                   EmptySpace(multiple: 4),
                   EButton(

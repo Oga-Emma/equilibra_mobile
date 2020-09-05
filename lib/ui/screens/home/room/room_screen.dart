@@ -187,33 +187,36 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(height: 56),
-                                  if (hasTopic && !widget.isVentTheSteam)
-                                    Container(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          SvgIconUtils.getSvgIcon(
-                                              SvgIconUtils.CLOCK,
-                                              color: Colors.white,
-                                              height: 18,
-                                              width: 18),
-                                          EmptySpace(),
-                                          CountDownToTopicEnd(widget.room)
+                                  Visibility(
+                                    visible: hasTopic && !widget.isVentTheSteam,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              SvgIconUtils.getSvgIcon(
+                                                  SvgIconUtils.CLOCK,
+                                                  color: Colors.white,
+                                                  height: 18,
+                                                  width: 18),
+                                              EmptySpace(),
+                                              CountDownToTopicEnd(widget.room)
 //                                            CountDownToTopicEnd(widget
 //                                                .room.currentTopic.startDate)
-                                        ],
-                                      ),
-                                      decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.white)),
-                                    )
-                                  else
-                                    SizedBox(),
-//                                  EmptySpace(),
-//                                  TopicTitle(
-//                                      room: room,
-//                                      isVentTheSteam: widget.isVentTheSteam)
+                                            ],
+                                          ),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.white)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TopicTitle(
+                                      room: room,
+                                      isVentTheSteam: widget.isVentTheSteam)
                                 ],
                               ),
                             ),

@@ -13,6 +13,7 @@ class EAuthTextField extends StatelessWidget {
       this.controller,
       this.obscureText = false,
       this.autoValidate = false,
+      this.isLastTextField = false,
       this.inputType = TextInputType.text});
   String hintText;
   Widget icon;
@@ -22,6 +23,7 @@ class EAuthTextField extends StatelessWidget {
   bool autoValidate;
   bool obscureText;
   TextInputType inputType;
+  final bool isLastTextField;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,10 @@ class EAuthTextField extends StatelessWidget {
               decoration: InputDecoration.collapsed(hintText: "$hintText"),
               validator: validator,
               onSaved: onSaved,
+              textInputAction:
+                  isLastTextField ? TextInputAction.done : TextInputAction.next,
+              onFieldSubmitted: (_) =>
+                  isLastTextField ? null : FocusScope.of(context).nextFocus(),
             ),
           ),
         ],

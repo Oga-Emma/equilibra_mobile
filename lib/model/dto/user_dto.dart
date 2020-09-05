@@ -132,11 +132,13 @@ class UserShortInfo {
   bool isSuspended;
   String role;
 
-  UserShortInfo.fromMap(Map<dynamic, dynamic> data)
-      : id = data['_id'] ?? "",
-        fullName = data['fullName'] ?? "",
-        username = data['username'] ?? "",
-        avatar = data['avatar'] ?? "",
-        isSuspended = data['isSuspended'] ?? false,
-        role = data['role'] ?? "";
+  UserShortInfo.fromMap(Map<dynamic, dynamic> data) {
+    print(data);
+    id = data['_id'] ?? "";
+    fullName = data['fullName'] ?? "";
+    username = data['username'] ?? "";
+    avatar = data['avatar'] ?? "";
+    isSuspended = data['isSuspended'] ?? false;
+    role = data['role'] ?? "";
+  }
 }
