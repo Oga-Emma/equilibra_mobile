@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "832023611491-4qbp87raibcmg40goih3ltt28c7vhp9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.theequilibra.android",
+            "certificate_hash": "dab431df7bf490712ca54febc9c37e250afb69c8"
+          }
+        },
+        {
           "client_id": "832023611491-rhld0pgt6knjpk3r0iptmh8lb81b9h5s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

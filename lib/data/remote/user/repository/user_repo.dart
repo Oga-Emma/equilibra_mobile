@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 
 abstract class UserRepo {
@@ -19,6 +20,7 @@ abstract class UserRepo {
 
   Future changePassword({oldPassword, newPassword});
   Future forgotPassword(email);
+  Future<UserDTO> socialAuth(accessToken, isGoogle);
   Future<UserDTO> fetchMyProfile();
 
   void logout();

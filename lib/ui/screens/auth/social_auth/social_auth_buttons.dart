@@ -1,9 +1,12 @@
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:helper_widgets/custom_toasts.dart';
 import 'package:helper_widgets/empty_space.dart';
+import 'package:helper_widgets/error_handler.dart';
 
-class SocialAuthButtons extends StatelessWidget {
+class SocialAuthButtons extends StatelessWidget with ErrorHandler {
   SocialAuthButtons({this.google, this.facebook});
   Function(String) google;
   Function(String) facebook;
@@ -87,16 +90,24 @@ class SocialAuthButtons extends StatelessWidget {
 //    }
   }
 
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
   Future<void> _googleSignin() async {
-//    try {
-//      var account = await googleSignIn.signIn();
-//      var auth = await account.authentication;
-//      var token = auth.accessToken;
-//
-//      print("TOKEN => $token");
-//      google(token);
-//    } catch (error) {
-//      print(error);
-//    }
+    try {
+      await _googleSignIn.signOut();
+      var account = await _googleSignIn.signIn();
+      var auth = await account.authentication;
+      var token = auth.accessToken;
+
+      print("TOKEN => $token");
+      google(token);
+    } catch (error) {
+      showErrorToast(getErrorMessage(error));
+      print(error);
+    }
   }
 }

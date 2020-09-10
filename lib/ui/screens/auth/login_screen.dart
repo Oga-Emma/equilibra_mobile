@@ -82,7 +82,11 @@ class _LoginScreenState extends State<LoginScreen>
                         style: TextStyle(color: Pallet.primaryColor)),
                   ),
                   EmptySpace(multiple: 2),
-                  SocialAuthButtons(google: (value) {}, facebook: (value) {}),
+                  SocialAuthButtons(google: (value) {
+                    _socialLogin(model, value, true);
+                  }, facebook: (value) {
+                    _socialLogin(model, value, false);
+                  }),
                   EmptySpace(multiple: 4),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,6 +126,18 @@ class _LoginScreenState extends State<LoginScreen>
         });
       }
     } catch (err) {
+      showInSnackBar(context, getErrorMessage(err));
+    }
+  }
+
+  Future<void> _socialLogin(
+      AuthViewModel model, String token, bool isGoogle) async {
+    try {
+      UserDTO user = await userController.socialAuth(token, isGoogle);
+      userController.user = user;
+      model.completeLogin(context, user);
+    } catch (err) {
+      print(err);
       showInSnackBar(context, getErrorMessage(err));
     }
   }

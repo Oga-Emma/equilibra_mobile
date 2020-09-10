@@ -92,4 +92,15 @@ class UserRepoImpl implements UserRepo {
   Future forgotPassword(email) {
     return userService.forgotPassword(email);
   }
+
+  @override
+  Future<UserDTO> socialAuth(accessToken, isGoogle) async {
+    AuthResponseDTO authResponse =
+        await userService.socialAuth(accessToken, isGoogle);
+
+    localCache.saveUser(authResponse.user);
+    localCache.saveToken(authResponse.token);
+
+    return authResponse.user;
+  }
 }

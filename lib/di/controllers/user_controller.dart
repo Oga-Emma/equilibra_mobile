@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:equilibra_mobile/data/remote/user/repository/user_repo.dart';
+import 'package:equilibra_mobile/model/dto/auth_response_dto.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/subjects.dart';
@@ -87,6 +88,20 @@ class UserController extends BaseViewModel {
     try {
       setBusy(true);
       await _userRepo.forgotPassword(email);
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
+  }
+
+  Future<UserDTO> socialAuth(token, isGoogle) async {
+    try {
+      setBusy(true);
+      var user = await _userRepo.socialAuth(token, isGoogle);
+
+      setBusy(false);
+      return user;
     } catch (err) {
       setBusy(false);
       throw err;

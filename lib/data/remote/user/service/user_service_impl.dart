@@ -233,4 +233,28 @@ class UserServiceImpl with BaseApi implements UserService {
       throw err;
     }
   }
+
+  @override
+  Future<AuthResponseDTO> socialAuth(accessToken, isGoogle) async {
+    try {
+      var url = isGoogle ? "$BASE_URL/auth/google" : "$BASE_URL/auth/facebook";
+      var header = {
+        "Content-Type": "application/json",
+      };
+
+      var data = {"access_token": accessToken};
+
+      var response =
+          await http.post(url, headers: header, body: json.encode(data));
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return AuthResponseDTO.fromMap(decode['data']);
+      }
+      throw Exception(handleError(decode));
+    } catch (err) {
+      throw err;
+    }
+  }
 }

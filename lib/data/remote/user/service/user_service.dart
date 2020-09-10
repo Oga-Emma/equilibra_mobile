@@ -20,5 +20,6 @@ abstract class UserService {
 
   Future changePassword(token, {oldPassword, newPassword});
   Future forgotPassword(email);
+  Future<AuthResponseDTO> socialAuth(accessToken, isGoogle);
   Future<UserProfileDTO> fetchMyProfile(token);
 }
