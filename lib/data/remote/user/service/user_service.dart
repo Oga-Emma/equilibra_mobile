@@ -19,5 +19,6 @@ abstract class UserService {
   Future changeStateOfResidence(token, data);
 
   Future changePassword(token, {oldPassword, newPassword});
+  Future forgotPassword(email);
   Future<UserProfileDTO> fetchMyProfile(token);
 }

@@ -82,4 +82,15 @@ class UserController extends BaseViewModel {
     _profileController.close();
     super.dispose();
   }
+
+  Future<void> forgotPassword(String email) async {
+    try {
+      setBusy(true);
+      await _userRepo.forgotPassword(email);
+    } catch (err) {
+      setBusy(false);
+      throw err;
+    }
+    setBusy(false);
+  }
 }

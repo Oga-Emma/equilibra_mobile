@@ -87,4 +87,9 @@ class UserRepoImpl implements UserRepo {
   Future saveFCMToken(String token) {
     return localCache.saveToken(token);
   }
+
+  @override
+  Future forgotPassword(email) {
+    return userService.forgotPassword(email);
+  }
 }
