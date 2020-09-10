@@ -1,5 +1,7 @@
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/screens/home/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
 
@@ -9,6 +11,7 @@ class EAppBar extends StatelessWidget with PreferredSizeWidget {
 //  AppStateProvider appState;
   @override
   Widget build(BuildContext context) {
+    var controller = Provider.of<UserController>(context);
     return Material(
       elevation: 4.0,
       child: Stack(
@@ -60,7 +63,7 @@ class EAppBar extends StatelessWidget with PreferredSizeWidget {
                           RichText(
                             text: TextSpan(text: 'Welcome, ', children: [
                               TextSpan(
-                                text: "Ani Emmanuel",
+                                text: "${controller.user.fullName}",
                                 style: TextStyle(
 //                                      fontSize: 14,
                                     fontWeight: FontWeight.bold,
