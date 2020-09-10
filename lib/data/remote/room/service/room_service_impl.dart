@@ -328,8 +328,10 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
+//      print(url);
       var response = await http.patch(url, headers: headers);
 
+//      print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));

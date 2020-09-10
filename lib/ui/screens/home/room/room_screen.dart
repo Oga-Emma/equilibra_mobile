@@ -688,7 +688,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Widget _selectPopup() => PopupMenuButton<int>(
         itemBuilder: (context) => [
           PopupMenuItem(
-              value: 1,
+              value: 2,
               child: Row(
                 children: <Widget>[
                   ProfileImage(
@@ -696,6 +696,15 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                   EmptySpace(),
                   Text(
                       "${userController.user.username ?? userController.user.fullName}")
+                ],
+              )),
+          PopupMenuItem(
+              value: 1,
+              child: Row(
+                children: [
+                  Icon(Icons.exit_to_app, color: Pallet.primaryColor, size: 20),
+                  EmptySpace(),
+                  Text("Leave Room"),
                 ],
               )),
 //          PopupMenuItem(
@@ -711,16 +720,23 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         onCanceled: () {
 //      ////print("You have canceled the menu.");
         },
-        onSelected: (value) {
+        onSelected: (value) async {
 //      ////print("value:$value");
           switch (value) {
             case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
+              {
+                try {
+                  showLoadingDialog(context);
+                  await roomController.leaveRoom(room.id);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                } catch (err) {
+                  showErrorToast(
+                      "Error leaving room, please check your internet and try again");
+                  Navigator.pop(context);
+                }
+                break;
+              }
             default:
               {
                 break;
