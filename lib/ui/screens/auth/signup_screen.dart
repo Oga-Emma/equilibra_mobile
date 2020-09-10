@@ -135,7 +135,7 @@ class _SignupScreenState extends State<SignupScreen>
                     Router.gotoWidget(PlaceOfOriginScreen(), context);
                   }),*/
                   EmptySpace(multiple: 4),
-                  SocialAuthButtons(google: (value) {}, facebook: (value) {}),
+                  SocialAuthButtons(),
                   EmptySpace(multiple: 4),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

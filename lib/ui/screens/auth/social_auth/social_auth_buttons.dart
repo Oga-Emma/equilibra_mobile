@@ -1,18 +1,31 @@
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
+import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:helper_widgets/custom_snackbar/ui_snackbar.dart';
 import 'package:helper_widgets/custom_toasts.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/error_handler.dart';
 
-class SocialAuthButtons extends StatelessWidget with ErrorHandler {
-  SocialAuthButtons({this.google, this.facebook});
-  Function(String) google;
-  Function(String) facebook;
+import '../auth_viewmodel.dart';
+
+class SocialAuthButtons extends StatefulWidget {
+  @override
+  _SocialAuthButtonsState createState() => _SocialAuthButtonsState();
+}
+
+class _SocialAuthButtonsState extends State<SocialAuthButtons>
+    with UISnackBarProvider, ErrorHandler {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+
+  UserController userController;
 
   @override
   Widget build(BuildContext context) {
+    userController = Provider.of<UserController>(context);
+    AuthViewModel model = Provider.of<AuthViewModel>(context);
     return Column(
       children: <Widget>[
         Container(
@@ -45,7 +58,7 @@ class SocialAuthButtons extends StatelessWidget with ErrorHandler {
           height: 52,
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: InkWell(
-            onTap: _googleSignin,
+            onTap: () => _googleSignin(model),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -96,18 +109,30 @@ class SocialAuthButtons extends StatelessWidget with ErrorHandler {
       'https://www.googleapis.com/auth/contacts.readonly',
     ],
   );
-  Future<void> _googleSignin() async {
+  Future<void> _googleSignin(AuthViewModel model) async {
     try {
       await _googleSignIn.signOut();
       var account = await _googleSignIn.signIn();
       var auth = await account.authentication;
       var token = auth.accessToken;
 
-      print("TOKEN => $token");
-      google(token);
+//      print("TOKEN => $token");
+      await _socialLogin(model, token, true);
     } catch (error) {
       showErrorToast(getErrorMessage(error));
-      print(error);
+//      print(error);
+    }
+  }
+
+  Future<void> _socialLogin(
+      AuthViewModel model, String token, bool isGoogle) async {
+    try {
+      UserDTO user = await userController.socialAuth(token, isGoogle);
+      userController.user = user;
+      model.completeLogin(context, user);
+    } catch (err) {
+      print(err);
+      showInSnackBar(context, getErrorMessage(err));
     }
   }
 }
