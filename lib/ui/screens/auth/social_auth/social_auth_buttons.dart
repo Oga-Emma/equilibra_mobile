@@ -3,6 +3,7 @@ import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:helper_widgets/custom_snackbar/ui_snackbar.dart';
 import 'package:helper_widgets/custom_toasts.dart';
@@ -33,7 +34,7 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons>
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: InkWell(
             onTap: () {
-              _facebook();
+              _facebook(model);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,26 +82,39 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons>
     );
   }
 
-  Future<void> _facebook() async {
+  Future<void> _facebook(AuthViewModel model) async {
 //    // appId = 2419999161601918
-//    final facebookLogin = FacebookLogin();
-//    final result = await facebookLogin
-//        .logInWithReadPermissions(['email', 'public_profile']);
-//
+
+    model.setBusy(true);
+    showLoadingSnackBar(context);
+    try {
+      final facebookLogin = FacebookLogin();
+      final result = await facebookLogin.logIn(['email', 'public_profile']);
+
 //    print("Facebook Error => ${result.errorMessage}");
-//    switch (result.status) {
-//      case FacebookLoginStatus.loggedIn:
-//        facebook(result.accessToken.token);
-////        _sendTokenToServer(result.accessToken.token);
-////        _showLoggedInUI();
-//        break;
-//      case FacebookLoginStatus.cancelledByUser:
-////        _showCancelledMessage();
-//        break;
-//      case FacebookLoginStatus.error:
-////        _showErrorOnUI(result.errorMessage);
-//        break;
-//    }
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          _socialLogin(model, result.accessToken.token, false);
+//        _sendTokenToServer(result.accessToken.token);
+//        _showLoggedInUI();
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          showInSnackBar(context, "Canceled by user");
+          break;
+        case FacebookLoginStatus.error:
+          showInSnackBar(context, result.errorMessage);
+          break;
+
+        default:
+          {
+            showInSnackBar(context, "Signin failed, please try again");
+          }
+      }
+    } catch (err) {
+      showInSnackBar(context, getErrorMessage(err));
+    }
+    model.setBusy(false);
+    closeLoadingSnackBar();
   }
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
