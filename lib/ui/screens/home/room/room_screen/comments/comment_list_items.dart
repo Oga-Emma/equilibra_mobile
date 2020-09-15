@@ -381,19 +381,20 @@ class _CommentListItemsState extends State<CommentListItems> {
 
     var moderator = widget.comment.authorType;
 
+    // print(moderator);
     if (moderator == null) {
       return Colors.grey[800];
     }
+    //
+    // moderator = widget.comment.authorType.toLowerCase();
+    //
+    moderator = moderator.toLowerCase();
 
-    moderator = widget.comment.authorType.toLowerCase();
-
-    var role = moderator.moderatorType.toLowerCase();
-
-    if (role.startsWith('gov')) {
+    if (moderator.startsWith('gov')) {
       return Colors.green;
-    } else if (role.startsWith('pro')) {
+    } else if (moderator.startsWith('pro')) {
       return Colors.blue;
-    } else if (role.startsWith('pol')) {
+    } else if (moderator.startsWith('pol')) {
       return Colors.red;
     }
 
