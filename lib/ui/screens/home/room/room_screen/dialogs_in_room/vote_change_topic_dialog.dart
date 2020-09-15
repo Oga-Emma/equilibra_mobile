@@ -42,7 +42,7 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
     return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
         contentPadding: EdgeInsets.all(0),
-        content: voted ? votedField() : votingField());
+        content: votingField());
   }
 
   Widget oldTopic() {
@@ -134,9 +134,33 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
     }
   }
 
+  countDownTimer() {
+    var time = Duration(minutes: 2); //
+    return Container(
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Pallet.primaryColor, width: 2),
+      ),
+      child: Center(
+        child: StreamBuilder<int>(
+            stream: Stream.periodic(
+                Duration(seconds: 1), (value) => time.inSeconds - value),
+            initialData: 30,
+            builder: (context, snapshot) {
+              if (snapshot.data <= 1) {
+                Future.delayed(Duration.zero, () => Navigator.pop(context));
+              }
+              return Text(
+                  '${_printDuration(Duration(seconds: snapshot.data))}');
+            }),
+      ),
+    );
+  }
+
   votedField() {
-    var time =
-        Duration(seconds: 30); //DateTime.now().difference(widget.stopAt);
+    DateTime.now().difference(widget.stopAt);
 
     return Container(
       width: double.maxFinite,
@@ -145,34 +169,6 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Spacer(),
-              Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Pallet.primaryColor, width: 2),
-                ),
-                child: Center(
-                  child: StreamBuilder<int>(
-                      stream: Stream.periodic(Duration(seconds: 1),
-                          (value) => time.inSeconds - value),
-                      initialData: 30,
-                      builder: (context, snapshot) {
-                        if (snapshot.data <= 1) {
-                          Future.delayed(
-                              Duration.zero, () => Navigator.pop(context));
-                        }
-                        return Text(
-                            '${_printDuration(Duration(seconds: snapshot.data))}');
-                      }),
-                ),
-              ),
-            ],
-          ),
-          EmptySpace(multiple: 2),
           Container(
             padding: EdgeInsets.all(16),
             width: double.maxFinite,
@@ -235,61 +231,67 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             EmptySpace(multiple: 3),
             Center(
-              child: Text("VOTE CHANGE TOPIC",
-                  style: Theme.of(context).textTheme.caption.copyWith(
+              child: Text("Vote for new topic in progress",
+                  style: TextStyle(
                       color: Pallet.accentColor, fontWeight: FontWeight.bold)),
             ),
+            Divider(),
+            EmptySpace(),
+            countDownTimer(),
             EmptySpace(),
             oldTopic(),
-            EmptySpace(multiple: 2),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      height: 42,
-                      child: FlatButton(
-                          color: Pallet.primaryColor,
-                          onPressed: controller.isBusy
-                              ? null
-                              : () {
+            EmptySpace(),
+            voted
+                ? votedField()
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                            height: 42,
+                            child: FlatButton(
+                                color: Pallet.primaryColor,
+                                onPressed: controller.isBusy
+                                    ? null
+                                    : () {
 //                              Navigator.pop(context, true);
-                                  requestTopicChange("up");
-                                },
-                          child: Center(
-                            child: Text(
-                              "ACCEPT",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ))),
-                  EmptySpace(multiple: 2),
-                  SizedBox(
-                      height: 42,
-                      child: OutlineButton(
-                          borderSide: BorderSide(
-                            color: Pallet.primaryColor,
-                          ),
-                          onPressed: controller.isBusy
-                              ? null
-                              : () {
+                                        requestTopicChange("up");
+                                      },
+                                child: Center(
+                                  child: Text(
+                                    "ACCEPT",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ))),
+                        EmptySpace(multiple: 2),
+                        SizedBox(
+                            height: 42,
+                            child: OutlineButton(
+                                borderSide: BorderSide(
+                                  color: Pallet.primaryColor,
+                                ),
+                                onPressed: controller.isBusy
+                                    ? null
+                                    : () {
 //                              Navigator.pop(context, false);
-                                  requestTopicChange("down");
-                                },
-                          child: Center(
-                            child: Text(
-                              "DECLINE",
-                              style: TextStyle(color: Pallet.primaryColor),
-                            ),
-                          ))),
-                  EmptySpace(multiple: 4),
-                ],
-              ),
-            ),
+                                        requestTopicChange("down");
+                                      },
+                                child: Center(
+                                  child: Text(
+                                    "DECLINE",
+                                    style:
+                                        TextStyle(color: Pallet.primaryColor),
+                                  ),
+                                ))),
+                        EmptySpace(multiple: 4),
+                      ],
+                    ),
+                  ),
           ],
         ),
       ),
