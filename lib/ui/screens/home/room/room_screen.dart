@@ -302,14 +302,16 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           : Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text("${widget.group.groupName}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16.0,
-                        color: Colors.white.withOpacity(0.7))),
-                Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.white),
-                EmptySpace(multiple: 0.5),
-                Text("${room.name}",
+                //   Text("${widget.group.groupName}",
+                //       style: TextStyle(
+                //           fontWeight: FontWeight.w300,
+                //           fontSize: 16.0,
+                //           color: Colors.white.withOpacity(0.7))),
+                //   Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.white),
+                //   EmptySpace(multiple: 0.5),
+                Text(
+                    StringUtils.toTitleCase(
+                        "${room.name} - ${room.government != null ? room.government['name'] : ''}"),
                     style: TextStyle(fontSize: 16.0, color: Colors.white)),
               ],
             ),
