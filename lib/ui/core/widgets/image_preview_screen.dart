@@ -20,14 +20,22 @@ class ImagePreviewScreen extends StatelessWidget {
               onTap: () => Navigator.pop(context),
             ),
           ),
-          Center(
-              child: PhotoView(
-            heroAttributes: const PhotoViewHeroAttributes(tag: "image"),
-            backgroundDecoration: BoxDecoration(color: Colors.black12),
-            imageProvider: file != null
-                ? FileImage(file)
-                : CachedNetworkImageProvider(imageUrl),
-          )),
+          Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+              image: file != null
+                  ? FileImage(file)
+                  : CachedNetworkImageProvider(imageUrl),
+            )),
+          ),
+          // Center(
+          //     child: PhotoView(
+          //   heroAttributes: const PhotoViewHeroAttributes(tag: "image"),
+          //   backgroundDecoration: BoxDecoration(color: Colors.black12),
+          //   imageProvider: file != null
+          //       ? FileImage(file)
+          //       : CachedNetworkImageProvider(imageUrl),
+          // )),
           Positioned(
               top: 0,
               right: 0,
@@ -59,5 +67,6 @@ showImagePreview(BuildContext context, {File file, String imageUrl}) {
   if (imageUrl == null && file == null) return;
   showDialog(
       context: context,
+      barrierColor: Colors.black87,
       builder: (context) => ImagePreviewScreen(imageUrl: imageUrl, file: file));
 }

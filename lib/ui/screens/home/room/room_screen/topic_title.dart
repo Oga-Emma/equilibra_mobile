@@ -1,5 +1,6 @@
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
+import 'package:equilibra_mobile/ui/core/utils/string_utils.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
@@ -63,9 +64,9 @@ class TopicTitle extends StatelessWidget {
                             children: <Widget>[
                               SvgIconUtils.getSvgIcon(SvgIconUtils.HON),
                               EmptySpace(),
-                              Text("N/A")
-//                              Text(
-//                                  "${room.government == null ? '' : room.government}")
+                              // Text("N/A")
+                              Text(
+                                  "${room.government != null && room.government['leader'] != null ? StringUtils.toTitleCase('${room.government['leader']}') : 'N/A'}")
                             ],
                           ),
                         ],

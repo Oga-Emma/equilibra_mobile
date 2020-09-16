@@ -895,7 +895,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   bool votingTopicChange = false;
   void voteChangeTopic(VoteDTO vote) async {
-    DateTime stopAt = DateTime.now()..add(Duration(seconds: 30));
+    DateTime stopAt = DateTime.now()..add(Duration(minutes: 2));
     if (vote.stopAt != null) {
       stopAt = DateTime.tryParse(vote.stopAt);
     }
@@ -1050,7 +1050,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
             children: [
               Expanded(
                 child: Text(
-                  _adminNotification.message,
+                  "${_adminNotification.message}".trim(),
                   style: TextStyle(color: Colors.white),
                 ),
               ),

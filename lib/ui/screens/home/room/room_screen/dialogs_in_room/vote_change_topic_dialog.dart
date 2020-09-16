@@ -8,7 +8,7 @@ import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/error_handler.dart';
 import 'package:provider/provider.dart';
 
-class VoteChangeTopicDialog extends StatefulWidget {
+class VoteChangeTopicDialog extends StatelessWidget {
   VoteChangeTopicDialog(this.voteId, this.title, this.description,
       {this.autoVote = false, this.stopAt});
   String voteId;
@@ -18,11 +18,45 @@ class VoteChangeTopicDialog extends StatefulWidget {
   DateTime stopAt;
 
   @override
-  _VoteChangeTopicDialogState createState() => _VoteChangeTopicDialogState();
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        contentPadding: EdgeInsets.all(0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            EmptySpace(multiple: 3),
+            Center(
+              child: Text("Vote for new topic in progress",
+                  style: TextStyle(
+                      color: Pallet.accentColor, fontWeight: FontWeight.bold)),
+            ),
+            Divider(),
+            EmptySpace(),
+            CountDownTimer(),
+            EmptySpace(),
+            VotingArea(voteId, title, description,
+                autoVote: autoVote, stopAt: stopAt)
+          ],
+        ));
+  }
 }
 
-class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
-    with ErrorHandler {
+class VotingArea extends StatefulWidget {
+  VotingArea(this.voteId, this.title, this.description,
+      {this.autoVote = false, this.stopAt});
+  String voteId;
+  String title;
+  String description;
+  bool autoVote;
+  DateTime stopAt;
+
+  @override
+  _VotingAreaState createState() => _VotingAreaState();
+}
+
+class _VotingAreaState extends State<VotingArea> with ErrorHandler {
   var _formKey = GlobalKey<FormState>();
   bool voted = false;
 
@@ -39,10 +73,7 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
   @override
   Widget build(BuildContext context) {
     controller = Provider.of<RoomController>(context);
-    return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-        contentPadding: EdgeInsets.all(0),
-        content: votingField());
+    return votingField();
   }
 
   Widget oldTopic() {
@@ -134,31 +165,6 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
     }
   }
 
-  countDownTimer() {
-    var time = Duration(minutes: 2); //
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Pallet.primaryColor, width: 2),
-      ),
-      child: Center(
-        child: StreamBuilder<int>(
-            stream: Stream.periodic(
-                Duration(seconds: 1), (value) => time.inSeconds - value),
-            initialData: 30,
-            builder: (context, snapshot) {
-              if (snapshot.data <= 1) {
-                Future.delayed(Duration.zero, () => Navigator.pop(context));
-              }
-              return Text(
-                  '${_printDuration(Duration(seconds: snapshot.data))}');
-            }),
-      ),
-    );
-  }
-
   votedField() {
     DateTime.now().difference(widget.stopAt);
 
@@ -217,14 +223,6 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
     );
   }
 
-  String _printDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$twoDigitMinutes:$twoDigitSeconds";
-//    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-  }
-
   votingField() {
     return Container(
       width: double.maxFinite,
@@ -233,16 +231,6 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
           mainAxisSize: MainAxisSize.min,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            EmptySpace(multiple: 3),
-            Center(
-              child: Text("Vote for new topic in progress",
-                  style: TextStyle(
-                      color: Pallet.accentColor, fontWeight: FontWeight.bold)),
-            ),
-            Divider(),
-            EmptySpace(),
-            countDownTimer(),
-            EmptySpace(),
             oldTopic(),
             EmptySpace(),
             voted
@@ -296,5 +284,43 @@ class _VoteChangeTopicDialogState extends State<VoteChangeTopicDialog>
         ),
       ),
     );
+  }
+}
+
+class CountDownTimer extends StatelessWidget {
+  final time = Duration(minutes: 2);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Pallet.primaryColor, width: 2),
+      ),
+      child: Center(
+        child: StreamBuilder<int>(
+            stream: Stream.periodic(
+                Duration(seconds: 1), (value) => time.inSeconds - value),
+            initialData: 120,
+            builder: (context, snapshot) {
+              if (snapshot.data <= 1) {
+                Future.delayed(Duration.zero, () => Navigator.pop(context));
+              }
+              return Text(
+                  '${_printDuration(Duration(seconds: snapshot.data))}');
+            }),
+      ),
+    );
+  }
+
+//
+  countDownTimer() {}
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+//    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

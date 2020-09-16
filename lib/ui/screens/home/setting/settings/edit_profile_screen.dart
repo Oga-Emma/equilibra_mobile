@@ -139,13 +139,14 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         ),
                         EmptySpace(multiple: 3),
                         EFormTextField(
-                            autoValidate: _autoValidate,
-                            labelText: "Username",
-                            validator: Validators.validateString(),
-                            onSaved: (value) {
-                              userName = value;
-                            },
-                            initialValue: user.username),
+                          autoValidate: _autoValidate,
+                          labelText: "Username",
+                          validator: Validators.validateString(),
+                          initialValue: user.username,
+                          onSaved: (value) {
+                            userName = value;
+                          },
+                        ),
 
                         EmptySpace(multiple: 2),
                         EFormTextField(
@@ -239,13 +240,13 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
   var dateFormat = DateFormat("yyyy - MMMM - dd");
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime(DateTime.now().year - 16);
   Future<Null> _selectDate() async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate ?? DateTime(1990, 1), //selectedDate,
         firstDate: DateTime(1960, 1),
-        lastDate: DateTime(DateTime.now().year - 15));
+        lastDate: DateTime(DateTime.now().year - 14));
     if (picked != null && picked != selectedDate) {
       var split = dateFormat.format(picked).split(' - ');
       print(split);
