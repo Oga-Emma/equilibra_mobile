@@ -33,11 +33,8 @@ import 'package:helper_widgets/loading_spinner.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:stacked/stacked.dart';
 
-import 'room_screen/comments/comment_list_items.dart';
 import 'room_screen/dialogs_in_room/change_topic_dialog.dart';
 import 'room_screen/dialogs_in_room/end_of_topic_voting_dialog.dart';
 import 'room_screen/dialogs_in_room/end_of_topic_voting_result_dialog.dart';
@@ -817,21 +814,6 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   bool fetched = false;
 
   Future fetchAdvert() async {}
-
-  Future<void> checkPermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.mediaLibrary,
-      Permission.camera,
-      Permission.photos,
-      Permission.storage,
-    ].request();
-
-    statuses.values.forEach((status) {
-      if (!status.isGranted && !status.isPermanentlyDenied) {
-        showErrorToast('Some permissions were denied');
-      }
-    });
-  }
 
   handleEvent(EventHandler event) {
     switch (event.type) {

@@ -36,7 +36,7 @@ dependencies:
 
   smooth_star_rating: ^1.1.1
 
-  permission_handler: ^5.0.1+1
+#  permission_handler: ^5.0.1+1
 
 #  socket_io_client: ^0.9.10
   socket_io: ^0.9.4
@@ -53,6 +53,11 @@ dependencies:
   helper_widgets:
     git:
       url: https://github.com/Oga-Emma/helper_widgets.git
+#
+#  permission_handler:
+#    git:
+#      url: git@github.com:ty0x2333/flutter-permission-handler.git
+#      ref: ios_permission_selectivity
 
   # Network
   http: ^0.12.1 # Makes network handling easier
