@@ -39,7 +39,9 @@ class CommentDTO {
   List reports = []; //":[],
   var createdAt; //":"2020-08-16T18:37:07.811Z",
   var updatedAt; //":"2020-08-16T18:38:08.369Z",
-  var __v; //":1}
+  var __v;
+
+  bool deleted = false; //":1}
 
   String getDate() {
     if (updatedAt != null) {
@@ -62,7 +64,6 @@ class CommentDTO {
 
   CommentDTO.fromJson(Map<dynamic, dynamic> data) {
     // print("COMMENT => $data");
-
     id = data["_id"];
     authorType = data["authorType"];
     comment = data["comment"];

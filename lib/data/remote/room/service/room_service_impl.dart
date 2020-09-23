@@ -161,9 +161,11 @@ class RoomServiceImpl with BaseApi implements RoomService {
 //      print(report);
 //      print(commentId);
 
-      var response = await http.patch(url,
-          headers: headers,
-          body: json.encode({"report": report, "comment": commentId}));
+      var data = {"report": report, "comment": commentId};
+      print(data);
+
+      var response =
+          await http.patch(url, headers: headers, body: json.encode(data));
 
 //      print(response.body);
       var decode = json.decode(response.body);

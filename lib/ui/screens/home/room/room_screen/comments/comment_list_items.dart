@@ -5,6 +5,7 @@ import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:equilibra_mobile/ui/core/widgets/image_preview_screen.dart';
+import 'package:equilibra_mobile/ui/core/widgets/keyboard_helper.dart';
 import 'package:equilibra_mobile/ui/core/widgets/profile_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +15,16 @@ import 'package:intl/intl.dart';
 
 class CommentListItems extends StatefulWidget {
   CommentListItems(this.comment, this.user, this.members,
-      {this.replyClicked, this.reportClicked, this.like, this.isReply = false});
+      {this.replyClicked,
+      this.reportClicked,
+      this.deleteClicked,
+      this.like,
+      this.isReply = false});
   List<RoomMember> members;
   CommentDTO comment;
   UserDTO user;
   Function(CommentDTO comment) replyClicked;
+  Function(CommentDTO comment) deleteClicked;
   Function(CommentDTO comment) reportClicked;
   Function(CommentDTO comment) like;
   bool isReply;
@@ -32,12 +38,8 @@ class _CommentListItemsState extends State<CommentListItems> {
   bool showReply = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (widget.comment.deleted) return SizedBox();
     var textTheme = Theme.of(context).textTheme;
     var decoration = BoxDecoration(
         color: Colors.white,
@@ -55,8 +57,7 @@ class _CommentListItemsState extends State<CommentListItems> {
             padding: EdgeInsets.symmetric(vertical: isExpanded ? 28.0 : 0.0),
             child: InkWell(
               onTap: () {
-                if (widget.user.id == widget.comment.author.id ||
-                    widget.isReply) {
+                if (hideKeyboard(context)) {
                   return;
                 }
                 setState(() {
@@ -270,7 +271,9 @@ class _CommentListItemsState extends State<CommentListItems> {
           Positioned(
               top: 0,
               right: 16,
-              child: !isExpanded
+              child: !isExpanded ||
+                      widget.user.id == widget.comment.author.id ||
+                      widget.isReply
                   ? SizedBox()
                   : Container(
                       decoration: decoration,
@@ -335,21 +338,40 @@ class _CommentListItemsState extends State<CommentListItems> {
             bottom: 0,
             right: 16,
             child: isExpanded
-                ? Container(
-                    decoration: decoration,
-                    width: 160,
-                    height: 32,
-                    alignment: Alignment.center,
-                    child: FlatButton(
-                      child: Text("Report Post",
-                          style: TextStyle(color: Colors.grey[600])),
-                      onPressed: () {
-                        if (widget.reportClicked != null) {
-                          widget.reportClicked(widget.comment);
-                        }
-                      },
-                    ),
-                  )
+                ? widget.user.id == widget.comment.author.id || widget.isReply
+                    ? Container(
+                        decoration: decoration,
+                        width: 160,
+                        height: 32,
+                        alignment: Alignment.center,
+                        child: FlatButton(
+                          child: Text("Delete Post",
+                              style: TextStyle(color: Colors.grey[600])),
+                          onPressed: () {
+                            if (widget.deleteClicked != null) {
+                              widget.deleteClicked(widget.comment);
+                              setState(() {
+                                widget.comment.deleted = true;
+                              });
+                            }
+                          },
+                        ),
+                      )
+                    : Container(
+                        decoration: decoration,
+                        width: 160,
+                        height: 32,
+                        alignment: Alignment.center,
+                        child: FlatButton(
+                          child: Text("Report Post",
+                              style: TextStyle(color: Colors.grey[600])),
+                          onPressed: () {
+                            if (widget.reportClicked != null) {
+                              widget.reportClicked(widget.comment);
+                            }
+                          },
+                        ),
+                      )
                 : SizedBox(),
           )
         ],

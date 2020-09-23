@@ -4,6 +4,7 @@ import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/ui/core/utils/date_utisl.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
+import 'package:equilibra_mobile/ui/core/widgets/keyboard_helper.dart';
 import 'package:equilibra_mobile/ui/screens/home/room/room_screen/dialogs_in_room/report_comment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:helper_widgets/empty_space.dart';
@@ -17,9 +18,11 @@ class RoomComments extends StatefulWidget {
       this.replyClicked,
       this.reportClicked,
       this.like,
+      this.deleteClicked,
       this.handleEvent});
   RoomDTO room;
   Function(CommentDTO comment) replyClicked;
+  Function(CommentDTO comment) deleteClicked;
   Function(CommentDTO comment) reportClicked;
   Function(CommentDTO comment) like;
   Function(EventHandler event) handleEvent;
@@ -34,8 +37,20 @@ class _RoomCommentsState extends State<RoomComments> {
   UserController userController;
   RoomController roomController;
 
+  var _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      hideKeyboard(context);
+    });
+    super.initState();
+  }
+
   @override
   void dispose() {
+    _scrollController.dispose();
+
     if (roomController != null) {
       roomController.connectHomeEvent();
     }
@@ -83,6 +98,7 @@ class _RoomCommentsState extends State<RoomComments> {
 
     return Container(
       child: AnimatedList(
+          controller: _scrollController,
           reverse: true,
           key: animatedListKey,
           initialItemCount: comments.length,
@@ -113,6 +129,7 @@ class _RoomCommentsState extends State<RoomComments> {
                         commentDTO, userController.user, widget.room.members,
                         replyClicked: widget.replyClicked,
                         like: widget.like,
+                        deleteClicked: widget.deleteClicked,
                         reportClicked: widget.reportClicked),
                     showDate
                         ? Row(
@@ -162,6 +179,7 @@ class _RoomCommentsState extends State<RoomComments> {
   void handleEvents(EventHandler event) {
     if (event.data['room'] != widget.room.id) return;
     if (event.type == EventTypes.COMMENT) {
+      if (event.data == null) return;
       var socketComment = SocketComment.fromMap(event.data);
 
       if (widget.room.currentTopic != null &&

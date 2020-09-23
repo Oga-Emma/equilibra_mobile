@@ -245,6 +245,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                           reportComment(comment.id, message);
                                         }));
                               },
+                              deleteClicked: (CommentDTO comment) {
+                                deleteComment(comment.id);
+                              },
                               like: (comment) {
                                 if (comment.liked(userController.user.id)) {
                                   unlikeComment(comment.id);
@@ -307,12 +310,24 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                 //   Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.white),
                 //   EmptySpace(multiple: 0.5),
                 Text(
-                    StringUtils.toTitleCase(
+                    toTitleCase(
                         "${room.name} - ${room.government != null ? room.government['name'] : ''}"),
                     style: TextStyle(fontSize: 16.0, color: Colors.white)),
               ],
             ),
     );
+  }
+
+  String toTitleCase(String sentence) {
+    if (StringUtils.isEmpty(sentence)) return "";
+
+    var split = sentence.trim().split(' ');
+
+    print(split);
+    return split
+        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .toList()
+        .join(" ");
   }
 
   Widget commentLayout() {
@@ -586,7 +601,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Future replyComment(CommentDTO reply, String comment, List<File> file) async {
-    print("replying...");
+    // print("replying...");
     try {
       await roomController.replyComment(
           images: file, comment: comment, commentId: reply.id);
@@ -602,6 +617,16 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       await roomController.reportComment(
           report: reportType, commentId: room.id);
       showSuccessToast("Comment reported");
+    } catch (err) {
+      print(err);
+      showErrorToast(getErrorMessage(err, "Error sending comment"));
+    }
+  }
+
+  Future deleteComment(id) async {
+    try {
+      await roomController.deleteComment(id);
+      // showSuccessToast("Comment reported");
     } catch (err) {
       print(err);
       showErrorToast(getErrorMessage(err, "Error sending comment"));
@@ -816,56 +841,65 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Future fetchAdvert() async {}
 
   handleEvent(EventHandler event) {
-    switch (event.type) {
-      case EventTypes.COMMENT:
-        // TODO: Handle this case.
-        break;
+    try {
+      switch (event.type) {
+        case EventTypes.COMMENT:
+          // TODO: Handle this case.
+          break;
 
-      case EventTypes.JOIN_ROOM:
-        if (userController.user.id == event.data["user"]) {
+        case EventTypes.JOIN_ROOM:
+          if (userController.user.id == event.data["user"]) {
+            if (votingTopicChange) {
+              Navigator.pop(context);
+            }
+            refreshPage();
+          }
+          print("join event => ${event.data}");
+          break;
+
+        case EventTypes.LEAVE_ROOM:
+          refreshPage();
+          break;
+
+        case EventTypes.TOPIC_CHANGED:
+          if (!isMember) return;
+          refreshPage();
+          break;
+
+        case EventTypes.VOTE_TOPIC_CHANGE:
+          if (!isMember) return;
+          var vote = VoteDTO.fromMap(event.data['vote']);
+          voteChangeTopic(vote);
+          break;
+
+        case EventTypes.VOTE_TOPIC_CLOSED:
+          if (!isMember) return;
           if (votingTopicChange) {
             Navigator.pop(context);
           }
-          refreshPage();
-        }
-        print("join event => ${event.data}");
-        break;
 
-      case EventTypes.LEAVE_ROOM:
-        refreshPage();
-        break;
+          var vote = VoteDTO.fromMap(event.data['vote']);
+          showChangeTopicVotingResult(vote);
+          break;
 
-      case EventTypes.TOPIC_CHANGED:
-        refreshPage();
-        break;
-
-      case EventTypes.VOTE_TOPIC_CHANGE:
-        var vote = VoteDTO.fromMap(event.data['vote']);
-        voteChangeTopic(vote);
-        break;
-
-      case EventTypes.VOTE_TOPIC_CLOSED:
-        if (votingTopicChange) {
-          Navigator.pop(context);
-        }
-
-        var vote = VoteDTO.fromMap(event.data['vote']);
-        showChangeTopicVotingResult(vote);
-        break;
-
-      case EventTypes.VOTE_DISCUSSION:
+        case EventTypes.VOTE_DISCUSSION:
+          if (!isMember) return;
 //        print(event.data['vote']);
-        var vote = VoteDTO.fromMap(event.data['vote']);
+          var vote = VoteDTO.fromMap(event.data['vote']);
 
-        if (!vote.voters.contains(userController.user.id)) {
-          showDiscussionVote(vote);
-        }
-        break;
+          if (!vote.voters.contains(userController.user.id)) {
+            showDiscussionVote(vote);
+          }
+          break;
 
-      case EventTypes.VOTE_DISCUSSION_CLOSED:
-        var vote = VoteDTO.fromMap(event.data['vote']);
-        endOfTopicVotingResultDialog(vote);
-        break;
+        case EventTypes.VOTE_DISCUSSION_CLOSED:
+          if (!isMember) return;
+          var vote = VoteDTO.fromMap(event.data['vote']);
+          endOfTopicVotingResultDialog(vote);
+          break;
+      }
+    } catch (err) {
+      print(err);
     }
   }
 
@@ -958,6 +992,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Future<void> showDiscussionVote(VoteDTO vote) async {
+    if (vote.topicId == null || vote.roomId == null) return;
     VotingResult result = await showDialog(
         context: context,
         builder: (context) => EndOfTopicVotingDialog(vote.topicId, vote.id));

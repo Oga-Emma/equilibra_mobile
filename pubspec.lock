@@ -327,7 +327,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.9"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -406,7 +406,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c1976f75184a18190079bbdeb6a3b113d26dfbcf
+      resolved-ref: c4474ab297ee313fab527a2fc74ba076b8a0449a
       url: "https://github.com/Oga-Emma/helper_widgets.git"
     source: git
     version: "0.0.1"
@@ -451,14 +451,14 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+4"
+    version: "0.6.7+10"
   image_picker_platform_interface:
     dependency: transitive
     description:
       name: image_picker_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   intl:
     dependency: "direct main"
     description:
