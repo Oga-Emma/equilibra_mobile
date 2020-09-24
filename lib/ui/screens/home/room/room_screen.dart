@@ -618,7 +618,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Future reportComment(String commentId, String reportType) async {
     try {
       await roomController.reportComment(
-          report: reportType, commentId: room.id);
+          report: reportType, commentId: commentId);
       showSuccessToast("Comment reported");
     } catch (err) {
       //print(err);
@@ -1044,6 +1044,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         //print(err);
       });
 
+      if (widget.isVentTheSteam) return;
       roomController
           .fetchAdminNotification(
               roomId: widget.room.id, userId: userController.user.id)
