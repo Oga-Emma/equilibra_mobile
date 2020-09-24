@@ -63,19 +63,22 @@ class UserController extends BaseViewModel {
   }
 
   Future updateFCMToken(String token) async {
+    // print("updating token => $token");
     try {
-      var oldToken = await _userRepo.getFcmToken();
+      // var oldToken = await _userRepo.getFcmToken();
+      //
+      // if (oldToken == token) return;
+      // setBusy(true);
 
-      if (oldToken == token) return;
-      setBusy(true);
-
-      await _userRepo.updateProfile({"fcmToken": token});
+      await _userRepo.updateProfile({
+        "fcmTokens": {"mobile": token}
+      });
       _userRepo.saveFCMToken(token);
     } catch (err) {
-      setBusy(false);
+      // setBusy(false);
       throw err;
     }
-    setBusy(false);
+    // setBusy(false);
   }
 
   @override
