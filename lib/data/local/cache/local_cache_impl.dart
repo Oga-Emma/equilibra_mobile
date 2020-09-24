@@ -34,12 +34,14 @@ class LocalCacheImpl implements LocalCache {
   Future<UserDTO> getUser() async {
     try {
       if (user != null) {
+        print('here 1');
         return user;
       }
 //      if (!(sharedPreferences.containsKey('not-first-time'))) {
 //        throw FirstTimeException();
 //      }
 
+      print('here');
       if (!sharedPreferences.containsKey('user')) {
         throw Exception("User not found");
       }
@@ -61,12 +63,14 @@ class LocalCacheImpl implements LocalCache {
 
   @override
   Future<void> saveToken(String token) async {
+    this.token = token;
     sharedPreferences.setString('token', token);
-    sharedPreferences.setInt('time', DateTime.now().millisecondsSinceEpoch);
+    // sharedPreferences.setInt('time', DateTime.now().millisecondsSinceEpoch);
   }
 
   @override
   Future<void> saveUser(UserDTO user) async {
+    this.user = user;
 //    print(user.toMap());
     return sharedPreferences.setString('user', json.encode(user.toMap()));
   }
@@ -84,14 +88,14 @@ class LocalCacheImpl implements LocalCache {
 
   @override
   Future<String> getFcmToken() async {
-    if (sharedPreferences.containsKey("token")) {
-      return sharedPreferences.getString("token");
+    if (sharedPreferences.containsKey("fcmtoken")) {
+      return sharedPreferences.getString("fcmtoken");
     }
     return "";
   }
 
   @override
   Future saveFcmToken(String token) async {
-    sharedPreferences.setString('token', token);
+    sharedPreferences.setString('fcmtoken', token);
   }
 }

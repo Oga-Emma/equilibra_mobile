@@ -91,10 +91,13 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   @override
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
-    userController = Provider.of<UserController>(context, listen: false);
+    if (userController == null) {
+      userController = Provider.of<UserController>(context, listen: false);
+    }
 
     if (roomController == null) {
       roomController = Provider.of<RoomController>(context, listen: false);
+      roomController.reconnect();
       fetchNotificationAndAdverts();
     }
 
@@ -323,7 +326,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
     var split = sentence.trim().split(' ');
 
-    print(split);
+    //print(split);
     return split
         .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
         .toList()
@@ -448,7 +451,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                         StringUtils.isEmpty(message)) {
                       return;
                     }
-                    ////print(message);
+                    //////print(message);
 
 //            var topicId = widget.room.currentTopic.id;
 
@@ -471,7 +474,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 //                refetch();
 //              }
                     } catch (e) {
-                      ////print("Error => $e");
+                      //////print("Error => $e");
                       showErrorToast(getErrorMessage(e));
                       setState(() {
                         sending = false;
@@ -567,9 +570,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         setState(() {});
       }
     } on PlatformException catch (e) {
-      //print("Error => $e");
+      ////print("Error => $e");
     } catch (e) {
-      //print("Error => $e");
+      ////print("Error => $e");
     }
   }
 
@@ -601,7 +604,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Future replyComment(CommentDTO reply, String comment, List<File> file) async {
-    // print("replying...");
+    // //print("replying...");
     try {
       await roomController.replyComment(
           images: file, comment: comment, commentId: reply.id);
@@ -618,7 +621,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           report: reportType, commentId: room.id);
       showSuccessToast("Comment reported");
     } catch (err) {
-      print(err);
+      //print(err);
       showErrorToast(getErrorMessage(err, "Error sending comment"));
     }
   }
@@ -628,7 +631,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       await roomController.deleteComment(id);
       // showSuccessToast("Comment reported");
     } catch (err) {
-      print(err);
+      //print(err);
       showErrorToast(getErrorMessage(err, "Error sending comment"));
     }
   }
@@ -742,16 +745,17 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         ],
         initialValue: 1,
         onCanceled: () {
-//      ////print("You have canceled the menu.");
+//      //////print("You have canceled the menu.");
         },
         onSelected: (value) async {
-//      ////print("value:$value");
+//      //////print("value:$value");
           switch (value) {
             case 1:
               {
                 try {
                   showLoadingDialog(context);
                   await roomController.leaveRoom(room.id);
+                  isMember = false;
                   Navigator.pop(context);
                   Navigator.pop(context);
                 } catch (err) {
@@ -854,7 +858,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
             }
             refreshPage();
           }
-          print("join event => ${event.data}");
+          //print("join event => ${event.data}");
           break;
 
         case EventTypes.LEAVE_ROOM:
@@ -884,7 +888,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
         case EventTypes.VOTE_DISCUSSION:
           if (!isMember) return;
-//        print(event.data['vote']);
+//        //print(event.data['vote']);
           var vote = VoteDTO.fromMap(event.data['vote']);
 
           if (!vote.voters.contains(userController.user.id)) {
@@ -899,7 +903,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           break;
       }
     } catch (err) {
-      print(err);
+      //print(err);
     }
   }
 
@@ -966,13 +970,13 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                   ],
                 ));
               });
-          //print("Please wait, closing soon");
+          ////print("Please wait, closing soon");
 
         }
-//        //print("Voting failed");
+//        ////print("Voting failed");
       }
     } catch (e) {
-      //print(e);
+      ////print(e);
     }
   }
 
@@ -1037,7 +1041,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           ),
         );
       }).catchError((err) {
-        print(err);
+        //print(err);
       });
 
       roomController
@@ -1050,7 +1054,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           });
         }
       }).catchError((err) {
-        print(err);
+        //print(err);
       });
     } catch (err) {}
   }
@@ -1110,16 +1114,16 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
 
   @override
   void initState() {
-//    print("${widget.room}");
-//    print("${widget.room.updatedAt}");
-//    print("${widget.room.topicStartDate}");
-//    print("${widget.room.createdAt}");
+//    //print("${widget.room}");
+//    //print("${widget.room.updatedAt}");
+//    //print("${widget.room.topicStartDate}");
+//    //print("${widget.room.createdAt}");
 
     if (widget.room.topicStartDate != null) {
       try {
         startDate = DateTime.tryParse(widget.room.topicStartDate);
       } catch (err) {
-        print(err);
+        //print(err);
       }
     }
     updateView();
@@ -1157,7 +1161,7 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
   void updateView() {
     if (startDate == null) return;
 
-//    print('updating...');
+//    //print('updating...');
 
     DateTime now = DateTime.now();
     var hourMins = format.format(now);
@@ -1169,7 +1173,7 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
       hour = int.parse(split[0]);
       minute = int.parse(split[1]);
     } catch (e) {
-      //print(e);
+      ////print(e);
     }
 
     var next7Days = startDate.add(Duration(days: 7));
@@ -1194,7 +1198,7 @@ class JoinRoom extends StatelessWidget {
     return EButton(
         label: "Join Room",
         onTap: () {
-//          print(roomId);
+//          //print(roomId);
           controller.joinRoom(roomId);
         },
         loading: controller.isBusy);

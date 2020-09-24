@@ -5,6 +5,8 @@ class AuthResponseDTO {
   String token;
 
   AuthResponseDTO.fromMap(Map<String, dynamic> data) {
+    print(data["accessToken"]);
+
     user = UserDTO.fromMap(data['user']);
     token = data["accessToken"]["token"];
   }

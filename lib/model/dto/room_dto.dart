@@ -17,6 +17,7 @@ class RoomDTO extends FilterableListItem {
   var voteId; //"
 
   RoomDTO.fromMap(Map<dynamic, dynamic> data) {
+    // print(data);
     changeTopic = data["changeTopic"] ?? false;
     id = data["_id"];
     roomType = data["roomType"];
@@ -31,6 +32,7 @@ class RoomDTO extends FilterableListItem {
 
     topicStartDate = data["topicStartDate"];
     if (data["currentTopic"] != null && data["currentTopic"] is Map) {
+      // print(data[currentTopic]);
       currentTopic = TopicDTO.fromMap(data["currentTopic"]);
     }
   }
@@ -73,9 +75,9 @@ class RoomMember {
 //                "_id": "5f1c75bb4a2e612c906027ac",
 //                "member": "5f1c640b4a2e612c906026e6"
 //            },
-  String member;
-  String id;
-  String moderatorType;
+  var member;
+  var id;
+  var moderatorType;
   RoomMember.fromMap(Map<dynamic, dynamic> data) {
     member = data['member'];
     id = data['_id'];

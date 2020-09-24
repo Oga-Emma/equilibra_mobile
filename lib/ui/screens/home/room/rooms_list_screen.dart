@@ -70,6 +70,9 @@ class RoomGroupsListScreen extends StatelessWidget {
                               snapshot.data[group.roomType], model);
                         }
 
+                        if (snapshot.hasError) {
+                          print(snapshot.error);
+                        }
                         return LoadingSpinner();
                       })));
         },

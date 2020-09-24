@@ -18,7 +18,7 @@ class UserController extends BaseViewModel {
   UserDTO user;
 
   Stream<UserProfileDTO> fetchProfile() {
-    if (!_profileIsFetching) {
+    if (user == null && !_profileIsFetching) {
       _profileIsFetching = true;
       _userRepo.fetchMyProfile().then((value) {
         user = value;
@@ -69,7 +69,7 @@ class UserController extends BaseViewModel {
       if (oldToken == token) return;
       setBusy(true);
 
-      await _userRepo.updateProfile({"fcmTokens": token});
+      await _userRepo.updateProfile({"fcmToken": token});
       _userRepo.saveFCMToken(token);
     } catch (err) {
       setBusy(false);

@@ -34,7 +34,8 @@ class CommentDTO {
   var reported; //":false,
   var comment; //":"Okay",
   // "topic":{"_id":"5f1c75ff4a2e612c906027ad","description":"Education in Nigeria","title":"EDUCATION"},"room":{"_id":"5e3d4a47fb9e016690a5bbc4","name":"Vent The Steam"},
-  var author; //":{"_id":"5f37df7ef39e9d5ca0aaf47e","avatar":"","suspended":false,"fullName":"Mokoman2","username":"mokoman2"},
+  UserShortInfo
+      author; //":{"_id":"5f37df7ef39e9d5ca0aaf47e","avatar":"","suspended":false,"fullName":"Mokoman2","username":"mokoman2"},
   var authorType; //":"Member","
   List reports = []; //":[],
   var createdAt; //":"2020-08-16T18:37:07.811Z",

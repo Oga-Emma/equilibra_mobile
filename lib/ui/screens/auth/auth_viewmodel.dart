@@ -227,6 +227,7 @@ class AuthViewModel extends BaseViewModel {
   Future<UserProfileDTO> getUser() async {
     try {
       var user = await _localCache.getUser();
+
       if (user.signupStatus) {
         user = await _userRepo.fetchMyProfile();
       }

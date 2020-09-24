@@ -54,11 +54,11 @@ class UserServiceImpl with BaseApi implements UserService {
       var url = "$BASE_URL/auth/login";
       var header = {"Content-Type": "application/json"};
 
-      print(payload);
       var response =
           await http.post(url, headers: header, body: json.encode(payload));
 
-//      print(response.body);
+      print(response.body);
+
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return AuthResponseDTO.fromMap(decode['data']);
@@ -77,11 +77,13 @@ class UserServiceImpl with BaseApi implements UserService {
         "x-access-token": "Bearer $token"
       };
 
-//      print(token);
+      // print(url);
+      // print(header);
 
       var response = await http.get(url, headers: header);
 
-//      print(response.body);
+      // print(response.body);
+      // print(response.statusCode);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return UserProfileDTO.fromMap(decode['data']);
@@ -107,13 +109,11 @@ class UserServiceImpl with BaseApi implements UserService {
       var response = await http.post(url,
           headers: header, body: json.encode({"update": data}));
 
-//      print(response.body);
+      print(response.body);
       var decode = json.decode(response.body);
-      if (response.statusCode == 200) {
-//        return AuthResponseDTO.fromMap(decode['data']);
-
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
       }
-      throw Exception(handleError(decode));
     } catch (err) {
       throw err;
     }
@@ -140,9 +140,10 @@ class UserServiceImpl with BaseApi implements UserService {
       }
       var response = await http.Response.fromStream(await request.send());
 //      print('Response ${response.body}');
-//      print('Status code ${response.statusCode}');
-
-      final body = json.decode(response.body);
+//       print('Status code ${response.statusCode}');
+//
+//       print(response.body);
+      // final body = json.decode(response.body);
 
 //      print(header);
 //      print(url);
@@ -150,13 +151,10 @@ class UserServiceImpl with BaseApi implements UserService {
 //      var response = await http.put(url,
 //          headers: header, body: json.encode({"update": data}));
 
-      print(response.body);
       var decode = json.decode(response.body);
-      if (response.statusCode == 200) {
-//        return AuthResponseDTO.fromMap(decode['data']);
-
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
       }
-      throw Exception(handleError(decode));
     } catch (err) {
       throw err;
     }

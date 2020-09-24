@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equilibra_mobile/di/controllers/room_controller.dart';
 import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
@@ -50,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-//    setupFcm();
+    setupFcm();
     super.initState();
   }
 
@@ -86,22 +88,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //addMobileToken(mobileToken: String!): user
     _firebaseMessaging.configure(
-      onBackgroundMessage: _HomeScreenState.myBackgroundMessageHandler,
+      onBackgroundMessage:
+          Platform.isIOS ? null : _HomeScreenState.myBackgroundMessageHandler,
       onMessage: (Map<String, dynamic> message) async {
-//        print("onMessage: $message");
+        print("onMessage: $message");
 
         handleNotification(message);
 
 //        _showItemDialog(messsage);
       },
       onLaunch: (Map<String, dynamic> message) async {
-//        print("onLaunch: $message");
+        print("onLaunch: $message");
 
 //        navigateToPage(message);
 //        _navigateToItemDetail(message);
       },
       onResume: (Map<String, dynamic> message) async {
-//        print("onResume: $message");
+        print("onResume: $message");
 
 //        navigateToPage(message);
 //        _navigateToItemDetail(message);
@@ -109,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     _firebaseMessaging.getToken().then((String token) async {
+      print(token);
       if (token != null) {
         controller.updateFCMToken(token);
       }
@@ -153,6 +157,7 @@ class HomePage extends StatelessWidget {
   RoomController roomController;
   @override
   Widget build(BuildContext context) {
+    // print("home");
     makeHeader(String headerText) {
       return SliverToBoxAdapter(
           child: Container(

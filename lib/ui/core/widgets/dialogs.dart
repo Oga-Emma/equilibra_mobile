@@ -66,6 +66,11 @@ class SelectSenatorialDialog extends StatelessWidget {
                 return FilterableList(snapshot.data);
               }
 
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return Text("${snapshot.error}");
+              }
+
               return LoadingSpinner();
             }),
       ),

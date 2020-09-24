@@ -13,6 +13,7 @@ import 'package:equilibra_mobile/model/dto/advert_dto.dart';
 import 'package:equilibra_mobile/model/dto/comment_dto.dart';
 import 'package:equilibra_mobile/model/dto/room_dto.dart';
 import 'package:equilibra_mobile/model/dto/vote_dto.dart';
+import 'package:equilibra_mobile/ui/core/utils/overlay_notification_util.dart';
 import 'package:equilibra_mobile/ui/router/router.gr.dart';
 import 'package:helper_widgets/custom_toasts.dart';
 import 'package:quick_log/quick_log.dart';
@@ -59,6 +60,10 @@ class RoomController extends BaseViewModel {
     try {
       if (eventHandlerStream != null && eventHandlerStream.hasListener) {
         eventHandlerStream.sink.add(event);
+      } else {
+        if (event.type == EventTypes.COMMENT && event.data != null) {
+          showOverlayMessage(SocketComment.fromMap(event.data));
+        }
       }
     } catch (err) {
       print(err);
@@ -172,7 +177,6 @@ class RoomController extends BaseViewModel {
       setBusy(true);
       runtTimeOut();
       await _roomRepo.voteEndOfDiscussionPoll(vote: vote, voteId: voteId);
-
     } catch (err) {
       setBusy(false);
       throw err;
@@ -198,7 +202,6 @@ class RoomController extends BaseViewModel {
   SocketIO _socket;
   IO.Socket socket;
   setupSocket() async {
-
 //    socket = IO.io('http://localhost:3000', );
 //    socket1.on('connect', (_) {
 //      print('connect');
@@ -305,20 +308,27 @@ class RoomController extends BaseViewModel {
     _socket.onConnectError((data) {
       print('connection error => $data');
       showErrorToast('Network error');
+      reconnect();
     });
     _socket.onError((data) {
       log('error => ${data}');
 //      showErrorToast('Network error');
     });
+    reconnect();
+
+    ///disconnect using
+    ///manager.
+  }
+
+  reconnect() async {
     try {
-      _socket.connect();
+      if (_socket != null && !(await _socket.isConnected())) {
+        _socket.connect();
+      }
     } catch (err) {
       log(err);
       showErrorToast('Network error');
     }
-
-    ///disconnect using
-    ///manager.
   }
 
   void showVentTheSteam(RoomDTO room) {

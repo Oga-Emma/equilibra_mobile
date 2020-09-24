@@ -79,6 +79,8 @@ class DataController extends BaseViewModel {
   var _federalRoomsController = BehaviorSubject<Map<String, List<RoomDTO>>>();
 
   Stream<Map<String, List<RoomDTO>>> fetchFederalRooms(String roomType) {
+    // print(!_federalRooms.containsKey(roomType) &&
+    //     !_federalRoomsFetching.contains(roomType));
     if (!_federalRooms.containsKey(roomType) &&
         !_federalRoomsFetching.contains(roomType)) {
       _federalRoomsFetching.add(roomType);
@@ -88,6 +90,7 @@ class DataController extends BaseViewModel {
         _federalRoomsController.sink.add(_federalRooms);
         _federalRoomsFetching.remove(roomType);
       }).catchError((err) {
+        print(err);
         _federalRoomsFetching.remove(roomType);
       });
     }

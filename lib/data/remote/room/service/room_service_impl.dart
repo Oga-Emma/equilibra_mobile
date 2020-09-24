@@ -139,7 +139,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
       }
       var response = await http.Response.fromStream(await request.send());
 
-      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -162,7 +162,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 //      print(commentId);
 
       var data = {"report": report, "comment": commentId};
-      print(data);
+      // print(data);
 
       var response =
           await http.patch(url, headers: headers, body: json.encode(data));
@@ -202,7 +202,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
     try {
       var url = "$BASE_URL/topics/vote-discussion/$voteId/$vote";
 
-      print(url);
+      // print(url);
       var headers = {
         "Content-Type": "application/json",
         "x-access-token": "Bearer $token"
@@ -210,7 +210,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 
       var response = await http.patch(url, headers: headers);
 
-      print("vote end of discussion poll => ${response.body}");
+      // print("vote end of discussion poll => ${response.body}");
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -237,7 +237,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
       var response = await http.post(url,
           headers: headers, body: json.encode({"topicPayload": payLoad}));
 
-      print("Set topic => ${response.body}");
+      // print("Set topic => ${response.body}");
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -262,11 +262,11 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "room": roomId
       };
 
-      print(payload);
+      // print(payload);
       var response = await http.post(url,
           headers: headers, body: json.encode({"topicPayload": payload}));
 
-      print("Suggest topic => ${response.body}");
+      // print("Suggest topic => ${response.body}");
 
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
@@ -286,11 +286,11 @@ class RoomServiceImpl with BaseApi implements RoomService {
         "x-access-token": "Bearer $token"
       };
 
-      print(url);
+      // print(url);
 
       var response = await http.patch(url, headers: headers);
 
-      print("Topic change => ${response.body}");
+      // print("Topic change => ${response.body}");
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -311,7 +311,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 
       var response = await http.patch(url, headers: headers);
 
-      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -333,7 +333,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 //      print(url);
       var response = await http.patch(url, headers: headers);
 
-//      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));
@@ -417,7 +417,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
       };
 
       var response = await http.patch(url, headers: headers);
-      print(response.body);
+      // print(response.body);
 
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {

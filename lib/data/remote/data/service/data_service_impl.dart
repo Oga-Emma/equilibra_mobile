@@ -17,7 +17,7 @@ class DataServiceImpl with BaseApi implements DataService {
 
       var response = await http.get(url, headers: header);
 
-//      print(response.body);
+//      //print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return List<GovernmentDTO>.from((decode['data']['governments'] ?? [])
@@ -38,9 +38,10 @@ class DataServiceImpl with BaseApi implements DataService {
 
       var response = await http.get(url, headers: header);
 
-//      print(response.body);
+      // //print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
+        // //print(decode['data']['rooms']);
         return List<RoomDTO>.from((decode['data']['rooms'] ?? [])
             .map((e) => RoomDTO.fromMap(e))
             .toList());
@@ -57,12 +58,17 @@ class DataServiceImpl with BaseApi implements DataService {
       var url = "$BASE_URL/rooms/$type";
       var header = {
         "Content-Type": "application/json",
-        "x-access-token": "Bearer $token"
+        // "x-access-token": "Bearer $token"
       };
+
+      //print("fetching => $url");
+      //print("fetching => $header");
 
       var response = await http.get(url, headers: header);
 
-//      print(response.body);
+      // //print(response.body);
+      // //print(response.statusCode);
+
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return List<RoomDTO>.from(
@@ -71,7 +77,7 @@ class DataServiceImpl with BaseApi implements DataService {
         throw Exception(handleError(decode));
       }
     } catch (err) {
-      print(err);
+      //print(err);
       throw err;
     }
   }
@@ -85,9 +91,11 @@ class DataServiceImpl with BaseApi implements DataService {
         "x-access-token": "Bearer $token"
       };
 
+      //print(url);
+      //print(token);
       var response = await http.get(url, headers: header);
 
-//      print(response.body);
+      //print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return List<RoomDTO>.from(
@@ -96,7 +104,7 @@ class DataServiceImpl with BaseApi implements DataService {
         throw Exception(handleError(decode));
       }
     } catch (err) {
-      print(err);
+      //print(err);
       throw err;
     }
   }
@@ -119,7 +127,7 @@ class DataServiceImpl with BaseApi implements DataService {
         throw Exception(handleError(decode));
       }
     } catch (err) {
-      print(err);
+      //print(err);
       throw err;
     }
   }
@@ -149,7 +157,7 @@ class DataServiceImpl with BaseApi implements DataService {
 //      var response =
 //          await http.post(url, headers: header, body: json.encode(payload));
 //
-//      print(response.body);
+//      //print(response.body);
 //      var decode = json.decode(response.body);
 //      if (response.statusCode != 200) {
 //        throw Exception(handleError(decode));
@@ -167,11 +175,11 @@ class DataServiceImpl with BaseApi implements DataService {
 //      var url = "$BASE_URL/auth/login";
 //      var header = {"Content-Type": "application/json"};
 //
-//      print(payload);
+//      //print(payload);
 //      var response =
 //          await http.post(url, headers: header, body: json.encode(payload));
 //
-//      print(response.body);
+//      //print(response.body);
 //      var decode = json.decode(response.body);
 //      if (response.statusCode == 200) {
 //        return AuthResponseDTO.fromMap(decode['data']);
