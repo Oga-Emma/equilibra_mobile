@@ -437,7 +437,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                 ),
               ),
               EmptySpace(),
-              GestureDetector(
+              InkWell(
                   onTap: () async {
                     if (room.currentTopic == null) {
                       showErrorToast(
@@ -488,7 +488,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                               width: 20,
                               child: CircularProgressIndicator()))
                       : Padding(
-                          padding: EdgeInsets.all(4.0),
+                          padding: EdgeInsets.all(8.0),
                           child: SvgIconUtils.getSvgIcon(
                               SvgIconUtils.COMMENT_SEND,
                               color: Colors.grey,
@@ -555,8 +555,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     try {
 //      checkPermission();
 
-      var image = await ImagePicker.pickImage(
-          source: ImageSource.gallery, maxWidth: 400, maxHeight: 400);
+      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 //
 //      var image = await FilePicker.getFile(type: FileType.IMAGE);
 //      var images = await MultiImagePicker.pickImages(
