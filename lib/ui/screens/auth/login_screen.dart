@@ -122,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen>
         });
       }
     } catch (err) {
+      print(err);
       showInSnackBar(context, getErrorMessage(err));
     }
   }

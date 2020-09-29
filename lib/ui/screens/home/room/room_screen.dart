@@ -328,7 +328,13 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
     //print(split);
     return split
-        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .map((word) {
+          if (word == null || word.length < 2) {
+            return word;
+          }
+
+          return word[0].toUpperCase() + word.substring(1).toLowerCase();
+        })
         .toList()
         .join(" ");
   }

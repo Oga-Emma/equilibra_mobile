@@ -17,16 +17,21 @@ class UserController extends BaseViewModel {
 
   UserDTO user;
 
+  UserProfileDTO userProfile;
   Stream<UserProfileDTO> fetchProfile() {
-    if (user == null && !_profileIsFetching) {
+    if (userProfile == null && !_profileIsFetching) {
       _profileIsFetching = true;
       _userRepo.fetchMyProfile().then((value) {
-        user = value;
+        userProfile = value;
         _profileIsFetching = false;
         _profileController.sink.add(value);
       }).catchError((err) {
         _profileIsFetching = false;
       });
+    } else {
+      if (userProfile != null) {
+        _profileController.sink.add(userProfile);
+      }
     }
     return _profileController.stream;
   }

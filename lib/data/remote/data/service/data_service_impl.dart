@@ -58,21 +58,24 @@ class DataServiceImpl with BaseApi implements DataService {
       var url = "$BASE_URL/rooms/$type";
       var header = {
         "Content-Type": "application/json",
-        // "x-access-token": "Bearer $token"
+        "x-access-token": "Bearer $token"
       };
 
-      //print("fetching => $url");
+      print("fetching => $url");
       //print("fetching => $header");
 
       var response = await http.get(url, headers: header);
 
-      // //print(response.body);
-      // //print(response.statusCode);
+      // print(response.body);
+      //print(response.statusCode);
 
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
-        return List<RoomDTO>.from(
+        var list = List<RoomDTO>.from(
             (decode['data'] ?? []).map((e) => RoomDTO.fromMap(e)).toList());
+
+        print(decode['data'].length);
+        return list;
       } else {
         throw Exception(handleError(decode));
       }

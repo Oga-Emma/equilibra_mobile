@@ -413,6 +413,10 @@ class HomePage extends StatelessWidget {
                 disposeViewModel: false);
           }
 
+          if (snapshot.hasError) {
+            print(snapshot.error);
+          }
+
           return LoadingSpinner();
         });
   }

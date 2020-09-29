@@ -45,6 +45,7 @@ class DataRepoImpl implements DataRepo {
 
   @override
   Future<List<RoomDTO>> fetchFederalRooms({String type}) async {
+    print(type);
     return dataService.fetchFederalRooms(await localCache.getToken(), type);
   }
 

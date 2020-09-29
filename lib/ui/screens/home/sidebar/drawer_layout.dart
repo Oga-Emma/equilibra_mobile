@@ -126,9 +126,13 @@ class DrawerLayout extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     SvgIconUtils.getSvgIcon(SvgIconUtils.LOGOUT,
-                        color: Colors.red),
+                        color: Colors.red, height: 18),
                     EmptySpace(multiple: 2),
-                    Text("Logout", style: Theme.of(context).textTheme.subhead),
+                    Text("Logout",
+                        style: Theme.of(context)
+                            .textTheme
+                            .subhead
+                            .copyWith(color: Colors.red)),
                   ],
                 ),
               ),
@@ -161,7 +165,9 @@ class SideBarItem extends StatelessWidget {
           child: Row(
             children: <Widget>[
               SvgIconUtils.getSvgIcon(icon,
-                  color: selected ? Pallet.primaryColor : Colors.grey[800]),
+                  color: selected ? Pallet.primaryColor : Colors.grey[800],
+                  height: 20,
+                  width: 20),
               EmptySpace(multiple: 2),
               Text("$label", style: Theme.of(context).textTheme.subhead),
             ],
