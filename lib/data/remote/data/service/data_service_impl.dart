@@ -61,7 +61,7 @@ class DataServiceImpl with BaseApi implements DataService {
         "x-access-token": "Bearer $token"
       };
 
-      print("fetching => $url");
+      // print("fetching => $url");
       //print("fetching => $header");
 
       var response = await http.get(url, headers: header);
@@ -74,7 +74,7 @@ class DataServiceImpl with BaseApi implements DataService {
         var list = List<RoomDTO>.from(
             (decode['data'] ?? []).map((e) => RoomDTO.fromMap(e)).toList());
 
-        print(decode['data'].length);
+        // print(decode['data'].length);
         return list;
       } else {
         throw Exception(handleError(decode));
