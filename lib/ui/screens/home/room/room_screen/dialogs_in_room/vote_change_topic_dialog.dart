@@ -157,6 +157,7 @@ class _VotingAreaState extends State<VotingArea> with ErrorHandler {
       await controller.voteTopicChange(widget.voteId, vote);
       setState(() {
         voted = true;
+        controller.voted.add(widget.voteId);
       });
     } catch (err) {
       if (mounted) {
@@ -233,7 +234,7 @@ class _VotingAreaState extends State<VotingArea> with ErrorHandler {
           children: <Widget>[
             oldTopic(),
             EmptySpace(),
-            voted
+            controller.voted.contains(widget.voteId)
                 ? votedField()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -292,8 +293,8 @@ class CountDownTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      width: 50,
+      height: 80,
+      width: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: Pallet.primaryColor, width: 2),

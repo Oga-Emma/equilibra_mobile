@@ -1,3 +1,5 @@
+import 'package:equilibra_mobile/di/controllers/data_controller.dart';
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/ui/screens/auth/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +24,8 @@ class SplashScreen extends StatelessWidget {
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
+                    // print(snapshot.data);
+                    Provider.of<UserController>(context).user = snapshot.data;
                     model.completeLogin(context, snapshot.data);
                   }
 

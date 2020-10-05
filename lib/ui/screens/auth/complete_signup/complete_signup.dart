@@ -1,6 +1,7 @@
 import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/complete_signup_dto.dart';
 import 'package:equilibra_mobile/ui/core/widgets/auth_background.dart';
+import 'package:equilibra_mobile/ui/router/router.gr.dart';
 import 'package:equilibra_mobile/ui/screens/auth/complete_signup/where_you_are_from.dart';
 import 'package:equilibra_mobile/ui/screens/auth/complete_signup/where_you_reside.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,9 @@ class _CompleteSignupScreenState extends State<CompleteSignupScreen>
   @override
   Widget build(BuildContext context) {
     return AuthBackground(
+        onBackPressed: () {
+          controller.showLoginPage();
+        },
         title: _current == 0
             ? "Tell us where you are from"
             : "Tell us where you reside in",

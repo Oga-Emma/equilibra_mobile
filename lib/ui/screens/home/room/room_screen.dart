@@ -878,6 +878,17 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         case EventTypes.VOTE_TOPIC_CHANGE:
           if (!isMember) return;
           var vote = VoteDTO.fromMap(event.data['vote']);
+
+          // print((vote.voters ?? []).contains(userController.user.id));
+          // print(userController.user.id);
+          // print(vote.voters);
+          // print(vote.stopAt);
+          // print(vote.isClosed);
+          // print(vote.id);
+
+          if (roomController.voted.contains(vote.id)) return;
+
+          if ((vote.voters ?? []).contains(userController.user.id)) return;
           voteChangeTopic(vote);
           break;
 

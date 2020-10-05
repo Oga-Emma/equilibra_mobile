@@ -19,14 +19,14 @@ showOverlayMessage(SocketComment comment) {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Text(
-                  //   "${comment.fullComment.comment}",
-                  //   style: TextStyle(color: Pallet.primaryColor, fontSize: 14),
-                  // ),
-                  // Text(
-                  //   "${comment.author}",
-                  //   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  // ),
+                  Text(
+                    "${comment.message}",
+                    style: TextStyle(color: Pallet.primaryColor, fontSize: 14),
+                  ),
+                  Text(
+                    "${comment.fullComment.comment}",
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
                   // Divider(),
                   // Text.rich(
                   //   TextSpan(text: "Room: ", children: [

@@ -28,6 +28,8 @@ class RoomController extends BaseViewModel {
   var _dataRepo = getIt<DataRepo>();
   var _roomRepo = getIt<RoomRepo>();
 
+  List voted = [];
+
   gotoRoomScreen(RoomGroupDTO group, RoomDTO room,
       {bool isVentTheSteam = false}) {
     _navigationService.navigateTo(Routes.roomScreen,
@@ -62,6 +64,7 @@ class RoomController extends BaseViewModel {
         eventHandlerStream.sink.add(event);
       } else {
         if (event.type == EventTypes.COMMENT && event.data != null) {
+          print("New message => ${event.data}");
           showOverlayMessage(SocketComment.fromMap(event.data));
         }
       }

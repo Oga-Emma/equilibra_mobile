@@ -18,6 +18,9 @@ class UserController extends BaseViewModel {
   UserDTO user;
 
   UserProfileDTO userProfile;
+
+  List voted = [];
+
   Stream<UserProfileDTO> fetchProfile() {
     if (userProfile == null && !_profileIsFetching) {
       _profileIsFetching = true;

@@ -202,6 +202,7 @@ class AuthViewModel extends BaseViewModel {
 
   Future<void> completeLogin(BuildContext context, UserDTO user) async {
     await Future.delayed(Duration.zero);
+
     if (user.suspended) {
       showDialog(
           context: context,
@@ -224,7 +225,7 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  Future<UserProfileDTO> getUser() async {
+  Future<UserDTO> getUser() async {
     try {
       var user = await _localCache.getUser();
 
