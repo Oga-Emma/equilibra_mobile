@@ -36,8 +36,8 @@ class HomeViewModel extends BaseViewModel {
     }
 
     _navigationService.navigateTo(Routes.roomScreen,
-        arguments: RoomScreenArguments(
-            group: group, room: ventTheSteam, isVentTheSteam: true));
+        arguments:
+            RoomScreenArguments(roomId: ventTheSteam.id, isVentTheSteam: true));
   }
 
   settingsScreen() {

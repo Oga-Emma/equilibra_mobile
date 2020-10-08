@@ -30,11 +30,10 @@ class RoomController extends BaseViewModel {
 
   List voted = [];
 
-  gotoRoomScreen(RoomGroupDTO group, RoomDTO room,
-      {bool isVentTheSteam = false}) {
+  gotoRoomScreen(String roomId, {bool isVentTheSteam = false}) {
     _navigationService.navigateTo(Routes.roomScreen,
         arguments: RoomScreenArguments(
-            group: group, room: room, isVentTheSteam: isVentTheSteam));
+            roomId: roomId, isVentTheSteam: isVentTheSteam));
   }
 
   Future<RoomDTO> fetchRoom(id) async {
@@ -65,7 +64,10 @@ class RoomController extends BaseViewModel {
       } else {
         if (event.type == EventTypes.COMMENT && event.data != null) {
           print("New message => ${event.data}");
-          showOverlayMessage(SocketComment.fromMap(event.data));
+          showOverlayMessage(SocketComment.fromMap(event.data),
+              onTap: (String roomId) {
+            gotoRoomScreen(roomId);
+          });
         }
       }
     } catch (err) {

@@ -45,10 +45,12 @@ import 'room_screen/dialogs_in_room/vote_change_topic_dialog.dart';
 import 'room_screen/dialogs_in_room/vote_change_topic_result_dialog.dart';
 
 class RoomScreen extends StatefulWidget {
-  RoomScreen(this.group, this.room, {this.isVentTheSteam = false});
+  RoomScreen(this.roomId, {this.isVentTheSteam = false});
+  // RoomScreen(this.group, this.room, {this.isVentTheSteam = false});
 
-  RoomGroupDTO group;
-  RoomDTO room;
+  String roomId;
+  // RoomGroupDTO group;
+  // RoomDTO room;
   bool isVentTheSteam;
 
   @override
@@ -116,11 +118,10 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         body: room != null
             ? body()
             : FutureBuilder<RoomDTO>(
-                future: roomController.fetchRoom(widget.room.id),
+                future: roomController.fetchRoom(widget.roomId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     room = snapshot.data;
-                    widget.room = snapshot.data;
                     Future.delayed(Duration.zero, () {
                       setState(() {});
                     });
@@ -202,7 +203,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                                   height: 18,
                                                   width: 18),
                                               EmptySpace(),
-                                              CountDownToTopicEnd(widget.room)
+                                              CountDownToTopicEnd(room)
 //                                            CountDownToTopicEnd(widget
 //                                                .room.currentTopic.startDate)
                                             ],
@@ -459,7 +460,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     }
                     //////print(message);
 
-//            var topicId = widget.room.currentTopic.id;
+//            var topicId = room.currentTopic.id;
 
                     setState(() {
                       sending = true;
@@ -947,14 +948,13 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
         context: context,
         builder: (context) => VoteChangeTopicDialog(
             vote.id, vote.topicId.title, vote.topicId.description,
-            autoVote: widget.room.members.length != null &&
-                widget.room.members.length == 1,
+            autoVote: room.members.length != null && room.members.length == 1,
             stopAt: stopAt));
 
     votingTopicChange = false;
 
     try {
-      if (widget.room.currentTopic == null) {
+      if (room.currentTopic == null) {
         if (changeFromMe) {
           Future.delayed(difference.inSeconds < 1 ? Duration.zero : difference,
               () => closeVotingSession(vote.id));
@@ -962,7 +962,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       } else {
         if (changeFromMe) {
           changeFromMe = false;
-          if (widget.room.members != null && widget.room.members.length == 1) {
+          if (room.members != null && room.members.length == 1) {
             refreshPage();
             return;
           }
@@ -1029,7 +1029,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   Future<void> fetchNotificationAndAdverts() async {
     try {
       roomController
-          .fetchRoomAdvert(roomId: widget.room.id)
+          .fetchRoomAdvert(roomId: room.id)
           .then((List<AdvertDTO> value) {
         if (value.isEmpty) return;
         value..shuffle();
@@ -1063,9 +1063,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       if (widget.isVentTheSteam) return;
       roomController
           .fetchAdminNotification(
-              roomId: widget.room.id, userId: userController.user.id)
+              roomId: room.id, userId: userController.user.id)
           .then((AdminNotificationDTO value) {
-        if (value.rooms.contains(widget.room.id)) {
+        if (value.rooms.contains(room.id)) {
           setState(() {
             _adminNotification = value;
           });
@@ -1131,10 +1131,10 @@ class _CountDownToTopicEndState extends State<CountDownToTopicEnd> {
 
   @override
   void initState() {
-//    //print("${widget.room}");
-//    //print("${widget.room.updatedAt}");
-//    //print("${widget.room.topicStartDate}");
-//    //print("${widget.room.createdAt}");
+//    //print("${room}");
+//    //print("${room.updatedAt}");
+//    //print("${room.topicStartDate}");
+//    //print("${room.createdAt}");
 
     if (widget.room.topicStartDate != null) {
       try {

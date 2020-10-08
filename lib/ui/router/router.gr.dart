@@ -166,8 +166,7 @@ class Router extends RouterBase {
       final args = data.getArgs<RoomScreenArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
         builder: (context) => RoomScreen(
-          args.group,
-          args.room,
+          args.roomId,
           isVentTheSteam: args.isVentTheSteam,
         ),
         settings: data,
@@ -190,9 +189,7 @@ class RoomGroupsListScreenArguments {
 
 /// RoomScreen arguments holder class
 class RoomScreenArguments {
-  final RoomGroupDTO group;
-  final RoomDTO room;
+  final String roomId;
   final bool isVentTheSteam;
-  RoomScreenArguments(
-      {@required this.group, @required this.room, this.isVentTheSteam = false});
+  RoomScreenArguments({@required this.roomId, this.isVentTheSteam = false});
 }

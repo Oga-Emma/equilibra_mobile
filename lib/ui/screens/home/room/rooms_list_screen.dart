@@ -136,8 +136,7 @@ class RoomGroupsListScreen extends StatelessWidget {
             onTap: () {
 //              print(room.id);
               model.gotoRoomScreen(
-                group,
-                room,
+                room.id,
                 isVentTheSteam: room.name.toLowerCase().contains("vent"),
               );
 

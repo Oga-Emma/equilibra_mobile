@@ -5,7 +5,8 @@ import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-showOverlayMessage(SocketComment comment) {
+showOverlayMessage(SocketComment comment,
+    {Null Function(String roomId) onTap}) {
   showOverlayNotification(
     (context) {
       return SafeArea(
@@ -13,44 +14,50 @@ showOverlayMessage(SocketComment comment) {
           padding: const EdgeInsets.all(8.0),
           child: Material(
             borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "${comment.message}",
-                    style: TextStyle(color: Pallet.primaryColor, fontSize: 14),
-                  ),
-                  Text(
-                    "${comment.fullComment.comment}",
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
-                  // Divider(),
-                  // Text.rich(
-                  //   TextSpan(text: "Room: ", children: [
-                  //     TextSpan(
-                  //         text: '${comment.room}',
-                  //         style: TextStyle(
-                  //             fontWeight: FontWeight.w600,
-                  //             fontSize: 12,
-                  //             color: Colors.grey))
-                  //   ]),
-                  //   style: TextStyle(fontSize: 12, color: Colors.grey),
-                  // ),
-                  // Text.rich(
-                  //   TextSpan(text: "Topic: ", children: [
-                  //     TextSpan(
-                  //         text: '${comment.topic}',
-                  //         style: TextStyle(
-                  //             fontWeight: FontWeight.w600,
-                  //             fontSize: 12,
-                  //             color: Colors.grey))
-                  //   ]),
-                  //   style: TextStyle(fontSize: 12, color: Colors.grey),
-                  // )
-                ],
+            child: InkWell(
+              onTap: () {
+                onTap(comment.room);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "${comment.message}",
+                      style:
+                          TextStyle(color: Pallet.primaryColor, fontSize: 14),
+                    ),
+                    Text(
+                      "${comment.fullComment.comment}",
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                    // Divider(),
+                    // Text.rich(
+                    //   TextSpan(text: "Room: ", children: [
+                    //     TextSpan(
+                    //         text: '${comment.room}',
+                    //         style: TextStyle(
+                    //             fontWeight: FontWeight.w600,
+                    //             fontSize: 12,
+                    //             color: Colors.grey))
+                    //   ]),
+                    //   style: TextStyle(fontSize: 12, color: Colors.grey),
+                    // ),
+                    // Text.rich(
+                    //   TextSpan(text: "Topic: ", children: [
+                    //     TextSpan(
+                    //         text: '${comment.topic}',
+                    //         style: TextStyle(
+                    //             fontWeight: FontWeight.w600,
+                    //             fontSize: 12,
+                    //             color: Colors.grey))
+                    //   ]),
+                    //   style: TextStyle(fontSize: 12, color: Colors.grey),
+                    // )
+                  ],
+                ),
               ),
             ),
           ),
