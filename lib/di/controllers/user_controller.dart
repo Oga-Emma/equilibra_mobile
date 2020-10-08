@@ -83,6 +83,7 @@ class UserController extends BaseViewModel {
       });
       _userRepo.saveFCMToken(token);
     } catch (err) {
+      // print(err);
       // setBusy(false);
       throw err;
     }

@@ -133,8 +133,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Widget body() {
-    isMember =
-        room.members.any((element) => element.member == userController.user.id);
+    isMember = room.members
+        .any((element) => element.member == userController.userProfile.id);
 
     hasTopic = room.currentTopic != null && room.currentTopic.id != null;
     return WillPopScope(
@@ -174,7 +174,22 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                               bottomRight: Radius.circular(16.0))),
                       pinned: true,
                       title: appBarContent(context),
-                      actions: <Widget>[_selectPopup()],
+                      actions: <Widget>[
+                        widget.isVentTheSteam
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Image(
+                                        image: AssetImage(
+                                            "assets/img/room_topic_side_image.png")),
+                                  ),
+                                ),
+                              )
+                            : _selectPopup()
+                      ],
                       expandedHeight:
                           widget.isVentTheSteam ? 56 : !hasTopic ? 190 : 230,
                       flexibleSpace: ClipRRect(
@@ -253,7 +268,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                                 deleteComment(comment.id);
                               },
                               like: (comment) {
-                                if (comment.liked(userController.user.id)) {
+                                if (comment
+                                    .liked(userController.userProfile.id)) {
                                   unlikeComment(comment.id);
                                 } else {
                                   likeComment(comment.id);
@@ -725,10 +741,10 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
               child: Row(
                 children: <Widget>[
                   ProfileImage(
-                      imageUrl: userController.user.avatar, radius: 30),
+                      imageUrl: userController.userProfile.avatar, radius: 30),
                   EmptySpace(),
                   Text(
-                      "${userController.user.username ?? userController.user.fullName}")
+                      "${userController.userProfile.username ?? userController.userProfile.fullName}")
                 ],
               )),
           PopupMenuItem(
@@ -858,7 +874,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           break;
 
         case EventTypes.JOIN_ROOM:
-          if (userController.user.id == event.data["user"]) {
+          if (userController.userProfile.id == event.data["user"]) {
             if (votingTopicChange) {
               Navigator.pop(context);
             }
@@ -880,8 +896,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           if (!isMember) return;
           var vote = VoteDTO.fromMap(event.data['vote']);
 
-          // print((vote.voters ?? []).contains(userController.user.id));
-          // print(userController.user.id);
+          // print((vote.voters ?? []).contains(userController.userProfile.id));
+          // print(userController.userProfile.id);
           // print(vote.voters);
           // print(vote.stopAt);
           // print(vote.isClosed);
@@ -889,7 +905,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
           if (roomController.voted.contains(vote.id)) return;
 
-          if ((vote.voters ?? []).contains(userController.user.id)) return;
+          if ((vote.voters ?? []).contains(userController.userProfile.id))
+            return;
           voteChangeTopic(vote);
           break;
 
@@ -908,7 +925,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 //        //print(event.data['vote']);
           var vote = VoteDTO.fromMap(event.data['vote']);
 
-          if (!vote.voters.contains(userController.user.id)) {
+          if (!vote.voters.contains(userController.userProfile.id)) {
             showDiscussionVote(vote);
           }
           break;
@@ -1063,7 +1080,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
       if (widget.isVentTheSteam) return;
       roomController
           .fetchAdminNotification(
-              roomId: room.id, userId: userController.user.id)
+              roomId: room.id, userId: userController.userProfile.id)
           .then((AdminNotificationDTO value) {
         if (value.rooms.contains(room.id)) {
           setState(() {
@@ -1078,7 +1095,8 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   Widget _buildAdminNotification() {
     return Visibility(
-      visible: !_adminNotification.mutedUsers.contains(userController.user.id),
+      visible: !_adminNotification.mutedUsers
+          .contains(userController.userProfile.id),
       child: Container(
           width: double.maxFinite,
           margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -1099,11 +1117,12 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                   ),
                   onTap: () {
                     setState(() {
-                      _adminNotification.mutedUsers.add(userController.user.id);
+                      _adminNotification.mutedUsers
+                          .add(userController.userProfile.id);
                     });
                     roomController.muteAdminNotification(
                         notificationId: _adminNotification.id,
-                        userId: userController.user.id);
+                        userId: userController.userProfile.id);
                   })
             ],
           )),

@@ -63,7 +63,6 @@ class RoomController extends BaseViewModel {
         eventHandlerStream.sink.add(event);
       } else {
         if (event.type == EventTypes.COMMENT && event.data != null) {
-          print("New message => ${event.data}");
           showOverlayMessage(SocketComment.fromMap(event.data),
               onTap: (String roomId) {
             gotoRoomScreen(roomId);

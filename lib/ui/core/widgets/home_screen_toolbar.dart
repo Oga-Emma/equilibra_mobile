@@ -63,7 +63,7 @@ class EAppBar extends StatelessWidget with PreferredSizeWidget {
                           RichText(
                             text: TextSpan(text: 'Welcome, ', children: [
                               TextSpan(
-                                text: "${controller.user.fullName}",
+                                text: "${controller.userProfile.fullName}",
                                 style: TextStyle(
 //                                      fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -72,7 +72,16 @@ class EAppBar extends StatelessWidget with PreferredSizeWidget {
                             ]),
                           ),
                         ],
-                      ))
+                      )),
+                      Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Image(
+                              image: AssetImage(
+                                  "assets/img/room_topic_side_image.png")),
+                        ),
+                      ),
                     ],
                   ),
                 ),

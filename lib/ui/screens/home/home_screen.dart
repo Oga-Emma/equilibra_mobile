@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     _firebaseMessaging.getToken().then((String token) async {
-      print(token);
+      // print("updating token $token");
       if (token != null) {
         controller.updateFCMToken(token);
       }
