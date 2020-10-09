@@ -470,6 +470,9 @@ class _DoNotDisturbSwitchState extends State<DoNotDisturbSwitch> {
   bool _on = false;
   @override
   Widget build(BuildContext context) {
+    return SizedBox(
+      height: 24,
+    );
     return Row(
       children: <Widget>[
         Expanded(
