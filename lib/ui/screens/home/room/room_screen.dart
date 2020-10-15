@@ -133,6 +133,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   Widget body() {
+    widget.isVentTheSteam = room.name.toLowerCase().contains("vent");
     isMember = room.members
         .any((element) => element.member == userController.userProfile.id);
 

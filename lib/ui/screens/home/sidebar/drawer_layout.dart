@@ -1,4 +1,5 @@
 import 'package:equilibra_mobile/di/controllers/data_controller.dart';
+import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -14,6 +15,7 @@ class DrawerLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var controller = getParentViewModel<HomeViewModel>(context);
+    var userController = getParentViewModel<UserController>(context);
     return Drawer(
       child: SafeArea(
           child: Column(
@@ -119,6 +121,7 @@ class DrawerLayout extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   controller.logout();
+                  userController.logout();
 //                  googleSignIn.signOut();
 //                  appState.signout();
 //                  Router.gotoNamed(Routes.LANDING, context, clearStack: true);

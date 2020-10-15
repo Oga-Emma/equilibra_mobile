@@ -37,7 +37,7 @@ class VoteChangeTopicResultDialog extends StatelessWidget {
                     child: Text(
                       changed
                           ? 'Majority Accepted the topic suggested, the new topic for the room is "$title"'
-                          : 'Majority Rejected the topic suggested, the topic current room topic will be retained',
+                          : 'Majority Rejected the topic suggested, the current room topic will be retained',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14),
                     ),

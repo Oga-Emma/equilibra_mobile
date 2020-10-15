@@ -16,13 +16,14 @@ class UserController extends BaseViewModel {
   var _profileController = BehaviorSubject<UserProfileDTO>();
 
   UserDTO user;
-
   UserProfileDTO userProfile;
-
   List voted = [];
 
-  Stream<UserProfileDTO> fetchProfile() {
-    if (userProfile == null && !_profileIsFetching) {
+  Stream<UserProfileDTO> fetchProfile({bool force = false}) {
+    if (force) {
+      _profileController.sink.add(null);
+    }
+    if (force || (userProfile == null && !_profileIsFetching)) {
       _profileIsFetching = true;
       _userRepo.fetchMyProfile().then((value) {
         userProfile = value;
@@ -49,7 +50,7 @@ class UserController extends BaseViewModel {
       setBusy(true);
       await _userRepo.updateProfile(data, avatar: avatar);
       _profileController = BehaviorSubject<UserProfileDTO>();
-      fetchProfile();
+      fetchProfile(force: true);
     } catch (err) {
       setBusy(false);
       throw err;
@@ -62,7 +63,7 @@ class UserController extends BaseViewModel {
       setBusy(true);
       await _userRepo.changeStateOfResidence(data);
       _profileController = BehaviorSubject<UserProfileDTO>();
-      fetchProfile();
+      fetchProfile(force: true);
     } catch (err) {
       setBusy(false);
       throw err;
@@ -119,5 +120,13 @@ class UserController extends BaseViewModel {
       throw err;
     }
     setBusy(false);
+  }
+
+  void logout() {
+    user = null;
+    userProfile = null;
+    voted = [];
+    _profileIsFetching = false;
+    _profileController = BehaviorSubject();
   }
 }
