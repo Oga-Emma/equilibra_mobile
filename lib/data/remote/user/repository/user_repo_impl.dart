@@ -103,4 +103,13 @@ class UserRepoImpl implements UserRepo {
 
     return authResponse.user;
   }
+
+  @override
+  sendFeedback({String message, firstName, lastName, email}) async {
+    return userService.sendFeedback(await localCache.getToken(),
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        message: message);
+  }
 }

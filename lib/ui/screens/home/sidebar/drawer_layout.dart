@@ -81,20 +81,20 @@ class DrawerLayout extends StatelessWidget {
                     },
                   ),
                   EmptySpace(),
-                  // SideBarItem(
-                  //   label: "Feedbacks",
-                  //   icon: SvgIconUtils.FEEDBACK,
-                  //   selected: false,
-                  //   onTap: () {
-                  //     Navigator.pop(context);
-                  //
-                  //     controller.currentPage = 0;
-                  //     showDialog(
-                  //         context: context,
-                  //         builder: (context) => FeedBackDialog("email"));
-                  //   },
-                  // ),
-                  // EmptySpace(),
+                  SideBarItem(
+                    label: "Feedbacks",
+                    icon: SvgIconUtils.FEEDBACK,
+                    selected: false,
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      controller.currentPage = 0;
+                      showDialog(
+                          context: context,
+                          builder: (context) => FeedBackDialog("email"));
+                    },
+                  ),
+                  EmptySpace(),
                   SideBarItem(
                     label: "Settings",
                     icon: SvgIconUtils.SETTINGS,

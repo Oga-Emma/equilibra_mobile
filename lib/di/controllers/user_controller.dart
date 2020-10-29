@@ -132,4 +132,25 @@ class UserController extends BaseViewModel {
     _profileIsFetching = false;
     _profileController = BehaviorSubject();
   }
+
+  void sendFeedback(String text) {
+    var firstname, lastName;
+
+    List split = user.fullName.split(" ");
+    if (split.length > 1) {
+      firstname = split[0];
+      lastName = split[1];
+    } else if (split.length == 1) {
+      firstname = split[0];
+      lastName = "";
+    } else {
+      firstname = "Anonymous";
+      lastName = "";
+    }
+    _userRepo.sendFeedback(
+        message: text,
+        firstName: firstname,
+        lastName: lastName,
+        email: user.email);
+  }
 }

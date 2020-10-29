@@ -254,4 +254,33 @@ class UserServiceImpl with BaseApi implements UserService {
       throw err;
     }
   }
+
+  @override
+  sendFeedback(token, {String message, firstName, lastName, email}) async {
+    try {
+      var url = "$BASE_URL/home/contact-us";
+      var header = {
+        "Content-Type": "application/json",
+        "x-access-token": "Bearer $token"
+      };
+
+      var data = {
+        "email": email,
+        "first_name": firstName,
+        "last_name": lastName,
+        "message": email
+      };
+
+      var response =
+          await http.post(url, headers: header, body: json.encode(data));
+
+      print(response.body);
+      var decode = json.decode(response.body);
+      if (response.statusCode != 200) {
+        throw Exception(handleError(decode));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
 }

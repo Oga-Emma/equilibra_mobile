@@ -1130,7 +1130,6 @@ class _AdminNotificationState extends State<AdminNotification> {
   }
 
   Widget _buildAdminNotification() {
-    print("building notificatino");
     return Visibility(
       visible: !_adminNotification.mutedUsers
           .contains(widget.userController.userProfile.id),

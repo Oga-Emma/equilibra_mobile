@@ -27,4 +27,6 @@ abstract class UserRepo {
 
   Future<String> getFcmToken();
   Future saveFCMToken(String token);
+
+  sendFeedback({String message, firstName, lastName, email});
 }
