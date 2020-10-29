@@ -189,6 +189,7 @@ class RoomController extends BaseViewModel {
   }
 
   Future<List<AdvertDTO>> fetchRoomAdvert({page, limit, roomId, visibility}) {
+    print("advert in room controller");
     return _roomRepo.fetchRoomAdvert(
         page: page, limit: limit, roomId: roomId, visibility: visibility);
   }

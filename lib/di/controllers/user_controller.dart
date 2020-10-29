@@ -13,7 +13,8 @@ class UserController extends BaseViewModel {
   var _userRepo = GetIt.instance<UserRepo>();
 
   var _profileIsFetching = false;
-  var _profileController = BehaviorSubject<UserProfileDTO>();
+  BehaviorSubject<UserProfileDTO> _profileController =
+      BehaviorSubject<UserProfileDTO>();
 
   UserDTO user;
   UserProfileDTO userProfile;
@@ -23,6 +24,7 @@ class UserController extends BaseViewModel {
     if (force) {
       _profileController.sink.add(null);
     }
+
     if (force || (userProfile == null && !_profileIsFetching)) {
       _profileIsFetching = true;
       _userRepo.fetchMyProfile().then((value) {
@@ -32,11 +34,12 @@ class UserController extends BaseViewModel {
       }).catchError((err) {
         _profileIsFetching = false;
       });
-    } else {
+    }
+    /*else {
       if (userProfile != null) {
         _profileController.sink.add(userProfile);
       }
-    }
+    }*/
     return _profileController.stream;
   }
 

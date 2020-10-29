@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:equilibra_mobile/di/controllers/data_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
-import 'package:equilibra_mobile/ui/router/router.gr.dart';
+import 'package:equilibra_mobile/ui/router/router.gr.dart' as Router;
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -44,8 +44,8 @@ class MyApp extends StatelessWidget {
           builder: BotToastInit(), //1. call BotToastInit
           navigatorObservers: [BotToastNavigatorObserver()],
           navigatorKey: getIt<NavigationService>().navigatorKey,
-          initialRoute: Routes.splashScreen,
-          onGenerateRoute: Router().onGenerateRoute,
+          initialRoute: Router.Routes.splashScreen,
+          onGenerateRoute: Router.Router().onGenerateRoute,
         ),
       ),
     );

@@ -100,6 +100,7 @@ class RoomRepoImpl implements RoomRepo {
 
   @override
   Future<AdminNotificationDTO> fetchAdminNotification({roomId, userId}) async {
+    print("room repo");
     return roomService.fetchAdminNotification(await localCache.getToken(),
         roomId: roomId, userId: userId);
   }

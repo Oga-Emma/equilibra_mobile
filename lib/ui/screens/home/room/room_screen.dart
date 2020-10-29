@@ -88,7 +88,6 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   TextTheme textTheme;
   UserController userController;
   RoomController roomController;
-  AdminNotificationDTO _adminNotification;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +99,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
     if (roomController == null) {
       roomController = Provider.of<RoomController>(context, listen: false);
       roomController.reconnect();
-      fetchNotificationAndAdverts();
     }
-
-//    if (room != null) {}
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -125,11 +121,9 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     Future.delayed(Duration.zero, () {
                       setState(() {});
                     });
-//                    return body();
                   }
                   return LoadingSpinner();
                 }));
-//    return Scaffold(key: _scaffoldKey, body: body());
   }
 
   Widget body() {
@@ -191,8 +185,11 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                               )
                             : _selectPopup()
                       ],
-                      expandedHeight:
-                          widget.isVentTheSteam ? 56 : !hasTopic ? 190 : 230,
+                      expandedHeight: widget.isVentTheSteam
+                          ? 56
+                          : !hasTopic
+                              ? 190
+                              : 230,
                       flexibleSpace: ClipRRect(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(24.0),
@@ -244,9 +241,12 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                     SliverFillRemaining(
                         child: Column(
                       children: [
-                        _adminNotification != null
-                            ? _buildAdminNotification()
-                            : SizedBox(),
+                        Visibility(
+                            visible: !widget.isVentTheSteam,
+                            child: AdminNotification(
+                                userController: userController,
+                                roomController: roomController,
+                                room: room)),
                         Expanded(
                           child: RoomComments(
                               room: room,
@@ -1043,11 +1043,46 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   closeVotingSession(id) {}
+}
+
+class AdminNotification extends StatefulWidget {
+  AdminNotification({this.roomController, this.userController, this.room});
+  RoomDTO room;
+  RoomController roomController;
+  UserController userController;
+
+  @override
+  _AdminNotificationState createState() => _AdminNotificationState();
+}
+
+class _AdminNotificationState extends State<AdminNotification> {
+  AdminNotificationDTO _adminNotification;
+  RoomController roomController;
+
+  var textTheme;
+  @override
+  Widget build(BuildContext context) {
+    textTheme = Theme.of(context).textTheme;
+    if (widget.userController == null) {
+      widget.userController =
+          Provider.of<UserController>(context, listen: false);
+    }
+
+    if (roomController == null) {
+      roomController = widget.roomController;
+      roomController.reconnect();
+      fetchNotificationAndAdverts();
+    }
+
+    return _adminNotification != null ? _buildAdminNotification() : SizedBox();
+  }
 
   Future<void> fetchNotificationAndAdverts() async {
+    // print(
+    //     "fetching notification => ${roomController.fetchRoomAdvert(roomId: widget.room.id)}");
     try {
       roomController
-          .fetchRoomAdvert(roomId: room.id)
+          .fetchRoomAdvert(roomId: widget.room.id)
           .then((List<AdvertDTO> value) {
         if (value.isEmpty) return;
         value..shuffle();
@@ -1075,29 +1110,30 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
           ),
         );
       }).catchError((err) {
-        //print(err);
+        print(err);
       });
 
-      if (widget.isVentTheSteam) return;
       roomController
           .fetchAdminNotification(
-              roomId: room.id, userId: userController.userProfile.id)
+              roomId: widget.room.id,
+              userId: widget.userController.userProfile.id)
           .then((AdminNotificationDTO value) {
-        if (value.rooms.contains(room.id)) {
+        if (value.rooms.contains(widget.room.id)) {
           setState(() {
             _adminNotification = value;
           });
         }
       }).catchError((err) {
-        //print(err);
+        print(err);
       });
     } catch (err) {}
   }
 
   Widget _buildAdminNotification() {
+    print("building notificatino");
     return Visibility(
       visible: !_adminNotification.mutedUsers
-          .contains(userController.userProfile.id),
+          .contains(widget.userController.userProfile.id),
       child: Container(
           width: double.maxFinite,
           margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -1119,11 +1155,11 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
                   onTap: () {
                     setState(() {
                       _adminNotification.mutedUsers
-                          .add(userController.userProfile.id);
+                          .add(widget.userController.userProfile.id);
                     });
                     roomController.muteAdminNotification(
                         notificationId: _adminNotification.id,
-                        userId: userController.userProfile.id);
+                        userId: widget.userController.userProfile.id);
                   })
             ],
           )),

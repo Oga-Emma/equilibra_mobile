@@ -158,259 +158,21 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print("home");
-    makeHeader(String headerText) {
-      return SliverToBoxAdapter(
-          child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.only(left: 18.0, top: 32.0, bottom: 16.0),
-        child: Text(headerText, style: Theme.of(context).textTheme.subtitle),
-      ));
-    }
 
     controller = Provider.of<UserController>(context);
     roomController = Provider.of<RoomController>(context);
     roomController.setupSocket();
+
+    if (user != null) {
+      return _buildPage();
+    }
     return StreamBuilder<UserProfileDTO>(
         stream: controller.fetchProfile(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             user = snapshot.data;
 
-            return ViewModelBuilder<HomeViewModel>.reactive(
-                builder: (context, model, child) {
-                  return Scaffold(
-                      appBar: EAppBar(onLeadingPressed: () {
-                        scaffoldKey.currentState.openDrawer();
-                      }),
-                      body: StreamBuilder<UserProfileDTO>(
-                          stream: controller.fetchProfile(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              user = snapshot.data;
-
-                              return CustomScrollView(
-                                slivers: <Widget>[
-                                  SliverToBoxAdapter(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        DoNotDisturbSwitch(),
-                                        Material(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              bottomLeft: Radius.circular(4.0)),
-                                          color: Pallet.primaryColor,
-                                          child: InkWell(
-                                            onTap: () {
-                                              model.getVentTheSteam();
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16.0,
-                                                      vertical: 12.0),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Expanded(
-                                                      child: Text(
-                                                          "Vent the Steam",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white))),
-                                                  Icon(EvaIcons.arrowIosForward,
-                                                      color: Colors.white),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
-                                  makeHeader('FEDERAL'),
-                                  SliverToBoxAdapter(
-                                    child: organizeGrid(
-                                      children: [
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils
-                                                .JUDICIARY_GROUP_ICON,
-//                                  isSelected: false,
-                                            group: RoomGroupDTO("Federal",
-                                                RoomType.COURT, "Judiciary", 0,
-                                                description1:
-                                                    "The Supreme Court",
-                                                description2:
-                                                    "Courts of Appeal",
-                                                isFederal: true)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "Federal",
-                                                RoomType.MINISTRY,
-                                                "Executive",
-                                                0,
-                                                description1:
-                                                    "Office of the president",
-                                                description2:
-                                                    "Federal Ministries",
-                                                isFederal: true)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO("Federal",
-                                                RoomType.SENATE, "Senate", 0,
-                                                description1: "The Senate",
-                                                description2:
-                                                    "Senatorial Districts",
-                                                isFederal: true)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "Federal",
-                                                RoomType
-                                                    .HOUSE_OF_REPRESENTATIVE,
-                                                "House of Reps.",
-                                                0,
-                                                description1:
-                                                    "The House of Representatives",
-                                                description2:
-                                                    "Federal Constituencies",
-                                                isFederal: true)),
-                                      ],
-                                    ),
-                                  ),
-                                  makeHeader(
-                                      '${user.stateOfOrigin.name} - ORIGIN'
-                                          .toUpperCase()),
-                                  SliverToBoxAdapter(
-                                    child: organizeGrid(
-                                      children: [
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils
-                                                .JUDICIARY_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfOrigin.name}",
-                                                RoomType.COURT,
-                                                "Judiciary",
-                                                0,
-                                                isOrigin: true,
-                                                description1:
-                                                    "Sate High Courts",
-                                                description2:
-                                                    "Customary Courts",
-                                                roomId: user.stateOfOrigin.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfOrigin.name}",
-                                                RoomType.MINISTRY,
-                                                "Executive",
-                                                0,
-                                                description1:
-                                                    "Office of the Governor",
-                                                description2:
-                                                    "State Ministries",
-                                                isOrigin: true,
-                                                roomId: user.stateOfOrigin.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfOrigin.name}",
-                                                RoomType.HOUSE_OF_ASSEMBLY,
-                                                "House of Assem.",
-                                                0,
-                                                isOrigin: true,
-                                                description1:
-                                                    "House of Assembly",
-                                                description2:
-                                                    "State Constituencies",
-                                                roomId: user.stateOfOrigin.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-//                      loading: '${user.localGovtOfOrigin.name}'.contains('LGA'),
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfOrigin.name}",
-                                                RoomType.LGA,
-                                                "${user.localGovtOfOrigin.name}",
-                                                0,
-                                                isOrigin: true,
-                                                description1:
-                                                    "Origin Local Government",
-                                                roomId: user.stateOfOrigin.id)),
-                                      ],
-                                    ),
-                                  ),
-                                  makeHeader(
-                                      "${user.stateOfResidence.name}  - RESIDENCE"
-                                          .toUpperCase()),
-                                  SliverToBoxAdapter(
-                                    child: organizeGrid(
-                                      children: [
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils
-                                                .JUDICIARY_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfResidence.name}",
-                                                RoomType.COURT,
-                                                "Judiciary",
-                                                0,
-                                                description1:
-                                                    "Sate High Courts",
-                                                description2:
-                                                    "Customary Courts",
-                                                roomId:
-                                                    user.stateOfResidence.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfResidence.name}",
-                                                RoomType.MINISTRY,
-                                                "Executive",
-                                                0,
-                                                description1:
-                                                    "Office of the Governor",
-                                                description2:
-                                                    "State Ministries",
-                                                roomId:
-                                                    user.stateOfResidence.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfResidence.name}",
-                                                RoomType.HOUSE_OF_ASSEMBLY,
-                                                "House of Assem.",
-                                                0,
-                                                description1:
-                                                    "House of Assembly",
-                                                description2:
-                                                    "State Constituencies",
-                                                roomId:
-                                                    user.stateOfResidence.id)),
-                                        GroupsGridItem(
-                                            icon: SvgIconUtils.OTHER_GROUP_ICON,
-                                            group: RoomGroupDTO(
-                                                "${user.stateOfResidence.name}",
-                                                RoomType.LGA,
-                                                "${user.localGovtOfResidence.name}",
-                                                0,
-                                                description1:
-                                                    "Resident Local Government",
-                                                roomId:
-                                                    user.stateOfResidence.id)),
-                                      ],
-                                    ),
-                                  ),
-                                  SliverPadding(
-                                      padding: EdgeInsets.only(bottom: 32.0))
-                                ],
-                              );
-                            }
-
-                            return LoadingSpinner();
-                          }));
-                },
-                viewModelBuilder: () => HomeViewModel(),
-                disposeViewModel: false);
+            return _buildPage();
           }
 
           if (snapshot.hasError) {
@@ -419,6 +181,220 @@ class HomePage extends StatelessWidget {
 
           return LoadingSpinner();
         });
+  }
+
+  makeHeader(BuildContext context, String headerText) {
+    return SliverToBoxAdapter(
+        child: Container(
+      color: Colors.white,
+      padding: const EdgeInsets.only(left: 18.0, top: 32.0, bottom: 16.0),
+      child: Text(headerText, style: Theme.of(context).textTheme.subtitle),
+    ));
+  }
+
+  _buildPage() {
+    return ViewModelBuilder<HomeViewModel>.reactive(
+        builder: (context, model, child) {
+          return Scaffold(
+              appBar: EAppBar(onLeadingPressed: () {
+                scaffoldKey.currentState.openDrawer();
+              }),
+              body: StreamBuilder<UserProfileDTO>(
+                  stream: controller.fetchProfile(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      user = snapshot.data;
+
+                      return CustomScrollView(
+                        slivers: <Widget>[
+                          SliverToBoxAdapter(
+                              child: Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Column(
+                              children: <Widget>[
+                                DoNotDisturbSwitch(),
+                                Material(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4.0),
+                                      bottomLeft: Radius.circular(4.0)),
+                                  color: Pallet.primaryColor,
+                                  child: InkWell(
+                                    onTap: () {
+                                      model.getVentTheSteam();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 12.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                              child: Text("Vent the Steam",
+                                                  style: TextStyle(
+                                                      color: Colors.white))),
+                                          Icon(EvaIcons.arrowIosForward,
+                                              color: Colors.white),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                          makeHeader(context, 'FEDERAL'),
+                          SliverToBoxAdapter(
+                            child: organizeGrid(
+                              children: [
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
+//                                  isSelected: false,
+                                    group: RoomGroupDTO("Federal",
+                                        RoomType.COURT, "Judiciary", 0,
+                                        description1: "The Supreme Court",
+                                        description2: "Courts of Appeal",
+                                        isFederal: true)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO("Federal",
+                                        RoomType.MINISTRY, "Executive", 0,
+                                        description1: "Office of the president",
+                                        description2: "Federal Ministries",
+                                        isFederal: true)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "Federal", RoomType.SENATE, "Senate", 0,
+                                        description1: "The Senate",
+                                        description2: "Senatorial Districts",
+                                        isFederal: true)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "Federal",
+                                        RoomType.HOUSE_OF_REPRESENTATIVE,
+                                        "House of Reps.",
+                                        0,
+                                        description1:
+                                            "The House of Representatives",
+                                        description2: "Federal Constituencies",
+                                        isFederal: true)),
+                              ],
+                            ),
+                          ),
+                          makeHeader(
+                              context,
+                              '${user.stateOfOrigin.name} - ORIGIN'
+                                  .toUpperCase()),
+                          SliverToBoxAdapter(
+                            child: organizeGrid(
+                              children: [
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfOrigin.name}",
+                                        RoomType.COURT,
+                                        "Judiciary",
+                                        0,
+                                        isOrigin: true,
+                                        description1: "Sate High Courts",
+                                        description2: "Customary Courts",
+                                        roomId: user.stateOfOrigin.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfOrigin.name}",
+                                        RoomType.MINISTRY,
+                                        "Executive",
+                                        0,
+                                        description1: "Office of the Governor",
+                                        description2: "State Ministries",
+                                        isOrigin: true,
+                                        roomId: user.stateOfOrigin.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfOrigin.name}",
+                                        RoomType.HOUSE_OF_ASSEMBLY,
+                                        "House of Assem.",
+                                        0,
+                                        isOrigin: true,
+                                        description1: "House of Assembly",
+                                        description2: "State Constituencies",
+                                        roomId: user.stateOfOrigin.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+//                      loading: '${user.localGovtOfOrigin.name}'.contains('LGA'),
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfOrigin.name}",
+                                        RoomType.LGA,
+                                        "${user.localGovtOfOrigin.name}",
+                                        0,
+                                        isOrigin: true,
+                                        description1: "Origin Local Government",
+                                        roomId: user.stateOfOrigin.id)),
+                              ],
+                            ),
+                          ),
+                          makeHeader(
+                              context,
+                              "${user.stateOfResidence.name}  - RESIDENCE"
+                                  .toUpperCase()),
+                          SliverToBoxAdapter(
+                            child: organizeGrid(
+                              children: [
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.JUDICIARY_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfResidence.name}",
+                                        RoomType.COURT,
+                                        "Judiciary",
+                                        0,
+                                        description1: "Sate High Courts",
+                                        description2: "Customary Courts",
+                                        roomId: user.stateOfResidence.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfResidence.name}",
+                                        RoomType.MINISTRY,
+                                        "Executive",
+                                        0,
+                                        description1: "Office of the Governor",
+                                        description2: "State Ministries",
+                                        roomId: user.stateOfResidence.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfResidence.name}",
+                                        RoomType.HOUSE_OF_ASSEMBLY,
+                                        "House of Assem.",
+                                        0,
+                                        description1: "House of Assembly",
+                                        description2: "State Constituencies",
+                                        roomId: user.stateOfResidence.id)),
+                                GroupsGridItem(
+                                    icon: SvgIconUtils.OTHER_GROUP_ICON,
+                                    group: RoomGroupDTO(
+                                        "${user.stateOfResidence.name}",
+                                        RoomType.LGA,
+                                        "${user.localGovtOfResidence.name}",
+                                        0,
+                                        description1:
+                                            "Resident Local Government",
+                                        roomId: user.stateOfResidence.id)),
+                              ],
+                            ),
+                          ),
+                          SliverPadding(padding: EdgeInsets.only(bottom: 32.0))
+                        ],
+                      );
+                    }
+
+                    return LoadingSpinner();
+                  }));
+        },
+        viewModelBuilder: () => HomeViewModel(),
+        disposeViewModel: false);
   }
 
   Widget organizeGrid({List<Widget> children}) {
