@@ -171,7 +171,7 @@ class UserServiceImpl with BaseApi implements UserService {
       var response = await http.post(url,
           headers: headers, body: json.encode({"update": data}));
 
-      final body = json.decode(response.body);
+      // final body = json.decode(response.body);
 
       // print(response.body);
       var decode = json.decode(response.body);
@@ -179,6 +179,12 @@ class UserServiceImpl with BaseApi implements UserService {
         throw Exception(handleError(decode));
 //        return AuthResponseDTO.fromMap(decode['data']);
 
+      } else {
+        if (decode['message'] != null) {
+          return decode['message'];
+        }
+
+        return 'Account updated';
       }
     } catch (err) {
       throw err;
@@ -274,7 +280,7 @@ class UserServiceImpl with BaseApi implements UserService {
       var response =
           await http.post(url, headers: header, body: json.encode(data));
 
-      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode != 200) {
         throw Exception(handleError(decode));

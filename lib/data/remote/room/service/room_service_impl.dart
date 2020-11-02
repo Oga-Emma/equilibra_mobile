@@ -358,7 +358,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
         return AdminNotificationDTO.fromMap(decode['data']);
@@ -391,7 +391,7 @@ class RoomServiceImpl with BaseApi implements RoomService {
 
       var response = await http.get(url, headers: header);
 
-      print(response.body);
+      // print(response.body);
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
 //        return [];

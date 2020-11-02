@@ -64,9 +64,11 @@ class UserController extends BaseViewModel {
   Future changeStateOfResidence(Map<String, dynamic> data) async {
     try {
       setBusy(true);
-      await _userRepo.changeStateOfResidence(data);
+      var res = await _userRepo.changeStateOfResidence(data);
       _profileController = BehaviorSubject<UserProfileDTO>();
       fetchProfile(force: true);
+      setBusy(false);
+      return res;
     } catch (err) {
       setBusy(false);
       throw err;

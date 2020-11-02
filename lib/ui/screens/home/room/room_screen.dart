@@ -943,6 +943,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
   }
 
   void refreshPage() {
+    if (votingTopicChange) return;
     setState(() {
       room = null;
     });
@@ -950,6 +951,7 @@ class _RoomScreenState extends State<RoomScreen> with helper.ErrorHandler {
 
   bool votingTopicChange = false;
   void voteChangeTopic(VoteDTO vote) async {
+    if (votingTopicChange) return;
     DateTime stopAt = DateTime.now()..add(Duration(minutes: 2));
     if (vote.stopAt != null) {
       stopAt = DateTime.tryParse(vote.stopAt);

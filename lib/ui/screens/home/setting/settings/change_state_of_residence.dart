@@ -246,7 +246,7 @@ class _ChangeStateOfResidenceState extends State<ChangeStateOfResidence>
 
   Future<void> saveChanges() async {
     try {
-      await controller.changeStateOfResidence({
+      var res = await controller.changeStateOfResidence({
         "stateOfResidence": state,
         "localGovtOfResidence": lga,
         "stateOfResidenceFedConstituency": federalConstituency,
@@ -254,7 +254,9 @@ class _ChangeStateOfResidenceState extends State<ChangeStateOfResidence>
         "stateOfResidenceConstituency": stateConstituency
       });
 
-      showInSnackBar(context, "Account updated");
+      if (StringUtils.isNotEmpty(res)) {
+        showInSnackBar(context, "$res");
+      }
     } catch (err) {
       showInSnackBar(context, getErrorMessage(err, "Error saving changes"));
     }
