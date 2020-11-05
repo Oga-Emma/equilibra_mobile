@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:832023611491:android:57ab815deae8bc30ad1056",
+        "android_client_info": {
+          "package_name": "com.theequilibra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832023611491-3sbebisgd5mslepgd0maa59jchancpaj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYmb-vb2K64f8RURUdqJrTa_36g60Pzmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832023611491-3sbebisgd5mslepgd0maa59jchancpaj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "832023611491-27ik74fms9sl3vpfbm300684dt1m35vh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.theequilibra"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:832023611491:android:3d85b0186f388559ad1056",
         "android_client_info": {
           "package_name": "com.theequilibra.android"

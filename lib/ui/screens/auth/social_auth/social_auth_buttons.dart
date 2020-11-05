@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/model/dto/user_dto.dart';
 import 'package:equilibra_mobile/ui/core/utils/svg_icon_utils.dart';
@@ -27,58 +29,62 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons>
   Widget build(BuildContext context) {
     userController = Provider.of<UserController>(context);
     AuthViewModel model = Provider.of<AuthViewModel>(context);
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 52,
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: InkWell(
-            onTap: () {
-              _facebook(model);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                SvgIconUtils.getSvgIcon(SvgIconUtils.FACEBOOK,
-                    color: Color(0xFF385C8E), width: 24, height: 24),
-                Text(
-                  "Sign in with Facebook",
-                  style: TextStyle(fontSize: 16.0, color: Color(0xFF385C8E)),
-                ),
-                SizedBox(
-                  width: 25,
-                )
-              ],
+
+    return Visibility(
+      visible: Platform.isAndroid,
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: 52,
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: InkWell(
+              onTap: () {
+                _facebook(model);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  SvgIconUtils.getSvgIcon(SvgIconUtils.FACEBOOK,
+                      color: Color(0xFF385C8E), width: 24, height: 24),
+                  Text(
+                    "Sign in with Facebook",
+                    style: TextStyle(fontSize: 16.0, color: Color(0xFF385C8E)),
+                  ),
+                  SizedBox(
+                    width: 25,
+                  )
+                ],
+              ),
             ),
+            decoration:
+                BoxDecoration(color: Color(0xFFE2E6EB), borderRadius: radius),
           ),
-          decoration:
-              BoxDecoration(color: Color(0xFFE2E6EB), borderRadius: radius),
-        ),
-        EmptySpace(multiple: 2),
-        Container(
-          height: 52,
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: InkWell(
-            onTap: () => _googleSignin(model),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                SvgIconUtils.getSvgIcon(SvgIconUtils.GOOGLE_PLUS,
-                    color: Color(0xFFDD4C41), width: 24, height: 24),
-                Text(
-                  "Sign in with Google",
-                  style: TextStyle(fontSize: 16.0, color: Color(0xFFDD4C41)),
-                ),
-                SizedBox(
-                  width: 25,
-                )
-              ],
+          EmptySpace(multiple: 2),
+          Container(
+            height: 52,
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: InkWell(
+              onTap: () => _googleSignin(model),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  SvgIconUtils.getSvgIcon(SvgIconUtils.GOOGLE_PLUS,
+                      color: Color(0xFFDD4C41), width: 24, height: 24),
+                  Text(
+                    "Sign in with Google",
+                    style: TextStyle(fontSize: 16.0, color: Color(0xFFDD4C41)),
+                  ),
+                  SizedBox(
+                    width: 25,
+                  )
+                ],
+              ),
             ),
+            decoration:
+                BoxDecoration(color: Color(0xFFF5E8EA), borderRadius: radius),
           ),
-          decoration:
-              BoxDecoration(color: Color(0xFFF5E8EA), borderRadius: radius),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:equilibra_mobile/di/controllers/user_controller.dart';
 import 'package:equilibra_mobile/ui/core/res/palet.dart';
 import 'package:equilibra_mobile/ui/core/widgets/e_button.dart';
 import 'package:flutter/material.dart';
+import 'package:helper_widgets/custom_toasts.dart';
 import 'package:helper_widgets/empty_space.dart';
 import 'package:helper_widgets/string_utils/string_utils.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -87,6 +88,8 @@ class _FeedBackDialogState extends State<FeedBackDialog> {
   sendFeedback() async {
     if (StringUtils.isNotEmpty(_feedbackTextController.text))
       userController.sendFeedback(_feedbackTextController.text);
+    await Future.delayed(Duration(seconds: 2));
+    showSuccessToast("Feedback sent");
     Navigator.pop(context);
   }
 }
