@@ -249,6 +249,7 @@ class RoomController extends BaseViewModel {
 //    final user = await localCache.getUser();
     _manager = SocketIOManager();
     SocketOptions options = SocketOptions(
+      Platform.isIOS ? BASE_URL :
       'https://equiliba-socket-service.herokuapp.com/',
 //      'https://api.equilibra-admin.test.natterbase.com/users-api/',
 //      'http://10.0.2.2:3000',

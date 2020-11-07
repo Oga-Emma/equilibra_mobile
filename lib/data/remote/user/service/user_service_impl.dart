@@ -56,7 +56,8 @@ class UserServiceImpl with BaseApi implements UserService {
       var response =
           await http.post(url, headers: header, body: json.encode(payload));
 
-      // print(response.body);
+       print(url);
+       print(response.body);
 
       var decode = json.decode(response.body);
       if (response.statusCode == 200) {
